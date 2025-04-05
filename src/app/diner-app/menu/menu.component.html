@@ -1,25 +1,192 @@
-<div *ngIf="menu_list" class="flex px-6 pt-14">
-    <div *ngFor="let s of menu_list" class="flex items-center justify-between w-full py-3 font-medium text-left rtl:text-right text-gray-500 border-b border-gray-200">
-       {{s?.name}}
-    </div>
-</div>
-<div *ngIf="menu_list" class="flex flex-col px-6">
-    <div *ngFor="let s of menu_list" class="flex flex-col justify-between w-full py-3 font-medium text-left rtl:text-right text-black">
-       <span class="font-bold">{{s?.name}}</span>
-       <div class="flex flex-col">
-        <div *ngFor="let i of s.items" class="py-4 border-b border-gray-200" [routerLink]="['/diner/menu-item',i.id]">
-            <div class="flex flex-row">
-                <div class="w-[140px]">
-                 <app-common-image [src]="i.image" [width]="'200'"></app-common-image>     
-                </div>
-                <div class="p-2 flex-grow">
-                    <p>{{i.name}} </p>
-                     <p class="text-sm">{{i.description}}</p>
-                     <p><strong>UGX {{i.primary_price|number}}</strong></p>
+<div *ngIf="false" class="flex flex-col mt-12">
 
+  <!-- Category Navigation + Search Toggle -->
+  <div *ngIf="!showSearch"
+       class="w-full top-0 overflow-x-auto flex items-center justify-between px-6 bg-white z-10 sticky shadow-md">
+    <div class="flex space-x-3">
+      <button
+        *ngFor="let s of filteredMenuList; let i = index"
+        (click)="scrollTo(s.name, i)"
+        class="px-4 py-2 text-lg font-semibold whitespace-nowrap border-b-4 transition-all duration-300"
+        [ngClass]="{'border-red-600 text-red-600': removeUnderscore(currentSection) === s.name, 'border-transparent text-gray-600': removeUnderscore(currentSection) !== s.name}">
+        {{ s?.name }}
+      </button>
+    </div>
+    <!-- Search Button -->
+    <button (click)="toggleSearch()" class="ml-4 px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
+      🔍 Search
+    </button>
+  </div>
+
+  <!-- Search Bar (Replaces Category List) -->
+  <div *ngIf="showSearch" class="relative px-6 mt-4 flex items-center space-x-3">
+    <input
+      type="text"
+      placeholder="Search menu..."
+      [(ngModel)]="searchQuery"
+      (input)="filterMenu()"
+      class="w-full p-3 pl-10 border border-gray-300 rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-red-500"
+    />
+    <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" width="20" height="20" viewBox="0 0 20 20">
+      <path stroke="currentColor" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+    </svg>
+    <button *ngIf="searchQuery" (click)="clearSearch()" class="text-gray-500 text-lg">✕</button>
+    <!-- Back to Categories Button -->
+    <button (click)="toggleSearch()" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
+      🔙 Back
+    </button>
+  </div>
+
+  <!-- Menu List (Minimalist) -->
+  <div *ngIf="filteredMenuList" class="flex flex-col px-6 overflow-y-scroll">
+    <div *ngFor="let s of filteredMenuList">
+      <h2 class="text-xl font-bold pt-3" [id]="sanitizeId(s.name)">{{s?.name}}</h2>
+      <div class="mt-3">
+        <div *ngFor="let i of s?.items" class="py-2 border-b border-gray-300 flex justify-between items-center">
+          <div (click)="viewItem(i)" class="flex-grow">
+            <p class="font-semibold text-lg">{{i.name}}</p>
+            <p class="text-sm text-gray-600">{{i.description}}</p>
+            <p class="font-medium text-red-600 mt-1">UGX {{i.primary_price | number}}</p>
+          </div>
+          <div (click)="viewItem(i)" class="w-[100px] h-[100px]">
+            <app-common-image [container]="false" [imgclass]="'rounded-lg w-full h-[100px] object-cover'" [src]="i.image" [width]="'100'" [height]="'100'"></app-common-image>     
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Basket Button -->
+  <div *ngIf="basketItems.length > 0" class="fixed bottom-5 right-5">
+    <div class="relative">
+      <span class="absolute -top-2 -right-2 bg-black text-white text-xs font-bold px-2 py-1 rounded-full">
+        {{ QuantitySum }}
+      </span>
+      <button routerLink="/diner/basket"
+        class="bg-red-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-red-700 transition-all">
+        VIEW BASKET
+      </button>
+    </div>
+  </div>
+
+  <!-- Minimalist Modal -->
+  <div *ngIf="showModal && selected_item &&false" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div class="bg-white w-11/12 max-w-lg p-6 relative animate-fadeIn">
+      <button (click)="closeModal()" class="absolute top-2 right-2 text-gray-500 hover:text-red-600">✕</button>
+      
+      <div class="text-center">
+        <img [src]="selected_item.image" class="rounded-lg w-[100px] h-[100px] mx-auto"/>
+        <h2 class="text-2xl font-bold mt-4">{{selected_item.name}}</h2>
+        <p class="text-gray-700">{{selected_item.description}}</p>
+        <p class="text-xl font-semibold text-red-600 mt-2">UGX {{selected_item.primary_price | number}}</p>
+      </div>
+
+      <!-- Quantity Selector -->
+      <div class="flex items-center justify-center space-x-4 mt-4">
+        <button (click)="checkSelected()" class="w-10 h-10 flex items-center justify-center bg-gray-300 rounded-lg text-xl">−</button>
+        <span class="text-lg font-semibold">{{ selected_quantity }}</span>
+        <button (click)="AddSelected()" class="w-10 h-10 flex items-center justify-center bg-gray-300 rounded-lg text-xl">+</button>
+      </div>
+
+      <button [disabled]="!isFormValid()" (click)="AddSelectedItem()"
+        class="w-full mt-4 bg-black text-white py-3 rounded-lg text-lg font-semibold hover:bg-gray-800 transition">
+        Add to Cart
+      </button>
+    </div>
+  </div>
+
+</div>
+
+
+<div  class="flex flex-col mt-12">
+
+   <!-- Category Navigation with Search Icon -->
+   <!-- Search + Category Navigation Section -->
+<div *ngIf="!showSearch" class="w-full top-[49px] left-0 bg-white z-10 sticky shadow-md border border-gray-300">
+
+  <div class="flex items-center justify-between w-full p-2">
+
+    <!-- Search Button -->
+    <button (click)="toggleSearch()" class="text-gray-500 hover:text-red-600 transition">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M21 21l-4.35-4.35M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/>
+      </svg>
+    </button>
+
+    <!-- Left Scroll Arrow -->
+    <button (click)="scrollCategory('left')" [class.hidden]="disableLeftScroll"
+      class="text-gray-500 hover:text-gray-700 transition mr-2 bg-fade">
+      <svg width="24" height="24" fill="none">
+        <path d="M15 19l-7-7 7-7" stroke="currentColor" stroke-width="2"/>
+      </svg>
+    </button>
+
+    <!-- Scrollable Categories -->
+    <div #categoryContainer class="overflow-x-auto whitespace-nowrap px-4 no-scrollbar">
+      <button [routerLink]="[]" *ngFor="let s of filteredMenuList; let i = index"
+        (click)="!searchQuery ? scrollTo(s.name, i) : false"
+        class="px-2 py-2 text-lg font-bold text-left border-gray-200">
+        <span [ngClass]="{'border-b-2 border-red-600': removeUnderscore(currentSection) === s.name}">
+          {{ s?.name }}
+        </span>
+      </button>
+    </div>
+
+    <!-- Right Scroll Arrow -->
+    <button (click)="scrollCategory('right')" [class.hidden]="disableRightScroll"
+      class="text-gray-500 hover:text-gray-700 transition ml-2">
+      <svg width="24" height="24" fill="none">
+        <path d="M9 19l7-7-7-7" stroke="currentColor" stroke-width="2"/>
+      </svg>
+    </button>
+
+  </div>
+</div>
+
+
+<!-- Search Bar (Replaces Category Navigation When Active) -->
+<div *ngIf="showSearch" class="relative flex items-center px-6 mt-2 border border-gray-300 p-2 shadow-md">
+  <svg class="absolute left-8 top-1/2 transform -translate-y-1/2 text-gray-400" width="20" height="20"
+    viewBox="0 0 20 20">
+    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+    d="M21 21l-4.35-4.35M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/>
+  </svg>
+  <input type="text" placeholder="Search menu..." [(ngModel)]="searchQuery" (input)="filterMenu()"
+    class="w-full p-2 pl-10 border border-gray-300 rounded-xl focus:outline-none "/>
+
+  <button *ngIf="searchQuery" (click)="clearSearch();"
+    class="ml-2 text-gray-400 text-sm p-2 rounded-full hover:text-gray-600 transition">✕</button>
+
+   <!---->  <button (click)="toggleSearch()" class="ml-2 px-3 py-2 text-sm font-bold text-white bg-gray-500 rounded-lg hover:bg-gray-600 transition">
+      Cancel
+    </button> 
+</div>
+
+
+  
+<div style="height: calc(100dvh - 100px);" *ngIf="filteredMenuList" class="flex flex-col px-6 overflow-y-scroll" scrollSpy [spiedTags]="['DIV']" (sectionChange)="onSectionChange($event)" >
+    <div id="{{addUnderScore(s.name)}}" *ngFor="let s of filteredMenuList;let is=index; let last=last" [ngClass]="{'min-h-dvh':last}"  class="flex flex-col justify-between w-full font-normal text-left rtl:text-right text-black">
+       <span class="font-bold text-xl pt-3">{{s?.name}}</span>
+       <div class="flex flex-col" [ngClass]="{'mb-auto':last }">
+        <div *ngFor="let i of s?.items" class="py-4 border-b border-gray-200">
+            <div class="flex flex-row">
+            
+                <div (click)="viewItem(i)" class="p-2 flex-grow">
+                    <p class="font-semibold">{{i.name}} </p>
+                     <p class="text-sm line-clamp-2 mt-2">{{i.description}}</p>
+                     <p class="font-light mt-2">UGX {{i.primary_price|number}} 
+                     </p>
+                    
                 </div>
-                 <div class="mt-auto">
-        <button class="float-end mt-auto">
+               
+           <div (click)="viewItem(i)" class="w-[150px] ml-auto mr-2">
+                 <app-common-image [container]="true" [imgclass]="'rounded-lg ml-auto'" [src]="i.image" [width]="'100'" [height]="'100'"></app-common-image>     
+                </div>
+            </div>
+       <div class="flex flex-col">
+                 
+        <button class="float-end ml-auto mt-1" (click)="viewItem(i)">
             <svg width="20px" height="20px" viewBox="0 0 32 32" fill="#000000">
                 <g> 
                     <g transform="translate(-464.000000, -1087.000000)" [attr.fill]="'#b6252c'">
@@ -28,11 +195,232 @@
                 </g> </svg>
         </button>
        </div> 
-            </div>
-     
  
         </div>
 
        </div>
     </div>
+    <div *ngIf="(!filteredMenuList || !filteredMenuList.length)&& menu_list.length" class="flex flex-col items-center justify-center h-full w-full">
+      <svg width="300px" height="200px" viewBox="0 0 300 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Magnifying Glass -->
+        <circle cx="100" cy="80" r="50" stroke="#d1d5db" stroke-width="6" fill="none"/>
+        <line x1="140" y1="120" x2="180" y2="160" stroke="#d1d5db" stroke-width="6" stroke-linecap="round"/>
+      
+        <!-- Sad Face -->
+        <circle cx="100" cy="80" r="5" fill="#d1d5db"/>
+        <path d="M90 95 Q100 105 110 95" stroke="#d1d5db" stroke-width="4" stroke-linecap="round" fill="none"/>
+      
+        <!-- Text -->
+        <text x="50%" y="180" text-anchor="middle" fill="#6b7280" font-size="16px">No items found</text>
+      </svg>
+
+  </div>
 </div>
+</div>
+  <!-- Floating Basket Button -->
+  <div *ngIf="basketItems.length > 0" class="fixed bottom-5 right-5">
+    <div class="relative">
+      <span class="absolute -top-2 -right-2 bg-black text-white text-xs font-bold px-2 py-1 rounded-full">
+        {{ QuantitySum }}
+      </span>
+      <button routerLink="/diner/basket"
+        class="bg-d-red text-white px-6 py-3 rounded-full shadow-lg hover:bg-red-700 transition-all">
+        VIEW BASKET
+      </button>
+    </div>
+  </div>
+    <div  *ngIf="basketItems.length>0&&false" id="outer" class="bottom-14">
+        <div id="inner">
+            <div
+    class="absolute bottom-auto left-auto right-0 top-0 z-10 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-black px-2.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
+    {{QuantitySum}}
+  </div>
+ <button title="Contact Sale"  routerLink="/diner/basket"
+        class="align-middle  bg-[#B6252C] px-5 h-10 rounded drop-shadow-lg flex justify-center items-center text-white text-sm font-bold">VIEW BASKET</button>
+   
+    </div>
+    </div>
+   
+  <div *ngIf="showModal" class="opacity-25 fixed inset-0 z-40 bg-black"></div>
+ 
+  <div *ngIf="showModal&&selected_item"  tabindex="-1"  class="bg-white fixed top-0 left-0 right-0 z-50 items-center justify-center w-full overflow-x-hidden overflow-y-auto md:inset-0">
+      <div  class="flex flex-col w-screen h-dvh mx-auto my-auto rounded-lg">
+       
+      
+            <div [ngClass]="{'shadow-lg':currentSectionItem}" class=" sticky top-0 flex items-start justify-between p-4 rounded-t bg-white z-10">
+                <span class="text-2xl font-black">{{currentSectionItem}}</span>
+               
+               <button type="button" (click)="closeModal()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" data-modal-hide="editUserModal">
+                <svg class="w-3 h-3"  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            </div>
+          
+             <div class="flex flex-col flex-grow overflow-y-auto">
+            <div #optionsContainer  class="flex flex-col flex-grow overflow-y-auto align-top" (scroll)="onScroll()" scrollSpy [spiedTags]="['DIV']" (sectionChange)="onSectionItemChange($event)">
+        <div class="mx-auto py-6">
+                 <app-common-image [imgclass]="'rounded-lg'" [src]="selected_item.image" [width]="'300'" [height]="'300'"></app-common-image>   
+                </div>
+                
+                <div class='mx-auto space-x-2'>
+                                    <span *ngFor="let a of selected_item.allergens" class="bg-gray-100 text-black text-xs font-normal inline-flex items-center px-2.5 py-0.5 rounded border-gray-800">
+                    <!-- <svg class="w-2.5 h-2.5 me-1.5"  xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 20 20">
+                    <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z"/>
+                    </svg> -->
+                    <svg class="w-2.5 h-2.5 me-1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Warning / Triangle_Warning"> <path id="Vector" d="M12 9.00006V13.0001M4.37891 15.1999C3.46947 16.775 3.01489 17.5629 3.08281 18.2092C3.14206 18.7729 3.43792 19.2851 3.89648 19.6182C4.42204 20.0001 5.3309 20.0001 7.14853 20.0001H16.8515C18.6691 20.0001 19.5778 20.0001 20.1034 19.6182C20.5619 19.2851 20.8579 18.7729 20.9172 18.2092C20.9851 17.5629 20.5307 16.775 19.6212 15.1999L14.7715 6.79986C13.8621 5.22468 13.4071 4.43722 12.8135 4.17291C12.2957 3.94236 11.704 3.94236 11.1862 4.17291C10.5928 4.43711 10.1381 5.22458 9.22946 6.79845L4.37891 15.1999ZM12.0508 16.0001V16.1001L11.9502 16.1003V16.0001H12.0508Z" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g>
+                    </svg>
+                    {{a}}
+                    </span>
+                  <!--   <span class="bg-gray-100 text-black text-xs font-normal inline-flex items-center px-2.5 py-0.5 rounded border-gray-800">
+                        <svg class="w-2.5 h-2.5 me-1.5"  xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 20 20">
+                        <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z"/>
+                        </svg>
+                        Nut Allergy
+                        </span> -->
+                </div>
+
+                   <div [id]="selected_item.name">
+                        <p class="text-2xl font-black pt-6 px-6">{{selected_item.name}} </p>
+                         <p class="px-6">{{selected_item.description}}</p>
+                         <p class="font-semibold mt-2 text-xl px-6">UGX {{selected_item.primary_price|number}}</p>
+    
+                         <!-- Conditionally Display Scroll Indicator -->
+      <div
+      *ngIf="needsScrolling"
+      class="absolute left-1/2 transform -translate-x-1/2 bottom-32 opacity-20"
+    >
+      <svg
+        class="animate-bounce w-10 h-10 text-gray-500"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M5 9l7 7 7-7"></path>
+        <path d="M5 3l7 7 7-7"></path>
+      </svg>
+    </div>
+   
+                        <div class="px-6 pt-6" *ngIf="selected_item?.has_options">
+                          
+                          <form (ngSubmit)="submitForm()">
+                            <div *ngFor="let o of selected_item?.options?.options; let i = index" class="relative flex flex-col mb-6">
+                              <!-- Option Name -->
+                              <label class="font-semibold mb-2">
+                                {{ o?.name }}
+                                <span *ngIf="o.required" class="text-sm font-normal text-gray-500"> (Required)</span>
+                              </label>
+                        
+                              <!-- Validation Subtle Error -->
+                              <div *ngIf="o.required && !o.isSelected" class="text-gray-400 text-sm mb-2">
+                                Please select an option.
+                              </div>
+                        
+                              <!-- Selectable Buttons for Radio-like Options -->
+                              <div *ngIf="o?.selectable" class="flex flex-col gap-3">
+                                <button
+                                  *ngFor="let choice of o.choices; let oi = index"
+                                  type="button"
+                                  [ngClass]="{
+                                    'border-gray-400 text-gray-700 hover:bg-gray-100': !isSelected(o, choice),
+                                    'border-4 border-black text-black font-bold bg-white': isSelected(o, choice)
+                                  }"
+                                  class="relative inline-flex items-center justify-center p-3 font-medium rounded-full border-2 shadow-md w-full transition-all"
+                                  (click)="SetChoice($event, i, oi, o, choice)"
+                                >
+                                  <span>{{ choice }}</span>
+                                  <!-- SVG Tick Icon -->
+                                  <svg
+                                    *ngIf="isSelected(o, choice)"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="absolute right-3 h-6 w-6"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="black"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                  >
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M9 12l2 2 4-4"></path>
+                                  </svg>
+                                </button>
+                              </div>
+                        
+                              <!-- Checkboxes for Non-selectable Options -->
+                              <div *ngIf="!o?.selectable" class="flex flex-col gap-3 mt-2">
+                                <div class="relative inline-flex items-center justify-center">
+                                  <input
+                                    id="checkbox-{{i}}"
+                                    type="checkbox"
+                                    (change)="SetChoice($event, i, null, o)"
+                                    class="hidden peer"
+                                  />
+                                  <label
+                                    for="checkbox-{{i}}"
+                                    class="peer-checked:border-4 peer-checked:border-black peer-checked:font-bold peer-checked:bg-white w-full px-4 py-3 flex items-center justify-center rounded-full border-2 border-gray-400 bg-gray-50 cursor-pointer shadow-md transition-all"
+                                  >
+                                    <span>{{ o?.name }}</span>
+                                    <!-- SVG Tick Icon -->
+                                    <svg
+                                      *ngIf="o.isSelected"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      class="absolute right-3 h-6 w-6"
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="black"
+                                      stroke-width="2"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                    >
+                                      <circle cx="12" cy="12" r="10"></circle>
+                                      <path d="M9 12l2 2 4-4"></path>
+                                    </svg>
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                        
+                            <!-- Submit Button 
+                            <button
+                              type="submit"
+                              [disabled]="!isFormValid()"
+                              class="mt-6 px-6 py-2 bg-gray-800 text-white rounded-md uppercase disabled:opacity-50 transition-all"
+                            >
+                              Submit
+                            </button>-->
+                          </form>
+                          
+           </div>
+                            
+        </div>
+        </div>
+   
+        <div class="flex flex-col w-screen align-bottom pb-3 px-2 pt-2 border-t border-gray-300 shadow bg-white">
+            <div class="custom-number-input h-10 w-32 mx-auto mb-3">
+                <label for="custom-input-number" class="w-full text-gray-700 text-sm font-semibold">
+                </label>
+                <div class="flex flex-row h-10 w-full rounded-lg relative bg-transparent mt-1">
+                  <button [disabled]="selected_quantity==1" (click)="selected_quantity>=1?(selected_quantity=selected_quantity-1):false" class=" bg-gray-300 text-gray-600 hover:text-gray-700 hover:bg-gray-400 h-full w-20 rounded-l cursor-pointer outline-none">
+                    <span class="m-auto text-2xl font-thin">−</span>
+                  </button>
+                  <input type="number" class="outline-none focus:outline-none text-center w-full bg-gray-300 font-semibold text-md hover:text-black focus:text-black  md:text-basecursor-default flex items-center text-gray-700" name="custom-input-number" [value]="selected_quantity">
+                <button (click)="(selected_quantity=selected_quantity+1)" data-action="increment" class="bg-gray-300 text-gray-600 hover:text-gray-700 hover:bg-gray-400 h-full w-20 rounded-r cursor-pointer">
+                  <span class="m-auto text-2xl font-thin">+</span>
+                </button>
+              </div>
+         </div>
+            <button [disabled]="!isFormValid()" (click)="AddSelectedItem()" type="submit" class="relative inline-flex items-center justify-center p-3 font-medium hover:bg-gray-700 active:bg-gray-700 text-white bg-black border-2 disabled:bg-gray-300 disabled:border-gray-300 border-gray-500 rounded-full shadow-md w-full disabled:opacity-50 transition-all">
+                     <span class="text-white">Add Item</span>
+           </button>   
+       </div>
+     </div>
+        </div>
+        </div>
+     

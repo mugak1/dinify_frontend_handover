@@ -7,6 +7,7 @@ import { StorageService } from '../storage/storage.service';
   providedIn: 'root',
 })
 export class SessionStorageService extends StorageService {
+
   public constructor(
     @Inject(WINDOW) window: Window,
     @Inject(STORAGE_KEY_PREFIX) prefix: string

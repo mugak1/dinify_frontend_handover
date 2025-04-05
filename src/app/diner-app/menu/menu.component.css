@@ -1,0 +1,52 @@
+#outer {
+    position: fixed;
+    left: 50%;          
+  }
+  #inner {
+    position: relative;
+    left: -50%;        
+  }
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .custom-number-input input:focus {
+    outline: none !important;
+  }
+
+  .custom-number-input button:focus {
+    outline: none !important;
+  }
+  .error {
+    border: 1px solid #e53e3e; /* Subtle red border */
+    border-radius: 4px;
+  }
+  .error-text {
+    color: #e53e3e; /* Red text */
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  /* TailwindCSS - Add to global CSS file */
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}

@@ -1,1 +1,150 @@
-<p>basket works!</p>
+<div class="px-1 pt-14">
+    <!-- Order Summary Header -->
+    <div class="flex items-center w-full text-center py-3 border-b border-gray-200 bg-gray-50 relative">
+        <!-- Back Button with better SVG arrow -->
+        <a (click)="loc.back()" class="absolute left-0 flex items-center px-3 py-1.5 rounded-md hover:bg-gray-100" aria-label="Go Back">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="h-6 w-6">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </a>
+        <!-- Order Summary Title -->
+        <span class="mx-auto text-xl font-bold">Order Summary</span>
+      </div>
+  
+    <!-- Table Information -->
+    <div class="flex items-center w-full text-center pt-4">
+      <span class="mx-auto font-medium text-lg">Table - {{ table?.number }}</span>
+    </div>
+  <div class=" overflow-y-auto pb-40" style="height: calc(100dvh - 100px);">
+    <!-- Basket Items -->
+    <div *ngIf="basketItems.length > 0" class="flex flex-col px-4 mt-4">
+      <!-- Basket Items -->
+      <div *ngFor="let item of basketItems" class="flex flex-col p-4 mb-4 border border-gray-300 rounded-lg bg-white shadow-sm">
+        <!-- Item Header -->
+        <div class="flex justify-between items-center mb-2">
+          <div>
+            <span class="font-semibold text-lg">{{ item.itemName }}</span>
+          </div>
+          <!-- Base Price -->
+          <div class="text-gray-600">Base Price: UGX {{ item.basePrice | number }}</div>
+        </div>
+  
+        <!-- Options -->
+        <div *ngIf="item.options.length > 0" class="text-gray-500 text-sm">
+            <div *ngFor="let option of item.options" class="option-row flex justify-between items-center relative py-2">
+              <!-- Option Name and Choice -->
+              <div class="flex items-center gap-2 relative">
+                <span>{{ option.optionName }}:</span>
+                <span *ngIf="option.choice !== 'None'">{{ option.choice }}</span>
+                <span *ngIf="option.choice === 'None'" class="flex items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    class="w-5 h-5 text-black"
+                  >
+                    <circle cx="12" cy="12" r="10" stroke="black" stroke-width="2"></circle>
+                    <path d="M9 12l2 2 4-4" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </span>
+              </div>
+          
+              <!-- Option Price -->
+              <div class="relative">
+                <span *ngIf="option.cost > 0" class="text-gray-700 font-semibold">+UGX {{ option.cost | number }}</span>
+              </div>
+          </div>
+              <!-- Linear Highlight 
+              <span
+                class="absolute h-px bg-gray-300 w-full top-1/2 left-0"
+                style="transform: translateY(-50%);"
+              ></span>-->
+            </div>
+          
+            <!-- Total Price (Only show if there's an option with a cost) -->
+            <div *ngIf="showItemTotal(item)" class="mt-4 flex justify-between font-bold text-lg border-t pt-2">
+              <span>Total</span>
+              <span>UGX {{ item.totalPrice | number }}</span>
+            </div>
+          
+            <!-- Quantity and Controls -->
+            <div class="mt-4 flex items-center justify-between">
+              <!-- Quantity Display -->
+              <div class="text-gray-600 text-sm">
+                Quantity: <span class="font-bold text-black">{{ item.quantity }}</span>
+              </div>
+              <!-- Add/Remove Buttons with SVG Icons -->
+              <div class="flex items-center gap-2">
+                <!-- Remove Button -->
+                <button
+                  [disabled]="item.quantity < 1"
+                  (click)="removeItem(item.itemId, item.options)"
+                  class="flex items-center justify-center w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 text-gray-600">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 12H6"></path>
+                  </svg>
+                </button>
+                <!-- Add Button -->
+                <button
+                  (click)="addItem(item)"
+                  class="flex items-center justify-center w-8 h-8 bg-black hover:bg-gray-800 rounded-full"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+    </div>
+  
+    <!-- Total Amount Section -->
+    <div class="flex flex-row mt-2 px-4 py-2 border-t border-gray-200 bg-gray-50">
+      <span class="text-lg font-medium">TOTAL</span>
+      <span class="ml-auto text-lg font-bold">UGX {{ totalAmount | number }}</span>
+    </div>
+  
+    <!-- Comments Section -->
+    <div class="mt-4 px-4">
+      <textarea
+        type="text"
+        [(ngModel)]="order_remarks"
+        placeholder="Add a comment"
+        rows="3"
+        class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg w-full p-3 focus:ring-primary-600 focus:border-primary-600"
+      ></textarea>
+    </div>
+  
+    <!-- Confirm Order Button -->
+    <div *ngIf="basketItems.length > 0" id="outer" class="bottom-14">
+        <div id="inner">
+          <button
+            title="Place Order"
+            (click)="initiateOrder()"
+            class="align-middle bg-[#B6252C] px-5 h-10 rounded drop-shadow-lg flex justify-center items-center text-white text-sm font-bold"
+          >
+            CONFIRM ORDER
+          </button>
+        </div>
+      </div>
+  </div>
+  
+<!-- Confirm Order Button -->
+   <!--  <div *ngIf="basketItems.length > 0" id="outer" class="mt-4 px-4">
+      <button
+        title="Place Order"
+        (click)="initiateOrder()"
+        class="bg-[#B6252C] hover:bg-[#a51f28] w-full h-12 rounded-lg text-white text-lg font-bold shadow-lg"
+      >
+        CONFIRM ORDER
+      </button>
+    </div> -->
+
+  
+<!-- Confirm Order Button -->
+              
+      <!-- Confirm Order Button --> 
+     

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from 'src/app/_services/api.service';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
 
 @Component({
   selector: 'app-menu-design',
@@ -29,29 +30,31 @@ export class MenuDesignComponent {
   /**
    *
    */
-  constructor(private fb:FormBuilder,private api:ApiService,private route:ActivatedRoute) {
-this.ConfigForm=this.fb.group({
-  home:this.fb.group({
-    bgColor:['#000000'],
-    headerColor:['#ffffff'],
-    headerShow:['text'], //logo or text
-    headerShowName:['Title'],
-    headerTextColor:['#ffffff'],
-    headerFontWeight:['800'],
-    headerCase:['uppercase'],//lowercase or uppercase or capitalize
-    viewMenuBgColor:['#ffffff'],
-    viewMenuTextColor:['#000000'],
-      })
-})
-if(this.route.parent?.parent?.snapshot.params['id']){
+  constructor(private auth:AuthenticationService, private fb:FormBuilder,private api:ApiService,private route:ActivatedRoute) {
+/*     if(auth.currentRestaurantRole?.restaurant_id){
+      this.rest=this.auth.currentRestaurant;
+
+    
+    }else if(this.route.parent?.parent?.snapshot.params['id']){
+      let rest_id=this.route.parent?.parent?.snapshot.params['id'];
+      this.loadRestaurant(rest_id);
+    }   */
+
+
+if(auth.currentRestaurantRole?.restaurant_id){
+  this.restaurant=auth.currentRestaurantRole?.restaurant_id;
+  this.loadRestaurant(this.restaurant,true);
+
+}else if(this.route.parent?.parent?.snapshot.params['id']){
   this.restaurant=this.route.parent?.parent?.snapshot.params['id'];
-  this.loadRestaurant(this.restaurant);
+  this.loadRestaurant(this.restaurant,true);
 }
     
   }
   get HomeForm (){
-    return <FormGroup> this.ConfigForm.get('home')
+    return <FormGroup> this.ConfigForm?.get('home')
   }
+
   InputCover($event:any){
     let fm = this.fb.group({
       id:[this.restaurant],
@@ -98,12 +101,28 @@ this.loadRestaurant(this.restaurant);
           //console.log(x)
         })
       }
-  loadRestaurant(id:string){
+  loadRestaurant(id:string,load_form?:boolean){
    
     this.api.get<any>(null,'restaurant-setup/'+(id?'details/':'restaurants/'),(id?{id:id,record:'restaurants'}:{})).subscribe((x)=>{
       
         console.log(x.data)
 this.rest=x?.data as any;
+if(load_form){
+ this.ConfigForm=this.fb.group({
+  home:this.fb.group({
+    bgColor:['#ffffff'],
+    headerColor:['#ffffff'],
+    headerShow:['text'], //logo or text
+    headerShowName:[this.rest.name],
+    headerTextColor:['#ffffff'],
+    headerFontWeight:['800'],
+    headerCase:['uppercase'],//lowercase or uppercase or capitalize
+    viewMenuBgColor:['#ffffff'],
+    viewMenuTextColor:['#000000'],
+      })
+})
+}
+this.branding_configs.home.headerShowName=this.branding_configs.home.headerShowName?this.branding_configs.home.headerShowName:this.rest?.name
 
 if(Object.keys(this.rest.branding_configuration).length==0){
 this.Save();

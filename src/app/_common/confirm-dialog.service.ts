@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, TemplateRef } from '@angular/core';
 import { BehaviorSubject, Subject, of } from 'rxjs';
 import { ConfirmaDialogData } from '../_models/app.models';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -8,20 +9,28 @@ import { ConfirmaDialogData } from '../_models/app.models';
 export class ConfirmDialogService {
 showModal:BehaviorSubject<boolean>=new BehaviorSubject(false);
 data:ConfirmaDialogData|null=null
-
-  constructor() {this.showModal?.subscribe(x=>
+DialogRef!:ConfirmDialogComponent;
+result!:string;
+resultSub= new BehaviorSubject({});
+  constructor() {
+  
+    this.showModal?.subscribe(x=>
     console.log(x)
-  ) }
+  ) 
+ 
+}
   openModal(d:ConfirmaDialogData){
     
     this.data=d;
+   // this.data.callback=this.resultSub;
 this.showModal?.next(true);
+//console.log(this.data.callback)
+return this.resultSub
   }
 
-  OK(){
-    
-  }
+ 
   closeModal(){
     this.showModal?.next(false);
+    this.resultSub.next({});
   }
 }

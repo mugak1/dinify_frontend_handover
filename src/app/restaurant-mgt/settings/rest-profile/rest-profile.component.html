@@ -4,17 +4,17 @@
     <div class="p-6 space-y-6">
         <div class="space-y-2 md:space-y-4">
             <div>
-                <label for="name" class="block mb-1 text-sm font-medium text-gray-900">Name <span class="text-d-red">*</span></label>
+                <label for="name" class="block mb-1 text-sm font-medium text-gray-900">Restaurant Name <span class="text-d-red">*</span></label>
                 <input type="text" formControlName="name" id="name" class="bg-gray-50 border border-gray-300 placeholder:text-xs text-gray-900 sm:text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Enter the restaurant name">
                 <div *ngIf="is_submitted && RestaurantForm.get('name')?.errors" class="text-d-red text-xs">
                     <div *ngIf="RestaurantForm.get('name')?.errors?.['required']">Name is required</div>
                 </div>
             </div>
             <div>
-                <label for="location" class="block mb-1 text-sm font-medium text-gray-900">Location <span class="text-d-red">*</span></label>
+                <label for="location" class="block mb-1 text-sm font-medium text-gray-900">Address <span class="text-d-red">*</span></label>
                 <textarea type="text" formControlName="location" id="location" class="bg-gray-50 border border-gray-300 placeholder:text-xs text-gray-900 sm:text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " placeholder="Enter the location of the restaurant"></textarea>
                 <div *ngIf="is_submitted && RestaurantForm.get('location')?.errors" class="text-d-red text-xs">
-                    <div *ngIf="RestaurantForm.get('location')?.errors?.['required']">Location is required</div>
+                    <div *ngIf="RestaurantForm.get('location')?.errors?.['required']">Address is required</div>
                 </div>
             </div>
             <div>
@@ -40,13 +40,13 @@
                      <span class="my-auto ml-3">{{(RestaurantForm.get('id')?.value&&(typOf(RestaurantForm.get('logo')?.value)=='string'))?'Change Image':(fileName || "No file uploaded yet.")}}   </span>
                   
                  </div>
-                 <app-common-image *ngIf="RestaurantForm.get('id')?.value&&(typOf(RestaurantForm.get('logo')?.value)=='string')" [src]="RestaurantForm.get('logo')?.value" [width]="'300'" [alt]="RestaurantForm.get('name')?.value"></app-common-image>
+                 <app-common-image [imgclass]="'mx-auto my-1'" *ngIf="RestaurantForm.get('id')?.value&&(typOf(RestaurantForm.get('logo')?.value)=='string')" [src]="RestaurantForm.get('logo')?.value" [width]="'300'" [alt]="RestaurantForm.get('name')?.value"></app-common-image>
                 <input type="file" #photoUpload (change)="InputLogo($event)" class="bg-gray-50 border hidden border-gray-300 placeholder:text-xs text-gray-900 sm:text-sm rounded focus:ring-primary-600 focus:border-primary-600 w-full p-2.5 " placeholder="Enter the restaurant logo">
                 <div *ngIf="is_submitted && RestaurantForm.get('logo')?.errors" class="text-d-red text-xs">
                     <div *ngIf="RestaurantForm.get('logo')?.errors?.['required']">The Logo is required</div>
                 </div>
             </div>
-            <div>
+          <!--   <div>
                 <div class="grid grid-cols-2 gap-2">
                
                     <div class="col-span-2 sm:col-span-1">
@@ -58,34 +58,8 @@
             </div>
        
             </div>
-            </div>
-            <div>
-                <div class="grid grid-cols-1 gap-4">
-                
-                    <div class="col-span-1">
-                        <label for="preferred_subscription_method" class="block mb-2 text-sm font-medium">Subscription Method</label>
-                        <select id="preferred_subscription_method" formControlName="preferred_subscription_method"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                            <option [value]="'surcharge'" class="p-2.5">Surcharge Percentage</option>
-                            <option [value]="'flat_fee'">Flat Fee</option>
-                            <option value="per_order">Per Order</option>
-                        </select>
-                    </div>
-                    <div *ngIf="RestaurantForm.get('preferred_subscription_method')?.value=='surcharge'" class="col-span-1">
-                        <label for="surcharge" class="block mb-2 text-sm font-medium text-gray-900">Surcharge Percentage <span class="text-d-red">*</span></label>
-                        <input type="number" formControlName="order_surcharge_percentage" id="surcharge" max="100" min="0"
-                            class="bg-gray-50 border border-gray-300 placeholder:text-xs text-gray-900 sm:text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
-                            placeholder="Enter the restaurant name">
-                    </div>
-                    <div *ngIf="RestaurantForm.get('preferred_subscription_method')?.value=='flat_fee'" class="col-span-1">
-                        <label for="flat_fee" class="block mb-2 text-sm font-medium text-gray-900">Flat Fee <span
-                                class="text-d-red">*</span></label>
-                        <input type="number" formControlName="flat_fee" id="flat_fee" min="0"
-                            class="bg-gray-50 border border-gray-300 placeholder:text-xs text-gray-900 sm:text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
-                            placeholder="Enter the restaurant name">
-                    </div>
-                </div>
-            </div>
+            </div> -->
+           
             <div class="flex gap-2">
                 <input type="checkbox" formControlName="require_order_prepayments" id="prepayment" class="relative peer shrink-0 appearance-none w-5 h-5 border-2 border-gray-400 rounded-sm bg-white checked:bg-black checked:border-0 focus:outline-none focus:ring-offset-0 focus:ring-2 focus:ring-blue-100 disabled:border-steel-400 disabled:bg-steel-400" />
                 <label class="text-sm font-normal" htmlFor="prepayment">Allow Prepayment</label>
@@ -155,3 +129,6 @@
         <button type="submit" class="text-white bg-d-red hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded text-sm w-40 px-5 py-2.5 text-center ml-auto">Save</button>
     </div>
 </form>
+<div class="flex items-center p-6 space-x-3 rtl:space-x-reverse border-t border-gray-200 rounded-b mb-6">
+    <button (click)="Block()" type="button" class="text-white bg-d-red hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded text-sm w-full px-5 py-2.5 text-center ml-auto">Block Account</button>
+</div>

@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { ConfirmDialogService } from 'src/app/_common/confirm-dialog.service';
 import { RestaurantList } from 'src/app/_models/app.models';
 import { ApiService } from 'src/app/_services/api.service';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
 
 @Component({
   selector: 'app-rest-profile',
@@ -20,10 +22,12 @@ export class RestProfileComponent {
   restaurant: any;
 
  
-  constructor(private api:ApiService, private fb:FormBuilder,private route:ActivatedRoute ) {
+  constructor(private auth:AuthenticationService, private api:ApiService, private fb:FormBuilder,private route:ActivatedRoute, private dialog:ConfirmDialogService ) {
     this.RestaurantForm=this.initRestaurantForm();
-    
-    if(this.route.parent?.parent?.snapshot.params['id']){
+    if(auth.currentRestaurantRole?.restaurant_id){
+      this.restaurant=auth.currentRestaurantRole?.restaurant_id;
+      this.loadRestaurant(this.restaurant);
+    }else   if(this.route.parent?.parent?.snapshot.params['id']){
       this.restaurant=this.route.parent?.parent?.snapshot.params['id'];
       this.loadRestaurant(this.restaurant);
     }
@@ -84,4 +88,34 @@ export class RestProfileComponent {
       typOf(val:any){
         return typeof val
       }
+
+      Block(){
+        let ref = this.dialog.openModal({
+          title:'BLOCK',
+          message:'Are you sure you want to <b>BLOCK</b> '+this.rest?.name+' from access to Dinify?',
+          has_reason:true,
+          cancelButtonText:'Cancel',
+          submitButtonText: 'Block Account'
+        })?.subscribe((x:any)=>{
+        
+          if(x?.action=='yes'){
+            
+         let o =   {
+              "restaurant": this.restaurant,
+              "decision": status,
+              "reason": x?.reason
+          } 
+      /*   this.api.postPatch('restaurant-setup/manager-actions/first-time-menu-review/',o,'post').subscribe({
+                next: (x:any)=>{
+                  if(x?.status==200){          
+            this.dialog.closeModal();
+            ref.unsubscribe();
+                  }
+                }
+              })*/  
+             ref.unsubscribe(); 
+            }
+          })
+        }
+
 }

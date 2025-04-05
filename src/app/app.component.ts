@@ -18,14 +18,15 @@ export class AppComponent {
   ngAfterViewInit(){
     
       this.dialog.showModal?.subscribe(x=>{
-        console.log(this.dialog?.data)
-      console.log("dialog service ",x)
+      //  console.log(this.dialog?.data)
+     // console.log("dialog service ",x)
       if(x){
-        console.log("dialog service ",x)
+       // console.log("dialog service ",x)
     
     const componentRef = this.contentRef.createComponent(ConfirmDialogComponent)
       componentRef.instance.data=this.dialog.data;
       this.contentRef.insert(componentRef.hostView);
+    
       }else{
         this.contentRef?.clear();
       }

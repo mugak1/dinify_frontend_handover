@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export abstract class StorageService implements Storage {
   public get length(): number {
     return this.api.length;
   }
-
+  public StorageValue: BehaviorSubject<any>=new BehaviorSubject<any>(null);
   public constructor(
     protected readonly api: Storage,
     protected readonly prefix: string
@@ -21,6 +22,7 @@ export abstract class StorageService implements Storage {
 
   public setItem(key: string, value: any): void {
     this.api.setItem(this.prefixKey(key), JSON.stringify({ value }));
+    this.StorageValue.next(this.prefixKey(key));
   }
 
   public getItem<T>(key: string): T | null;
@@ -38,6 +40,7 @@ export abstract class StorageService implements Storage {
 
     return null;
   }
+  
 
   public removeItem(key: string): void {
     this.api.removeItem(this.prefixKey(key));

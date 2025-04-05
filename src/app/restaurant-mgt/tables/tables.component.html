@@ -1,58 +1,141 @@
-<div class="overflow-x-auto shadow-md sm:rounded-lg">
+<div class="h-full flex flex-col overflow-hidden">
+    
+<div class="shadow-md sm:rounded-lg">
     <div class="flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white">
         <div class="ml-3">
-            <button (click)="toggleModal()" class="inline-flex items-center text-d-red border-d-red border focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5" type="button">
+            <button (click)="NewArea()" class="inline-flex items-center text-d-red border-d-red border focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5" type="button">
                 <span class="sr-only">Action button</span>
-                New Table
-                <!-- <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                </svg> -->
+                New Area
+               
             </button>
-            <!-- Dropdown menu
-            <div id="dropdownAction" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
-                <ul class="py-1 text-sm text-gray-700" aria-labelledby="dropdownActionButton">
-                    <li>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Reward</a>
-                    </li>
-                    <li>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Promote</a>
-                    </li>
-                    <li>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-100">Activate account</a>
-                    </li>
-                </ul>
-                <div class="py-1">
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Delete User</a>
-                </div>
-            </div> -->
+
         </div>
-  <!--       <label for="table-search" class="sr-only">Search</label>
-        <div class="relative mr-3">
-            <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
-                <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                </svg>
-            </div>
-            <input type="text" id="table-search-users" class="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500" placeholder="Search for users">
-        </div> -->
+
     </div>
-    <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+    <div class="bg-white flex-1 p-4 max-h-[calc(95vh-4rem-3rem)] flex flex-col">
+        <div class="flex-1 bg-gray-100 overflow-y-auto">
+          <ul *ngIf="true" class="list-none flex-shrink">
+            <!-- Parent Node: Dining Area -->
+            <li *ngFor="let area of list; let i = index" class="mb-6 bg-white rounded shadow-md">
+              <div class="px-4 py-3 border-b cursor-pointer flex justify-between items-center"
+                (click)="area.isCollapsed = !area.isCollapsed"
+              >
+                <div>
+                  <h2 class="font-semibold text-lg text-gray-800">{{ area.dining_area.name }}</h2>
+                  <p class="text-sm text-gray-600">{{ area.dining_area.description }}</p>
+                  <p class="text-sm text-gray-700">
+                    Status: <span>{{ area.dining_area?.available ? 'Available' : 'Not Available' }}</span>
+                  </p>
+                </div>
+                <div>
+                  <div class="flex flex-row space-x-3 justify-between">
+                    <!--    
+                    <svg  class="hover:scale-105 hover:fill-d-red cursor-pointer my-auto" fill="#000000" width="30px" height="30px" viewBox="0 0 24 24">
+                        <g stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g>
+                            <path
+                                d="M4.07,14.927a.976.976,0,0,0-.167.25c-.011.023-.023.043-.032.067a.362.362,0,0,0-.019.04l-1.8,5.4A1,1,0,0,0,3,22a1.014,1.014,0,0,0,.316-.051l5.4-1.8c.013,0,.023-.013.036-.017s.041-.021.062-.031a.967.967,0,0,0,.259-.172c.01-.009.024-.012.033-.022l12.6-12.6a1,1,0,0,0,0-1.414l-3.6-3.6a1,1,0,0,0-1.414,0l-12.6,12.6C4.083,14.9,4.08,14.917,4.07,14.927ZM17.4,4.414,19.586,6.6,8.4,17.786,7.307,16.693,6.214,15.6ZM5.237,17.451l.656.656.656.656-1.968.656Z">
+                            </path>
+                        </g>
+                    </svg>
+                
+                    <label class="inline-flex items-center cursor-pointer my-auto hover:scale-105">
+                        <input type="checkbox" class="sr-only peer">
+                        <div
+                            class="relative w-8 h-5 bg-gray-300 peer-focus:outline-none  peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-black">
+                        </div>
+                    </label>
+                    <a>
+                    <svg class="hover:scale-105 hover:fill-d-red cursor-pointer my-auto" width="35px" height="35px" viewBox="0 0 24 24" fill="none">
+                        <g>
+                            <path
+                                d="M7.69231 8.70833H5V8.16667H9.84615M7.69231 8.70833V19H16.3077V8.70833M7.69231 8.70833H16.3077M16.3077 8.70833H19V8.16667H14.1538M9.84615 8.16667V6H14.1538V8.16667M9.84615 8.16667H14.1538"
+                                stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M10 11V17" stroke="#000000" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M12 11V17" stroke="#000000" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M14 11V17" stroke="#000000" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </g>
+                    </svg></a> -->
+                       <svg 
+                  class="w-6 h-6 transform transition-transform"
+                  [ngClass]="area.isCollapsed ? 'rotate-0' : 'rotate-180'"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round" 
+                    stroke-width="2" 
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg> 
+                    </div>
+
+                </div>
+
+              </div>
+              
+              <!-- Child Nodes: Tables -->
+              <ul *ngIf="!area.isCollapsed" class="transition-all duration-300">
+                <li *ngFor="let l of area.tables; let j = index" 
+                    class="flex items-center bg-gray-50 hover:bg-gray-100 px-4 py-2 border-b">
+                  <!-- Table Info -->
+                  <div class="flex-1">
+                    <span class="font-medium">{{ l.number }}</span> - 
+                    Status: {{ l.available ? 'Available' : 'Occupied' }}
+                  </div>
+                  <!-- Action Buttons on the Right -->
+                  <div class="flex items-center space-x-2" [style.width.%]="30">
+                    <div class="relative group inline-block">
+                      <button title="View QR Code" class="border border-gray-400 text-white px-1 py-1 rounded-lg hover:bg-gray-300 transition duration-300 ease-in-out transform hover:scale-105">
+                          <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="System / Qr_Code"> <path id="Vector" d="M19 20H20M16 20H14V17M17 17H20V14H19M14 14H16M4 16.9997C4 16.0679 4 15.6019 4.15224 15.2344C4.35523 14.7443 4.74432 14.3552 5.23438 14.1522C5.60192 14 6.06786 14 6.99974 14C7.93163 14 8.39808 14 8.76562 14.1522C9.25568 14.3552 9.64467 14.7443 9.84766 15.2344C9.9999 15.6019 9.9999 16.0681 9.9999 17C9.9999 17.9319 9.9999 18.3978 9.84766 18.7654C9.64467 19.2554 9.25568 19.6447 8.76562 19.8477C8.39808 19.9999 7.93162 19.9999 6.99974 19.9999C6.06786 19.9999 5.60192 19.9999 5.23438 19.8477C4.74432 19.6447 4.35523 19.2557 4.15224 18.7656C4 18.3981 4 17.9316 4 16.9997ZM14 6.99974C14 6.06786 14 5.60192 14.1522 5.23438C14.3552 4.74432 14.7443 4.35523 15.2344 4.15224C15.6019 4 16.0679 4 16.9997 4C17.9316 4 18.3981 4 18.7656 4.15224C19.2557 4.35523 19.6447 4.74432 19.8477 5.23438C19.9999 5.60192 19.9999 6.06812 19.9999 7C19.9999 7.93188 19.9999 8.39783 19.8477 8.76537C19.6447 9.25542 19.2557 9.64467 18.7656 9.84766C18.3981 9.9999 17.9316 9.9999 16.9997 9.9999C16.0679 9.9999 15.6019 9.9999 15.2344 9.84766C14.7443 9.64467 14.3552 9.25568 14.1522 8.76562C14 8.39808 14 7.93163 14 6.99974ZM4 6.99974C4 6.06786 4 5.60192 4.15224 5.23438C4.35523 4.74432 4.74432 4.35523 5.23438 4.15224C5.60192 4 6.06786 4 6.99974 4C7.93163 4 8.39808 4 8.76562 4.15224C9.25568 4.35523 9.64467 4.74432 9.84766 5.23438C9.9999 5.60192 9.9999 6.06812 9.9999 7C9.9999 7.93188 9.9999 8.39783 9.84766 8.76537C9.64467 9.25542 9.25568 9.64467 8.76562 9.84766C8.39808 9.9999 7.93162 9.9999 6.99974 9.9999C6.06786 9.9999 5.60192 9.9999 5.23438 9.84766C4.74432 9.64467 4.35523 9.25568 4.15224 8.76562C4 8.39808 4 7.93163 4 6.99974Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g></svg>
+                      </button>
+                      <div
+                          class="opacity-0 invisible group-hover:opacity-100 group-hover:visible absolute w-[260px] mt-2 bg-white text-gray-800 border border-gray-300 rounded-lg shadow-lg py-2 z-10">
+                         <qrcode (qrCodeURL)="onChangeURL($event)" [qrdata]="bsref+'/diner/h/'+l.id" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
+                      </div>
+                  </div>
+                  <a title="Edit"  class="relative group inline-block border border-gray-400 text-white px-1 py-1 rounded-lg hover:bg-gray-300 transition duration-300 ease-in-out transform hover:scale-105" (click)="toggleModal(l,false,area.dining_area)">
+                      <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Edit / Edit_Pencil_02"> <path id="Vector" d="M4 16.0001V20.0001L8 20.0001L18.8686 9.13146L18.8695 9.13061C19.265 8.73516 19.4628 8.53736 19.5369 8.3092C19.6021 8.10835 19.6022 7.89201 19.5369 7.69117C19.4627 7.46284 19.2646 7.26474 18.8686 6.86872L17.1288 5.12892C16.7345 4.7346 16.5369 4.53704 16.3091 4.46301C16.1082 4.39775 15.8919 4.39775 15.691 4.46301C15.463 4.53709 15.2652 4.73488 14.8704 5.12976L14.8686 5.13146L4 16.0001Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g></svg>
+                  </a>
+                  
+<a  title="Download QR Code" class="relative group inline-block border border-gray-400 text-white px-1 py-1 rounded-lg hover:bg-gray-300 transition duration-300 ease-in-out transform hover:scale-105" [href]="qrCodeDownloadLink" download="qrcode">
+  <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Interface / Download"> <path id="Vector" d="M6 21H18M12 3V17M12 17L17 12M12 17L7 12" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g></svg>
+</a>
+                 <a title="Order"  class="relative group inline-block border border-gray-400 text-white px-1 py-1 rounded-lg hover:bg-gray-300 transition duration-300 ease-in-out transform hover:scale-105" target="_blank" [routerLink]="['/diner/h/',l.id]">
+                  <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Interface / External_Link"> <path id="Vector" d="M10.0002 5H8.2002C7.08009 5 6.51962 5 6.0918 5.21799C5.71547 5.40973 5.40973 5.71547 5.21799 6.0918C5 6.51962 5 7.08009 5 8.2002V15.8002C5 16.9203 5 17.4801 5.21799 17.9079C5.40973 18.2842 5.71547 18.5905 6.0918 18.7822C6.5192 19 7.07899 19 8.19691 19H15.8031C16.921 19 17.48 19 17.9074 18.7822C18.2837 18.5905 18.5905 18.2839 18.7822 17.9076C19 17.4802 19 16.921 19 15.8031V14M20 9V4M20 4H15M20 4L13 11" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g></svg>
+                 </a>
+                 <a title="Delete" (click)="DeleteTable(l,i)"  class="relative group inline-block border border-gray-400 text-white px-1 py-1 rounded-lg hover:bg-gray-100 transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer">
+                  <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Interface / Trash_Empty"> <path id="Vector" d="M6 6V17.8C6 18.9201 6 19.4798 6.21799 19.9076C6.40973 20.2839 6.71547 20.5905 7.0918 20.7822C7.5192 21 8.07899 21 9.19691 21H14.8031C15.921 21 16.48 21 16.9074 20.7822C17.2837 20.5905 17.5905 20.2839 17.7822 19.9076C18 19.4802 18 18.921 18 17.8031V6M6 6H8M6 6H4M8 6H16M8 6C8 5.06812 8 4.60241 8.15224 4.23486C8.35523 3.74481 8.74432 3.35523 9.23438 3.15224C9.60192 3 10.0681 3 11 3H13C13.9319 3 14.3978 3 14.7654 3.15224C15.2554 3.35523 15.6447 3.74481 15.8477 4.23486C15.9999 4.6024 16 5.06812 16 6M16 6H18M18 6H20" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g></svg>
+                 </a>
+                  </div>
+                </li>
+              </ul>
+          
+              <!-- Add Table Button -->
+              <div class="px-4 py-2">
+                <button 
+                  class="bg-blue-500 text-white px-3 py-1 rounded"
+                  (click)="addTable(i,area.dining_area)">
+                  Add Table
+                </button>
+              </div>
+            </li>
+          </ul>
+              
+              
+              
+    <table *ngIf="false" class="w-full text-sm text-left rtl:text-right text-gray-500">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
-               <!--  <th scope="col" class="p-4">
-                    <div class="flex items-center">
-                        <input id="checkbox-all-search" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
-                        <label for="checkbox-all-search" class="sr-only">checkbox</label>
-                    </div>
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Table Id
-                </th> -->
+               
                 <th scope="col" class="px-6 py-3">
                     Table Number
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Section
+                    Area
                 </th>
                 <th scope="col" class="px-6 py-3">
                     Status
@@ -63,16 +146,8 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let l of list" class="bg-white border-b hover:bg-gray-50">
-              <!--   <td class="w-4 p-4">
-                    <div class="flex items-center">
-                        <input id="checkbox-table-search-1" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2">
-                        <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
-                    </div>
-                </td>
-                <td class="px-6 py-4">
-                    {{l.id}}
-                </td> -->
+      <!--       <tr *ngFor="let l of list" class="bg-white border-b hover:bg-gray-50">
+             
                 <td class="px-6 py-4">
                     Table {{l.number}}
                 </td>
@@ -82,37 +157,32 @@
                 <td class="px-6 py-4">
                     {{l.available?'Available':'Occupied'}}
                 </td>
-                <td class="px-6 py-4 space-x-2">
-                    <!-- Modal toggle 
-                    <a (click)="toggleModal(l)" title="Quick Edit" type="button" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <span class="sr-only">Quick Edit</span>
-                        <svg fill="#000000" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <g stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g>
-                                <path
-                                    d="M4.07,14.927a.976.976,0,0,0-.167.25c-.011.023-.023.043-.032.067a.362.362,0,0,0-.019.04l-1.8,5.4A1,1,0,0,0,3,22a1.014,1.014,0,0,0,.316-.051l5.4-1.8c.013,0,.023-.013.036-.017s.041-.021.062-.031a.967.967,0,0,0,.259-.172c.01-.009.024-.012.033-.022l12.6-12.6a1,1,0,0,0,0-1.414l-3.6-3.6a1,1,0,0,0-1.414,0l-12.6,12.6C4.083,14.9,4.08,14.917,4.07,14.927ZM17.4,4.414,19.586,6.6,8.4,17.786,7.307,16.693,6.214,15.6ZM5.237,17.451l.656.656.656.656-1.968.656Z">
-                                </path>
-                            </g>
-                        </svg>
+                
+                <td class="px-6 py-4 flex space-x-1">
+                    <div class="relative group inline-block">
+                        <button title="View QR Code" class="border border-gray-400 text-white px-1 py-1 rounded-lg hover:bg-gray-300 transition duration-300 ease-in-out transform hover:scale-105">
+                            <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="System / Qr_Code"> <path id="Vector" d="M19 20H20M16 20H14V17M17 17H20V14H19M14 14H16M4 16.9997C4 16.0679 4 15.6019 4.15224 15.2344C4.35523 14.7443 4.74432 14.3552 5.23438 14.1522C5.60192 14 6.06786 14 6.99974 14C7.93163 14 8.39808 14 8.76562 14.1522C9.25568 14.3552 9.64467 14.7443 9.84766 15.2344C9.9999 15.6019 9.9999 16.0681 9.9999 17C9.9999 17.9319 9.9999 18.3978 9.84766 18.7654C9.64467 19.2554 9.25568 19.6447 8.76562 19.8477C8.39808 19.9999 7.93162 19.9999 6.99974 19.9999C6.06786 19.9999 5.60192 19.9999 5.23438 19.8477C4.74432 19.6447 4.35523 19.2557 4.15224 18.7656C4 18.3981 4 17.9316 4 16.9997ZM14 6.99974C14 6.06786 14 5.60192 14.1522 5.23438C14.3552 4.74432 14.7443 4.35523 15.2344 4.15224C15.6019 4 16.0679 4 16.9997 4C17.9316 4 18.3981 4 18.7656 4.15224C19.2557 4.35523 19.6447 4.74432 19.8477 5.23438C19.9999 5.60192 19.9999 6.06812 19.9999 7C19.9999 7.93188 19.9999 8.39783 19.8477 8.76537C19.6447 9.25542 19.2557 9.64467 18.7656 9.84766C18.3981 9.9999 17.9316 9.9999 16.9997 9.9999C16.0679 9.9999 15.6019 9.9999 15.2344 9.84766C14.7443 9.64467 14.3552 9.25568 14.1522 8.76562C14 8.39808 14 7.93163 14 6.99974ZM4 6.99974C4 6.06786 4 5.60192 4.15224 5.23438C4.35523 4.74432 4.74432 4.35523 5.23438 4.15224C5.60192 4 6.06786 4 6.99974 4C7.93163 4 8.39808 4 8.76562 4.15224C9.25568 4.35523 9.64467 4.74432 9.84766 5.23438C9.9999 5.60192 9.9999 6.06812 9.9999 7C9.9999 7.93188 9.9999 8.39783 9.84766 8.76537C9.64467 9.25542 9.25568 9.64467 8.76562 9.84766C8.39808 9.9999 7.93162 9.9999 6.99974 9.9999C6.06786 9.9999 5.60192 9.9999 5.23438 9.84766C4.74432 9.64467 4.35523 9.25568 4.15224 8.76562C4 8.39808 4 7.93163 4 6.99974Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g></svg>
+                        </button>
+                        <div
+                            class="opacity-0 invisible group-hover:opacity-100 group-hover:visible absolute w-[260px] mt-2 bg-white text-gray-800 border border-gray-300 rounded-lg shadow-lg py-2 z-10">
+                           <qrcode (qrCodeURL)="onChangeURL($event)" [qrdata]="bsref+'/diner/h/'+l.id" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
+                        </div>
+                    </div>
+                    <a title="Edit"  class="relative group inline-block border border-gray-400 text-white px-1 py-1 rounded-lg hover:bg-gray-300 transition duration-300 ease-in-out transform hover:scale-105" (click)="toggleModal(l,false)">
+                        <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Edit / Edit_Pencil_02"> <path id="Vector" d="M4 16.0001V20.0001L8 20.0001L18.8686 9.13146L18.8695 9.13061C19.265 8.73516 19.4628 8.53736 19.5369 8.3092C19.6021 8.10835 19.6022 7.89201 19.5369 7.69117C19.4627 7.46284 19.2646 7.26474 18.8686 6.86872L17.1288 5.12892C16.7345 4.7346 16.5369 4.53704 16.3091 4.46301C16.1082 4.39775 15.8919 4.39775 15.691 4.46301C15.463 4.53709 15.2652 4.73488 14.8704 5.12976L14.8686 5.13146L4 16.0001Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g></svg>
                     </a>
-                    <a (click)="toggleModal(l,true)" title="View Restaurant" type="button" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <span class="sr-only">View Restaurant</span>
-                        <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                           
-                            <g stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g>
-                                <path d="M16 7L21 12M21 12L16 17M21 12H3" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </g>
-                        </svg>
-                    </a>-->
-                </td>
-                <td class="px-6 py-4">
                     
-                    <qrcode (qrCodeURL)="onChangeURL($event)" [qrdata]="bsref+'/diner/h/'+l.id" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
-<a [href]="qrCodeDownloadLink" download="qrcode">Download</a>
-                   <a [routerLink]="['/diner/h/',l.id]">Link</a>
+<a  title="Download QR Code" class="relative group inline-block border border-gray-400 text-white px-1 py-1 rounded-lg hover:bg-gray-300 transition duration-300 ease-in-out transform hover:scale-105" [href]="qrCodeDownloadLink" download="qrcode">
+    <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Interface / Download"> <path id="Vector" d="M6 21H18M12 3V17M12 17L17 12M12 17L7 12" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g></svg>
+</a>
+                   <a title="Order"  class="relative group inline-block border border-gray-400 text-white px-1 py-1 rounded-lg hover:bg-gray-300 transition duration-300 ease-in-out transform hover:scale-105" target="_blank" [routerLink]="['/diner/h/',l.id]">
+                    <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Interface / External_Link"> <path id="Vector" d="M10.0002 5H8.2002C7.08009 5 6.51962 5 6.0918 5.21799C5.71547 5.40973 5.40973 5.71547 5.21799 6.0918C5 6.51962 5 7.08009 5 8.2002V15.8002C5 16.9203 5 17.4801 5.21799 17.9079C5.40973 18.2842 5.71547 18.5905 6.0918 18.7822C6.5192 19 7.07899 19 8.19691 19H15.8031C16.921 19 17.48 19 17.9074 18.7822C18.2837 18.5905 18.5905 18.2839 18.7822 17.9076C19 17.4802 19 16.921 19 15.8031V14M20 9V4M20 4H15M20 4L13 11" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g></svg>
+                   </a>
+                   <a title="Delete" (click)="DeleteTable(l)"  class="relative group inline-block border border-gray-400 text-white px-1 py-1 rounded-lg hover:bg-gray-100 transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer">
+                    <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Interface / Trash_Empty"> <path id="Vector" d="M6 6V17.8C6 18.9201 6 19.4798 6.21799 19.9076C6.40973 20.2839 6.71547 20.5905 7.0918 20.7822C7.5192 21 8.07899 21 9.19691 21H14.8031C15.921 21 16.48 21 16.9074 20.7822C17.2837 20.5905 17.5905 20.2839 17.7822 19.9076C18 19.4802 18 18.921 18 17.8031V6M6 6H8M6 6H4M8 6H16M8 6C8 5.06812 8 4.60241 8.15224 4.23486C8.35523 3.74481 8.74432 3.35523 9.23438 3.15224C9.60192 3 10.0681 3 11 3H13C13.9319 3 14.3978 3 14.7654 3.15224C15.2554 3.35523 15.6447 3.74481 15.8477 4.23486C15.9999 4.6024 16 5.06812 16 6M16 6H18M18 6H20" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g></svg>
+                   </a>
                 </td>
-            </tr>
+            </tr> -->
 
             <!--  <tr class="bg-white hover:bg-gray-50">
                <td class="w-4 p-4">
@@ -142,10 +212,11 @@
                 </td>
             </tr> -->
         </tbody>
-    </table>
+    </table></div>
+</div>
     <div *ngIf="showModal" class="opacity-25 fixed inset-0 z-40 bg-black"></div>
     <!-- Edit user modal -->
-    <div *ngIf="showModal"  tabindex="-1" aria-hidden="true"  class="fixed top-0 p-4 left-0 right-0 z-50 items-center justify-center w-full overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div *ngIf="showModal"  tabindex="-1"   class="fixed top-0 p-4 left-0 right-0 z-50 items-center justify-center w-full overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative max-h-full mx-auto my-auto max-w-2xl">
             <!-- Modal content -->
             <div *ngIf="detailModal" class="relative bg-white rounded-lg shadow">
@@ -154,7 +225,7 @@
                      <span class="font-thin text-d-red">Selected Restaurant: </span> <span class="font-semibold text-black text-xl">{{rest?.name}}</span>
                     </h3>
                    <button type="button" (click)="closeModal()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" data-modal-hide="editUserModal">
-                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <svg class="w-3 h-3"  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                     </svg>
                     <span class="sr-only">Close modal</span>
@@ -166,13 +237,86 @@
             
             </div>
             <form *ngIf="TableForm" [formGroup]="TableForm" (ngSubmit)="TableForm.valid?Save():is_submitted=true" class="relative bg-white rounded-lg shadow">
+                
+                <!-- Modal Header -->
+                <div class="flex items-start justify-between p-4 border-b rounded-t">
+                  <h3 class="text-xl font-semibold text-gray-900">
+                    {{ TableForm.get('id')?.value ? 'Edit Table' : 'Add Tables' }}
+                  </h3>
+                  <button type="button" (click)="closeModal()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center">
+                    <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                  </button>
+                </div>
+              
+                <!-- Modal Body -->
+                <div class="p-6 space-y-6">
+                  <div class="space-y-2 md:space-y-4">
+                    <div>
+                      <label for="start_table" class="block mb-1 text-sm font-medium text-gray-900">Table Number</label>
+                      <input type="number" formControlName="number" min="1"
+                             class="bg-gray-50 border border-gray-300 placeholder:text-xs text-gray-900 sm:text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                             placeholder="Enter the table Number">
+                    </div>
+                     <!-- Area Selection Mode 
+      <div>
+        <label for="area_mode" class="block mb-1 text-sm font-medium text-gray-900">Do you have one area or multiple areas?</label>
+        <select id="area_mode" formControlName="area_mode" (change)="onAreaModeChange($any($event.target).value)"
+                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
+          <option value="" disabled selected>Select...</option>
+          <option value="single">One Area</option>
+          <option value="multiple">Multiple Areas</option>
+        </select>
+      </div>-->
+                    <!-- Area Selection 
+                    <div *ngIf="!isSingleArea">
+                      <label for="room_name" class="block mb-1 text-sm font-medium text-gray-900">Name of Area</label>
+                      <input type="text"  id="room_name" formControlName="room_name"
+                             class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
+                    </div>-->
+                   <!--  <div *ngIf="!isSingleArea">
+                      <label for="room_name" class="block mb-1 text-sm font-medium text-gray-900">Select Area</label>
+                      <select formControlName="room_name" id="room_name"
+                              class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
+                        <option *ngFor="let area of areas" [value]="area">{{ area }}</option>
+                      </select>
+                    </div> -->
+              
+                    <!-- Table Range Fields 
+                    <div>
+                      <label for="start_table" class="block mb-1 text-sm font-medium text-gray-900">Start Table Number</label>
+                      <input type="number" formControlName="start" id="start_table" min="1"
+                             class="bg-gray-50 border border-gray-300 placeholder:text-xs text-gray-900 sm:text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                             placeholder="Enter the starting table number">
+                    </div>
+                    <div>
+                      <label for="end_table" class="block mb-1 text-sm font-medium text-gray-900">End Table Number</label>
+                      <input type="number" formControlName="end" id="end_table" min="1"
+                             class="bg-gray-50 border border-gray-300 placeholder:text-xs text-gray-900 sm:text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                             placeholder="Enter the ending table number">
+                      <div *ngIf="is_submitted && TableForm.get('end')?.errors" class="text-d-red text-xs">
+                        <div *ngIf="TableForm.get('end')?.errors?.['required']">End Table Number is required</div>
+                      </div>
+                    </div>-->
+                  </div>
+                </div>
+              
+                <!-- Modal Footer -->
+                <div class="flex items-center p-6 space-x-3 rtl:space-x-reverse border-t border-gray-200 rounded-b">
+                  <button type="submit" class="text-white bg-d-red hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-40 px-5 py-2.5 text-center ml-auto">Save</button>
+                </div>
+              </form>
+              
+            <form *ngIf="TableEditForm" [formGroup]="TableEditForm" (ngSubmit)="TableEditForm.valid?Save():is_submitted=true" class="relative bg-white rounded-lg shadow">
                 <!-- Modal header -->
                 <div class="flex items-start justify-between p-4 border-b rounded-t">
                     <h3 class="text-xl font-semibold text-gray-900 ">
-                        {{TableForm.get('id')?.value?'Edit':'New'}} Restaurant
+                        {{TableEditForm.get('id')?.value?'Edit Table':'New Area & Tables'}}
                     </h3>
                    <button type="button" (click)="closeModal()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" data-modal-hide="editUserModal">
-                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <svg class="w-3 h-3"  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                     </svg>
                     <span class="sr-only">Close modal</span>
@@ -181,62 +325,95 @@
                 <!-- Modal body -->
                 <div class="p-6 space-y-6">
                     <div class="space-y-2 md:space-y-4">
+ <div>
+                            <label for="room_name" class="block mb-1 text-sm font-medium text-gray-900">Restaurant Area</label>
+                            <select type="text" formControlName="dining_area" id="room_name" class="bg-gray-50 border border-gray-300 placeholder:text-xs text-gray-900 sm:text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
+                              
+                              <option [value]="m.dining_area.id" *ngFor="let m of list">{{m.dining_area.name}}</option>
+                            </select>
+                            
+                        </div>
+
                         <div>
-                            <label for="name" class="block mb-1 text-sm font-medium text-gray-900">Table Number <span class="text-d-red">*</span></label>
-                            <input type="text" formControlName="number" id="number" class="bg-gray-50 border border-gray-300 placeholder:text-xs text-gray-900 sm:text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " placeholder="Enter the restaurant name">
+                            <label for="name" class="block mb-1 text-sm font-medium text-gray-900">{{TableEditForm.get('id')?.value?'Table Number':'Number of Tables to be added'}}<span class="text-d-red">*</span></label>
+                            <input type="number" formControlName="number" id="number" min="1" class="bg-gray-50 border border-gray-300 placeholder:text-xs text-gray-900 sm:text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Enter the table number">
                             <div *ngIf="is_submitted && TableForm.get('number')?.errors" class="text-d-red text-xs">
-                                <div *ngIf="TableForm.get('number')?.errors?.['required']">The Table Number is required</div>
+                                <div *ngIf="TableEditForm.get('number')?.errors?.['required']">The Table Number is required</div>
                             </div>
                         </div>
-                      <!--   <div>
-                            <label for="location" class="block mb-1 text-sm font-medium text-gray-900">Location <span class="text-d-red">*</span></label>
-                            <textarea type="text" formControlName="location" id="location" class="bg-gray-50 border border-gray-300 placeholder:text-xs text-gray-900 sm:text-sm rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " placeholder="Enter the location of the restaurant"></textarea>
-                            <div *ngIf="is_submitted && TableForm.get('location')?.errors" class="text-d-red text-xs">
-                                <div *ngIf="TableForm.get('location')?.errors?.['required']">Location is required</div>
-                            </div>
-                        </div> -->
+                     
                        
                     </div>
-                    <!-- <div class="grid grid-cols-6 gap-6">
-                        <div class="col-span-6 sm:col-span-3">
-                            <label for="first-name" class="block mb-2 text-sm font-medium text-gray-900 ">First Name</label>
-                            <input type="text" name="first-name" id="first-name" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 " placeholder="Bonnie" required="">
-                        </div>
-                        <div class="col-span-6 sm:col-span-3">
-                            <label for="last-name" class="block mb-2 text-sm font-medium text-gray-900 ">Last Name</label>
-                            <input type="text" name="last-name" id="last-name" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 " placeholder="Green" required="">
-                        </div>
-                        <div class="col-span-6 sm:col-span-3">
-                            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 ">Email</label>
-                            <input type="email" name="email" id="email" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 " placeholder="example@company.com" required="">
-                        </div>
-                        <div class="col-span-6 sm:col-span-3">
-                            <label for="phone-number" class="block mb-2 text-sm font-medium text-gray-900 ">Phone Number</label>
-                            <input type="number" name="phone-number" id="phone-number" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 " placeholder="e.g. +(12)3456 789" required="">
-                        </div>
-                        <div class="col-span-6 sm:col-span-3">
-                            <label for="department" class="block mb-2 text-sm font-medium text-gray-900 ">Department</label>
-                            <input type="text" name="department" id="department" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 " placeholder="Development" required="">
-                        </div>
-                        <div class="col-span-6 sm:col-span-3">
-                            <label for="company" class="block mb-2 text-sm font-medium text-gray-900 ">Company</label>
-                            <input type="number" name="company" id="company" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 " placeholder="123456" required="">
-                        </div>
-                        <div class="col-span-6 sm:col-span-3">
-                            <label for="current-password" class="block mb-2 text-sm font-medium text-gray-900 ">Current Password</label>
-                            <input type="password" name="current-password" id="current-password" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 " placeholder="••••••••" required="">
-                        </div>
-                        <div class="col-span-6 sm:col-span-3">
-                            <label for="new-password" class="block mb-2 text-sm font-medium text-gray-900 ">New Password</label>
-                            <input type="password" name="new-password" id="new-password" class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 " placeholder="••••••••" required="">
-                        </div>
-                    </div> -->
+                
                 </div>
                 <!-- Modal footer -->
                 <div class="flex items-center p-6 space-x-3 rtl:space-x-reverse border-t border-gray-200 rounded-b">
                     <button type="submit" class="text-white bg-d-red hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-40 px-5 py-2.5 text-center ml-auto">Save</button>
                 </div>
             </form>
+
+            <form *ngIf="DiningAreaForm" [formGroup]="DiningAreaForm" (ngSubmit)="onSubmitArea()" class="relative bg-white rounded-lg shadow">
+                    <!-- Modal Header -->
+                    <div class="flex items-start justify-between p-4 border-b rounded-t">
+                        <h3 class="text-xl font-semibold text-gray-900">
+                          {{ DiningAreaForm.get('id')?.value ? 'Edit Area' : 'New Area' }}
+                        </h3>
+                        <button type="button" (click)="closeModal()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center">
+                          <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                          </svg>
+                          <span class="sr-only">Close modal</span>
+                        </button>
+                      </div>
+                      <div class="p-4">
+                        <div class="mb-4" *ngIf="ask_multiple">
+                            <label for="area_mode" class="block mb-1 text-sm font-medium text-gray-900">Do you have one area or multiple areas?</label>
+                            <select id="area_mode" formControlName="area_mode" (change)="onAreaModeChange($any($event.target).value)"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
+                              <option value="" disabled>Select...</option>
+                              <option value="single">One Area</option>
+                              <option value="multiple">Multiple Areas</option>
+                            </select>
+                          </div>
+                                        
+                <div class="mb-4" *ngIf="!isSingleArea" >
+                  <label for="name" class="block text-gray-700 text-sm font-medium">Dining Area Name</label>
+                  <input type="text" id="name" formControlName="name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500" />
+                  <div *ngIf="DiningAreaForm.get('name')?.invalid && DiningAreaForm.get('name')?.touched" class="text-red-500 text-sm">
+                    Name is required.
+                  </div>
+                </div>
+            
+                <div class="mb-4">
+                  <label for="description" class="block text-gray-700 text-sm font-medium">Description</label>
+                  <textarea id="description" formControlName="description" rows="3" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"></textarea>
+                  <div *ngIf="DiningAreaForm.get('description')?.invalid && DiningAreaForm.get('description')?.touched" class="text-red-500 text-sm">
+                    Description is required.
+                  </div>
+                </div>
+             <div class="mb-4">
+                      <label for="start_table" class="block mb-1 text-sm font-medium text-gray-900">Start Table Number</label>
+                      <input type="number" formControlName="start" id="start_table" min="1"
+                             class="border border-gray-300 placeholder:text-xs text-gray-900 rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                             placeholder="Enter the starting table number">
+                    </div>
+                    <div class="mb-4">
+                      <label for="end_table" class="block mb-1 text-sm font-medium text-gray-900">End Table Number</label>
+                      <input type="number" formControlName="end" id="end_table" min="1"
+                             class="border border-gray-300 placeholder:text-xs text-gray-900 rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                             placeholder="Enter the ending table number">
+                      <div *ngIf="DiningAreaForm.get('end')?.errors&&DiningAreaForm.get('end')?.touched" class="text-d-red text-xs">
+                        <div *ngIf="DiningAreaForm.get('end')?.errors?.['required']&&DiningAreaForm.get('end')?.touched">End Table Number is required</div>
+                      </div>
+                    </div>
+                <button type="submit" class="w-full py-2 px-4 bg-d-red text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring">
+                  Submit
+                </button>
+            </div>
+              </form>
+            
         </div>
     </div>
+</div>
+
 </div>

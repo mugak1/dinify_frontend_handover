@@ -1,4 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 import {
   ChartComponent,
@@ -13,33 +14,36 @@ import {
   ApexTitleSubtitle,
   ApexLegend
 } from "ng-apexcharts";
+import { Orders, RestaurantDashboardData, Revenue } from 'src/app/_models/app.models';
+import { ApiService } from 'src/app/_services/api.service';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
 
-export type ChartOptions = {
-  series: ApexAxisChartSeries;
-  chart: ApexChart;
-  xaxis: ApexXAxis;
-  stroke: ApexStroke;
-  dataLabels: ApexDataLabels;
-  markers: ApexMarkers;
-  tooltip: any; // ApexTooltip;
-  yaxis: ApexYAxis;
-  grid: ApexGrid;
-  legend: ApexLegend;
-  title: ApexTitleSubtitle;
-};
+
 
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'app-rest-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent {
   @ViewChild("chart") chart?: ChartComponent;
-  public chartOptions: Partial<ChartOptions>|any;
+  restaurant!: string;
+  RevenueData?: Revenue;
+  OrderData?: Orders;
+ // public chartOptions: Partial<ChartOptions>|any;
 
-  constructor() {
-    this.chartOptions = {
+  constructor(private api:ApiService, private route:ActivatedRoute,public auth:AuthenticationService) {
+  
+    if(auth.currentRestaurantRole?.restaurant_id){
+      this.restaurant=auth.currentRestaurantRole?.restaurant_id;
+      this.loadData();
+    }else  if(this.route.parent?.snapshot.params['id']){
+      this.restaurant=this.route.parent?.snapshot.params['id'];
+    this.loadData();
+    }
+   
+/*     this.chartOptions = {
       series: [
         {
           name: "Total Order Number",
@@ -67,7 +71,7 @@ export class DashboardComponent {
         width: 5,
         curve: "straight",
         dashArray: [0, 8, 5],
-       /*  colors:['#ff0000','red','red'] */
+       // colors:['#ff0000','red','red']
       },
       title: {
         text: "Total Revenues",
@@ -145,6 +149,113 @@ export class DashboardComponent {
       grid: {
         borderColor: "#f1f1f1"
       }
-    };
+    }; */
   }
+  restaurantName: string = "Your Restaurant Name";
+  now: Date = new Date();
+
+  // Revenue Data
+  totalRevenue: number = 500000000;  // Example total revenue
+  previousRevenue: number = 450000000;
+  revenueChangePercentage: number = 0;
+
+  // Orders Data
+  totalOrders: number = 1250;
+  previousOrders: number = 1100;
+  ordersChangePercentage: number = 0;
+
+  // Order Status Breakdown
+  orderStatuses = {
+    closed: 900,
+    cancelled: 350
+  };
+
+  // Active Diners Data
+  activeDiners: number = 320;
+  previousActiveDiners: number = 300;
+  activeDinersChangePercentage: number = 0;
+
+  // Active Orders & Tables
+  activeOrders: number = 42;
+  totalOrderItems: number = 315;
+  activeTables: number = 30;
+  availableTables: number = 50;
+
+  // Frequent Customers Data
+  frequentCustomers = [
+    { name: "Paul Mukasa", visits: 15 },
+    { name: "Lou Kiror", visits: 12 },
+    { name: "Dianne Kori", visits: 10 }
+  ];
+
+  // Popular Meals Data
+  popularMeals = [
+    { name: "Grilled Chicken", orders: 150 },
+    { name: "Beef Steak", orders: 130 },
+    { name: "Pasta Alfredo", orders: 120 }
+  ];
+
+  ngOnInit() {
+    this.calculatePercentageChanges();
+    this.startAutoUpdate();
+  }
+
+  /**
+   * Calculates percentage changes for key metrics.
+   */
+  private calculatePercentageChanges() {
+    this.revenueChangePercentage = this.calculatePercentage(this.totalRevenue, this.previousRevenue);
+    this.ordersChangePercentage = this.calculatePercentage(this.totalOrders, this.previousOrders);
+    this.activeDinersChangePercentage = this.calculatePercentage(this.activeDiners, this.previousActiveDiners);
+  }
+
+  /**
+   * Utility function to calculate percentage change.
+   * @param current - Current value.
+   * @param previous - Previous value.
+   * @returns Percentage change.
+   */
+  private calculatePercentage(current: number, previous: number): number {
+    if (previous === 0) return 100; // If there was no previous data, assume 100% growth
+    return ((current - previous) / previous * 100).toFixed(1) as unknown as number;
+  }
+
+  /**
+   * Auto-updates the dashboard every 30 seconds.
+   */
+  private startAutoUpdate() {
+    setInterval(() => {
+      this.now = new Date();
+      // Simulating a real-time update (e.g., fetching new data from API)
+      this.refreshDashboardData();
+    }, 30000); // Refresh every 30 seconds
+  }
+
+  /**
+   * Simulates fetching new dashboard data.
+   */
+  private refreshDashboardData() {
+    // Simulated data updates (Replace with actual API calls)
+    this.totalRevenue += Math.floor(Math.random() * 10000);
+    this.totalOrders += Math.floor(Math.random() * 5);
+    this.activeDiners += Math.floor(Math.random() * 3);
+    
+    this.calculatePercentageChanges();
+  }
+  
+  loadData(){
+      this.api.get<any>(null,`reports/restaurant/dashboard1/?restaurant=${this.restaurant}`,{}).subscribe((x:any)=>{
+          let d =x?.data as RestaurantDashboardData;
+          this.OrderData=d.orders;
+          this.RevenueData=d.revenue;
+          //this.stats = d.stats;
+          /* this.list=x?.data?.records as any[];  */    
+        //  this.acc= this.rest?.account
+     // this.list=x?.data as any;
+      })
+  }
+ /*  totalReviews = this.fiveStarBreakdown.reduce((acc, review) => acc + review.count, 0);
+  averageRating:any = (
+    this.fiveStarBreakdown.reduce((acc, review) => acc + review.rating * review.count, 0) / this.totalReviews
+  ).toFixed(1); */
 }

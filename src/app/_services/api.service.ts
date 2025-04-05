@@ -15,13 +15,16 @@ export class ApiService {
     const l = this.correctFormatForQueryUrl(parameters);
     return this._http["get"](`${this._base}/${url}${id ? "/" + id : ""}${l}`) as any;
   }
-  postPatch(url: string, data: any,method:'get'|'post'|'put', id?:string, params?:{}, isFormData?: boolean) {
+  postPatch(url: string, data: any,method:'get'|'post'|'put', id?:any, params?:{}, isFormData?: boolean,version?:string,has_false?:boolean){
     const d = this.correctFormatForQueryUrl(params);
-      const h:any = Object.entries(data).reduce((y:{[key:string]:any}, [w, T]) => (T && (y[w] = T), y), {});
-    return this._http[method](`${this._base}/${url}${id ? "/" + id : ""}${d}`, isFormData ? this.toFormData<any>(h) : h)
+      //const h:any = Object.entries(data).reduce((y:{[key:string]:any}, [w, T]) => ((Boolean(T) && (y[w] = T)), y),{});
+      const h:any = has_false? Object.entries(data).reduce((y:{[key:string]:any},[w,T])=>(y[w]=T,y),{}):Object.entries(data).reduce((y:{[key:string]:any}, [w, T]) => ((Boolean(T) && (y[w] = T)), y),{});
+      console.log(h)
+    return this._http[method](`${version?environment.apiUrl+'/api/'+version:this._base}/${url}${id ? "/" + id : ""}${d}`, isFormData ? this.toFormData<any>(h) : h);
   }
-  Delete(url: string, i: any, reason: string) {
-    return this._http.delete(`${this._base}/${url}`, {body: {id: i, deletion_reason: reason }}).pipe(e=>e);
+  Delete(url: string, data: any,version?:string) {
+    const h:any = Object.entries(data).reduce((y:{[key:string]:any}, [w, T]) => ((Boolean(T) && (y[w] = T)), y),{});
+    return this._http.delete(`${version?environment.apiUrl+'/api/'+version:this._base}/${url}`, {body: h}).pipe(e=>e);
   }
   postFileWithProgress(url: string, data: any) {
     return this._http.post(`${this._base}/${url}`, this.toFormData(data), {
@@ -38,12 +41,12 @@ export class ApiService {
   mapQueryParamsToUrl(e: any) {
     return Object.keys(e).map(i => `${i}=${e[i]}`)
   }
-  UserChangePasswordOnLogin(data: any, token: any) {
+  UserChangePasswordOnLogin(data: any) {
     const r = `${this._base}/users/auth/change-password/`;
     
     let l: any = {
       headers: new HttpHeaders({
-        Authorization: "Token " + token,
+       // Authorization: "Token " + token,
         Accept: "application/json, text/plain, */*"
       }),
       reportProgress: true,

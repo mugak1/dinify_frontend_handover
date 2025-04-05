@@ -10,6 +10,7 @@ export class ErrorInterceptor implements HttpInterceptor {
     constructor(private authenticationService: AuthenticationService,private message:MessageService) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        this.message.clear();
         return next.handle(request).pipe(catchError(err => {
             if ([401, 403].includes(err.status) && this.authenticationService.userValue) {
                 // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
@@ -23,7 +24,11 @@ if(err.status===0){
 }else{
                 const error = err.error.message || err.statusText;
             if(error){
-                       this.message.add(error);     
+                 this.message.add(error); 
+              /*   setTimeout(() => {
+                    this.message.clear();
+                }, 1200); */
+                          
             }
 return throwError(() => error);
 }
