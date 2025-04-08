@@ -37,6 +37,8 @@ export class LoginComponent {
   log_in!: LoginResponse;
   fieldTextType: boolean=false;
 
+  isSubmittingOtp=false;
+
   constructor(
       private formBuilder: FormBuilder,
       private route: ActivatedRoute,
@@ -64,6 +66,7 @@ export class LoginComponent {
     this.authenticationService.resetStorage();
       this.submitted = true;
 this.loading=true;
+this.isSubmittingOtp=(this.data)?true:false;
       // stop here if form is invalid
       if (this.loginForm.invalid) {
         this.loading=false;
@@ -98,7 +101,9 @@ this.authenticationService.setCurrentRestaurantRole(this.log_in.profile.restaura
                    const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/mgt-app';
                    this.router.navigateByUrl(returnUrl);  
                  }
+                 this.isSubmittingOtp=false;
                 }
+
               }
               if(this.as_diner){
                 this.LoginResp.emit(true);
@@ -113,7 +118,7 @@ this.authenticationService.setCurrentRestaurantRole(this.log_in.profile.restaura
   }
 
   SubmitOTP(){
-    
+    this.isSubmittingOtp=(this.data)?true:false;
     this.authenticationService.setOtp(this.authenticationService.userValue?.profile.id,this.data).pipe(first()).subscribe({
         next:(val:ApiResponse<OTPResponse>)=>{
       //      console.log(val)
@@ -131,11 +136,15 @@ if(u.profile.restaurant_roles.length==1){
                        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/mgt-app';
                        this.router.navigateByUrl(returnUrl);  
                      }
+                     this.isSubmittingOtp=false;
                     
 }else{
+  this.isSubmittingOtp=false;
     this.error='The OTP provided is invalid'
     this.message.add(this.error)
     this.authenticationService.logout();
+    this.authenticationService.resetStorage();
+    this.loginForm.reset();
     this.require_otp=false;
     
 }
