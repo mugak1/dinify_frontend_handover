@@ -67,7 +67,7 @@
                     <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
             </div>
-            <div class="flex gap-2">
+<!--             <div class="flex gap-2">
                 <input type="checkbox" formControlName="expose_order_ratings"  class="relative peer shrink-0 appearance-none w-5 h-5 border-2 border-gray-400 rounded-sm bg-white checked:bg-black checked:border-0 focus:outline-none focus:ring-offset-0 focus:ring-2 focus:ring-blue-100 disabled:border-steel-400 disabled:bg-steel-400" />
                 <label class="text-sm font-normal" htmlFor="prepayment">Show Menu Ratings</label>
                 <svg class=" absolute w-5 h-5 hidden peer-checked:block pointer-events-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
@@ -87,7 +87,7 @@
                 <svg class=" absolute w-5 h-5 hidden peer-checked:block pointer-events-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
-            </div>
+            </div> -->
         </div>
         <!-- <div class="grid grid-cols-6 gap-6">
             <div class="col-span-6 sm:col-span-3">
@@ -129,6 +129,6 @@
         <button type="submit" class="text-white bg-d-red hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded text-sm w-40 px-5 py-2.5 text-center ml-auto">Save</button>
     </div>
 </form>
-<div class="flex items-center p-6 space-x-3 rtl:space-x-reverse border-t border-gray-200 rounded-b mb-6">
+<div *ngIf="(auth.userValue?.profile?.roles?.includes('dinify_admin'))" class="flex items-center p-6 space-x-3 rtl:space-x-reverse border-t border-gray-200 rounded-b mb-6">
     <button (click)="Block()" type="button" class="text-white bg-d-red hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded text-sm w-full px-5 py-2.5 text-center ml-auto">Block Account</button>
 </div>

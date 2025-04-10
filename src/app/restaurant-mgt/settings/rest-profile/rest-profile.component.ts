@@ -22,7 +22,7 @@ export class RestProfileComponent {
   restaurant: any;
 
  
-  constructor(private auth:AuthenticationService, private api:ApiService, private fb:FormBuilder,private route:ActivatedRoute, private dialog:ConfirmDialogService ) {
+  constructor(public auth:AuthenticationService, private api:ApiService, private fb:FormBuilder,private route:ActivatedRoute, private dialog:ConfirmDialogService ) {
     this.RestaurantForm=this.initRestaurantForm();
     if(auth.currentRestaurantRole?.restaurant_id){
       this.restaurant=auth.currentRestaurantRole?.restaurant_id;
@@ -114,7 +114,11 @@ export class RestProfileComponent {
                 }
               })*/  
              ref.unsubscribe(); 
-            }
+            } 
+          else if(x?.action=='no'||x?.action=='reject'){
+            ref.unsubscribe();
+            this.dialog.closeModal();
+          }
           })
         }
 
