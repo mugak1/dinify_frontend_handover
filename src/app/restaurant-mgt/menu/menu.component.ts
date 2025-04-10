@@ -1,5 +1,5 @@
 import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ConfirmDialogService } from 'src/app/_common/confirm-dialog.service';
 import { ApiResponse, MenuItem, MenuSectionListItem, RestaurantDetail } from 'src/app/_models/app.models';
@@ -428,7 +428,7 @@ closeModal(){
   this.fileError='';
   this.temp_extra='';
   this.temp_extra_list=[];
-  this.CategoryGroups.clear();
+  //this.CategoryGroups.clear();
   this.active_tab=this.tabs_list[0];
   this.view_menu=false
   this.is_new=false;
@@ -555,10 +555,19 @@ public simpleList = [
 
 InitOptionObject(){
   return this.fb.group({
-    min_selections: 0,
-    max_selections: 0,
+    min_selections: [1, [Validators.required, Validators.min(1), Validators.pattern('^[0-9]*$')]],
+    max_selections: [1, [Validators.required, Validators.min(1), Validators.pattern('^[0-9]*$')]],
     options : this.fb.array([this.InitOptionItem()])
+}, {
+  validators: this.minLessThanMax('min_selections', 'max_selections')
 })
+}
+minLessThanMax(minKey: string, maxKey: string) {
+  return (group: AbstractControl) => {
+    const min = group.get(minKey)?.value;
+    const max = group.get(maxKey)?.value;
+    return (min && max && min > max) ? { minGreaterThanMax: true } : null;
+  };
 }
 InitDiscountObject(){
   return this.fb.group({

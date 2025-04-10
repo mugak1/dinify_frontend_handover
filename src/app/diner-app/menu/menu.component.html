@@ -173,10 +173,24 @@
             <div class="flex flex-row">
             
                 <div (click)="viewItem(i)" class="p-2 flex-grow">
-                    <p class="font-semibold">{{i.name}} </p>
+                    <p class="font-semibold">{{i.name}} <span *ngIf="i?.discount_details?.discount_amount" class="ml-2 bg-black text-white text-xs font-medium px-2 py-1 rounded-full">
+                      -{{ calculateDiscount(i) }}%
+                        <span class="text-xs text-gray-400 ml-2">Save UGX {{ priceSaved(i) | number }}</span>
+                    </span></p>
+                    
                      <p class="text-sm line-clamp-2 mt-2">{{i.description}}</p>
-                     <p class="font-light mt-2">UGX {{i.primary_price|number}} 
-                     </p>
+                     <div class="flex flex-col mt-2">
+                      <ng-container *ngIf="i?.discount_details?.discount_amount; else normalPrice">
+                        <span class="text-red-600 font-bold text-lg">UGX {{ i?.discount_details?.discount_amount | number }}</span>
+                        <div class="flex justify-between items-center">
+                          <span class="line-through text-gray-400 text-sm">UGX {{ i.primary_price | number }}</span>
+                        </div>
+                      </ng-container>
+              
+                      <ng-template #normalPrice>
+                        <span class="font-bold text-base">UGX {{ i.primary_price | number }}</span>
+                      </ng-template>
+                    </div>
                     
                 </div>
                
@@ -260,8 +274,15 @@
           
              <div class="flex flex-col flex-grow overflow-y-auto">
             <div #optionsContainer  class="flex flex-col flex-grow overflow-y-auto align-top" (scroll)="onScroll()" scrollSpy [spiedTags]="['DIV']" (sectionChange)="onSectionItemChange($event)">
-        <div class="mx-auto py-6">
+              <div class="relative mx-auto py-6 w-fit">
                  <app-common-image [imgclass]="'rounded-lg'" [src]="selected_item.image" [width]="'300'" [height]="'300'"></app-common-image>   
+                 <ng-container *ngIf="selected_item?.discount_details?.discount_amount">
+                  <div class="absolute top-2 right-2">
+                    <div class="bg-black/90 text-white text-xs md:text-sm font-extrabold px-3 py-1 rounded-full backdrop-blur-sm shadow-2xl animate-pulse text-right">
+                      -{{ calculateDiscount(selected_item) }}%
+                    </div>
+                  </div>
+                </ng-container>
                 </div>
                 
                 <div class='mx-auto space-x-2'>
@@ -284,8 +305,23 @@
 
                    <div [id]="selected_item.name">
                         <p class="text-2xl font-black pt-6 px-6">{{selected_item.name}} </p>
+                        <div class="flex items-center gap-2 mt-2 px-6">
+                          <span class="text-red-600 font-extrabold text-2xl">
+                            UGX {{ selected_item.discount_details?.discount_amount || selected_item.primary_price | number }}
+                          </span>
+                        </div>
+                      <p class="px-6" *ngIf="selected_item?.discount_details?.discount_amount">
+                          <ng-container>
+                            <span class="line-through text-gray-400 text-sm">
+                              UGX {{ selected_item.primary_price | number }}
+                            </span>
+                      
+                            <span class="text-xs text-black font-medium">
+                              Save UGX {{ priceSaved(selected_item) | number }}
+                            </span>
+                          </ng-container></p>
                          <p class="px-6">{{selected_item.description}}</p>
-                         <p class="font-semibold mt-2 text-xl px-6">UGX {{selected_item.primary_price|number}}</p>
+                        <!--  <p class="font-semibold mt-2 text-xl px-6">UGX {{selected_item.primary_price|number}}</p> -->
     
                          <!-- Conditionally Display Scroll Indicator -->
       <div
@@ -308,9 +344,12 @@
     </div>
    
                         <div class="px-6 pt-6" *ngIf="selected_item?.has_options">
-                          
+                          <div *ngIf="globalError" class="text-gray-500 text-xs my-2">
+                            {{ globalError }}
+                          </div>
                           <form (ngSubmit)="submitForm()">
                             <div *ngFor="let o of selected_item?.options?.options; let i = index" class="relative flex flex-col mb-6">
+                              
                               <!-- Option Name -->
                               <label class="font-semibold mb-2">
                                 {{ o?.name }}
@@ -416,7 +455,7 @@
                 </button>
               </div>
          </div>
-            <button [disabled]="!isFormValid()" (click)="AddSelectedItem()" type="submit" class="relative inline-flex items-center justify-center p-3 font-medium hover:bg-gray-700 active:bg-gray-700 text-white bg-black border-2 disabled:bg-gray-300 disabled:border-gray-300 border-gray-500 rounded-full shadow-md w-full disabled:opacity-50 transition-all">
+            <button [disabled]="!isFormValid()&&this.validateSelections()" (click)="AddSelectedItem()" type="submit" class="relative inline-flex items-center justify-center p-3 font-medium hover:bg-gray-700 active:bg-gray-700 text-white bg-black border-2 disabled:bg-gray-300 disabled:border-gray-300 border-gray-500 rounded-full shadow-md w-full disabled:opacity-50 transition-all">
                      <span class="text-white">Add Item</span>
            </button>   
        </div>

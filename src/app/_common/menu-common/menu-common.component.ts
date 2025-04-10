@@ -18,7 +18,7 @@ export class MenuCommonComponent {
   basketItems = this.basketService.Basket().items;
   totalAmount = this.basketService.Basket().totalAmount;
   showModal=false;
-  selected_item!:MenuItem
+  selected_item!:MenuItem|any
   selected_quantity:number=1;
   selected_amount:number=0;
   selected_choices:any[]=[];
@@ -189,5 +189,13 @@ console.log(this.selected_choices)
     clearSearch() {
       this.searchQuery = '';
       this.filterMenu();
+    }
+    calculateDiscount(item:any): number {
+      if (!item.discount_details.discount_amount) return 0;
+      return Math.round(((item.primary_price - item.discount_details.discount_amount) / item.primary_price) * 100);
+    }
+    priceSaved(item:any): number {
+      if (!item.discount_details.discount_amount) return 0;
+      return item.primary_price - item.discount_details.discount_amount;
     }
 }

@@ -317,6 +317,24 @@
                           <h4 class="font-black text-lg">{{ i?.name }}</h4>
                           <p class="text-gray-500 text-sm line-clamp-2">{{ i?.description }}</p>
                           <span class="font-semibold text-d-red">UGX {{ i?.primary_price | number }}</span>
+                          <p *ngIf="i?.discount_details?.discount_amount" class="text-sm">
+                            <span class="font-bold">Discount: UGX {{i?.discount_details?.discount_amount|number}}</span> | 
+                            <strong class="text-blue-600">{{i?.discount_details?.start_date|date:'shortDate'}} - {{i?.discount_details?.end_date|date:'shortDate'}}</strong> | Available on:
+                            <span *ngFor="let d of i?.discount_details?.recurring_days;let l=last" class="text-green-500">{{days_of_week[d??0]|uppercase}}{{!l?', ':''}}</span>
+                       
+                          </p>
+                          <p *ngIf="i?.discount_details&&false" class="text-gray-600 p-4 border border-gray-300 rounded-lg">
+                            <span class="text-red-600 font-bold">Discount: $8,500</span> | 
+                            <strong class="text-blue-600">April 1-30, 2025</strong> | Available on:
+                            <span class="text-green-500">Mon, Wed, Fri</span>
+                          </p>
+                          
+                          <div *ngIf="i?.discount_details&&false" class="p-4 border border-gray-300 rounded-lg">
+                            <h2 class="text-lg font-semibold text-gray-800">Discount Details</h2>
+                            <p class="text-gray-600">Valid from <strong class="text-blue-600">April 1, 2025</strong> to <strong class="text-blue-600">April 30, 2025</strong></p>
+                            <p class="text-gray-600">Available on: <span class="text-green-500">Monday, Wednesday, Friday</span></p>
+                            <p class="text-red-600 font-bold">Discount: $8,500</p>
+                          </div>
                         </div>
                       </div>
               
@@ -417,7 +435,7 @@
                             <p class="w-[30vw] line-clamp-2">{{i?.description}}</p>
                         </div>
                     <div class="md:ml-auto mr-8 my-auto">
-                        <span class="font-semibold">UGX {{i?.primary_price|number}}</span>
+                        <span class="font-semibold text-d-red">UGX {{i?.primary_price|number}}</span>
                     </div>
                     <div class="flex flex-row space-x-3 justify-between">
                        
@@ -532,7 +550,7 @@
                         <p class="w-[30vw] line-clamp-2">{{i?.description}}</p>
                     </div>
                 <div class="md:ml-auto mr-8 my-auto">
-                    <span class="font-semibold">UGX {{i?.primary_price|number}}</span>
+                    <span class="font-semibold text-d-red">UGX {{i?.primary_price|number}}</span>
                 </div>
                 <div class="flex flex-row space-x-3 justify-between">
                    
@@ -993,11 +1011,27 @@ class="inline-flex items-center gap-x-0.5 rounded-md bg-black px-2 py-1 text-xs 
                                     <div class="w-full px-2 md:w-1/2">
                                       <label class="block mb-1" for="formGridCode_name">Minimum Selection</label>
                                       <input formControlName="min_selections" min="1" step="1"  class="w-full h-10 px-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline" type="text" id="formGridCode_name"/>
+                                    
+      <div *ngIf="ItemForm.get('options.min_selections')?.touched && ItemForm.get('options.min_selections')?.errors"
+      class="text-red-500 text-xs mt-1">
+      <span *ngIf="ItemForm.get('options.min_selections')?.hasError('required')">Minimum is required</span>
+      <span *ngIf="ItemForm.get('options.min_selections')?.hasError('min')">Minimum must be at least 1</span>
+      <span *ngIf="ItemForm.get('options.min_selections')?.hasError('pattern')">Numbers only</span>
+    </div>
                                     </div>
                                     <div class="w-full px-2 md:w-1/2">
                                       <label class="block mb-1" for="formGridCode_last">Maximum Selection</label>
                                       <input formControlName="max_selections" class="w-full h-10 px-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline" type="text" id="formGridCode_last"/>
+                                      <div *ngIf="ItemForm.get('options.max_selections')?.touched && ItemForm.get('options.max_selections')?.errors"
+        class="text-red-500 text-xs mt-1">
+        <span *ngIf="ItemForm.get('options.max_selections')?.hasError('required')">Maximum is required</span>
+        <span *ngIf="ItemForm.get('options.max_selections')?.hasError('min')">Must be at least 1</span>
+        <span *ngIf="ItemForm.get('options.max_selections')?.hasError('pattern')">Numbers only</span>
+      </div>
                                     </div>
+                                    <div *ngIf="ItemForm.get('options')?.errors?.['minGreaterThanMax']" class="text-red-500 text-xs mt-1 px-2 w-full">
+                                        Minimum cannot be greater than Maximum
+                                      </div>
                                   </div>
                             </div>
                             <div *ngIf="ItemForm.get('has_options')?.value">
@@ -1268,6 +1302,7 @@ class="inline-flex items-center gap-x-0.5 rounded-md bg-black px-2 py-1 text-xs 
                     <button type="submit" class="text-white bg-d-red hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-40 px-5 py-2.5 text-center ml-auto">Save</button>
                 </div>
             </form>
+           
             <div *ngIf="view_menu" class="flex flex-row bg-white">
                
                  <!--  <h3 class="flex flex-row">

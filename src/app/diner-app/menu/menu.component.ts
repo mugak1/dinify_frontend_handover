@@ -22,6 +22,7 @@ export class DinersMenuComponent implements OnInit {
   needsScrolling: boolean = false;
 
   showSearch:boolean=false;
+  globalError:string|null=null;
   toggleSearch() {
     this.showSearch = !this.showSearch;
     if (!this.showSearch) {
@@ -34,7 +35,7 @@ export class DinersMenuComponent implements OnInit {
   basketItems = this.basketService.Basket().items;
   totalAmount = this.basketService.Basket().totalAmount;
   showModal=false;
-  selected_item!:MenuItem
+  selected_item!:MenuItem|any
   selected_quantity:number=1;
   selected_amount:number=0;
   selected_choices:any[]=[];
@@ -320,5 +321,61 @@ removeUnderscore(x:string){
       console.error('Form submission failed. Errors:', this.errorMessages);
     }
   }
-    
+  calculateDiscount(item:any): number {
+    if (!item.discount_details.discount_amount) return 0;
+    return Math.round(((item.primary_price - item.discount_details.discount_amount) / item.primary_price) * 100);
+  }
+  priceSaved(item:any): number {
+    if (!item.discount_details.discount_amount) return 0;
+    return item.primary_price - item.discount_details.discount_amount;
+  }
+  validateSelections(): boolean {
+    let isValid = true;
+    let totalSelected = 0;
+  
+    this.selected_item?.options?.options.forEach((option: any) => {
+      const selectedCount = option.choices?.filter((c: any) => c.isSelected).length || 0;
+  
+      option.error = null; // clear previous error
+  
+      // Count towards global total
+      totalSelected += selectedCount;
+  
+      // Per-option validation
+      if (option.required && selectedCount === 0) {
+        option.error = 'Please select at least 1 option.';
+        isValid = false;
+      }
+  
+      if (option.min_selections && selectedCount < option.min_selections) {
+        option.error = `Pick at least ${option.min_selections}`;
+        isValid = false;
+      }
+  
+      if (option.max_selections && selectedCount > option.max_selections) {
+        option.error = `Pick at most ${option.max_selections}`;
+        isValid = false;
+      }
+    });
+  
+    // Global validation
+    const globalMin = this.selected_item.options.min_selections;
+    const globalMax = this.selected_item.options.max_selections;
+  
+    this.globalError = null; // reset
+  
+    if (globalMin && totalSelected < globalMin) {
+      this.globalError = `Please select at least ${globalMin} options in total.`;
+      isValid = false;
+    }
+  
+    if (globalMax && totalSelected > globalMax) {
+      this.globalError = `You can only select up to ${globalMax} options in total.`;
+      isValid = false;
+    }
+  
+    return isValid;
+  }
+  
+  
 }

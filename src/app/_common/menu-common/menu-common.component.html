@@ -46,40 +46,40 @@
            <span class="font-bold text-xl pt-3">{{s?.name}}</span>
            <div class="flex flex-col" [ngClass]="{'mb-auto':last }">
             <div *ngFor="let i of s?.items" class="py-4 border-b border-gray-200">
-                <div class="flex flex-row">
+              <div class="flex flex-row">
                 
-                    <div (click)="viewItem(i)" class="p-2 flex-grow">
-                        <p class="font-semibold">{{i.name}} </p>
-                         <p class="text-sm line-clamp-2 mt-2">{{i.description}}</p>
-                         <p class="font-light mt-2">UGX {{i.primary_price|number}} 
-                           <!--  <button class="float-end ml-auto absolute right-1" (click)="addItem(i)">
-                            <svg width="20px" height="20px" viewBox="0 0 32 32" fill="#000000">
-                                <g> 
-                                    <g transform="translate(-464.000000, -1087.000000)" [attr.fill]="'#b6252c'">
-                                        <path d="M480,1117 C472.268,1117 466,1110.73 466,1103 C466,1095.27 472.268,1089 480,1089 C487.732,1089 494,1095.27 494,1103 C494,1110.73 487.732,1117 480,1117 L480,1117 Z M480,1087 C471.163,1087 464,1094.16 464,1103 C464,1111.84 471.163,1119 480,1119 C488.837,1119 496,1111.84 496,1103 C496,1094.16 488.837,1087 480,1087 L480,1087 Z M486,1102 L481,1102 L481,1097 C481,1096.45 480.553,1096 480,1096 C479.447,1096 479,1096.45 479,1097 L479,1102 L474,1102 C473.447,1102 473,1102.45 473,1103 C473,1103.55 473.447,1104 474,1104 L479,1104 L479,1109 C479,1109.55 479.447,1110 480,1110 C480.553,1110 481,1109.55 481,1109 L481,1104 L486,1104 C486.553,1104 487,1103.55 487,1103 C487,1102.45 486.553,1102 486,1102 L486,1102 Z"> </path> 
-                                    </g> 
-                                </g> </svg>
-                        </button> --></p>
-                        
-                    </div>
-                   
-               <div (click)="viewItem(i)" class="w-[150px] ml-auto mr-2">
-                     <app-common-image [container]="true" [imgclass]="'rounded-lg ml-auto'" [src]="i.image" [width]="'100'" [height]="'100'"></app-common-image>     
-                    </div>
+                <div (click)="viewItem(i)" class="p-2 flex-grow">
+                  <div class="flex items-center">
+                    <p class="font-semibold text-base">{{ i.name }}</p>
+                    <span *ngIf="i?.discount_details?.discount_amount" class="ml-2 bg-black text-white text-xs font-medium px-2 py-1 rounded-full">
+                      -{{ calculateDiscount(i) }}%
+                        <span class="text-xs text-gray-400 ml-2">Save UGX {{ priceSaved(i) | number }}</span>
+                    </span>
+                  </div>
+            
+                  <p class="text-sm line-clamp-2 mt-2">{{ i.description }}</p>
+            
+                  <div class="flex flex-col mt-2">
+                    <ng-container *ngIf="i?.discount_details?.discount_amount; else normalPrice">
+                      <span class="text-red-600 font-bold text-lg">UGX {{ i?.discount_details?.discount_amount | number }}</span>
+                      <div class="flex justify-between items-center">
+                        <span class="line-through text-gray-400 text-sm">UGX {{ i.primary_price | number }}</span>
+                      </div>
+                    </ng-container>
+            
+                    <ng-template #normalPrice>
+                      <span class="font-bold text-base text-d-red">UGX {{ i.primary_price | number }}</span>
+                    </ng-template>
+                  </div>
                 </div>
-           <div class="flex flex-col">
-                     
-            <button class="float-end ml-auto mt-1" (click)="viewItem(i)">
-                <svg width="20px" height="20px" viewBox="0 0 32 32" fill="#000000">
-                    <g> 
-                        <g transform="translate(-464.000000, -1087.000000)" [attr.fill]="'#b6252c'">
-                            <path d="M480,1117 C472.268,1117 466,1110.73 466,1103 C466,1095.27 472.268,1089 480,1089 C487.732,1089 494,1095.27 494,1103 C494,1110.73 487.732,1117 480,1117 L480,1117 Z M480,1087 C471.163,1087 464,1094.16 464,1103 C464,1111.84 471.163,1119 480,1119 C488.837,1119 496,1111.84 496,1103 C496,1094.16 488.837,1087 480,1087 L480,1087 Z M486,1102 L481,1102 L481,1097 C481,1096.45 480.553,1096 480,1096 C479.447,1096 479,1096.45 479,1097 L479,1102 L474,1102 C473.447,1102 473,1102.45 473,1103 C473,1103.55 473.447,1104 474,1104 L479,1104 L479,1109 C479,1109.55 479.447,1110 480,1110 C480.553,1110 481,1109.55 481,1109 L481,1104 L486,1104 C486.553,1104 487,1103.55 487,1103 C487,1102.45 486.553,1102 486,1102 L486,1102 Z"> </path> 
-                        </g> 
-                    </g> </svg>
-            </button>
-           </div> 
-     
+            
+                <div (click)="viewItem(i)" class="w-[150px] ml-auto mr-2">
+                  <app-common-image [container]="true" [imgclass]="'rounded-lg ml-auto'" [src]="i.image" [width]="'100'" [height]="'100'">
+                  </app-common-image>
+                </div>
+              </div>
             </div>
+            
     
            </div>
         </div>
@@ -151,44 +151,46 @@
                 <!-- Modal body -->
                  <div class="flex flex-col flex-grow overflow-y-auto">
                 <div class="flex flex-col flex-grow overflow-y-auto align-top" scrollSpy [spiedTags]="['DIV']" (sectionChange)="onSectionItemChange($event)">
-            <div class="mx-auto py-6">
+                  <div class="relative mx-auto py-6 w-fit">
                      <app-common-image [imgclass]="'rounded-lg'" [src]="selected_item.image" [width]="'300'" [height]="'300'"></app-common-image>   
+                     <ng-container *ngIf="selected_item?.discount_details?.discount_amount">
+                      <div class="absolute top-2 right-2">
+                        <div class="bg-black/90 text-white text-xs md:text-sm font-extrabold px-3 py-1 rounded-full backdrop-blur-sm shadow-2xl animate-pulse text-right">
+                          -{{ calculateDiscount(selected_item) }}%
+                        </div>
+                      </div>
+                    </ng-container>
                     </div>
-                 <!--    <div class='mx-auto space-x-2'>
-                                        <span class="bg-gray-100 text-black text-xs font-normal inline-flex items-center px-2.5 py-0.5 rounded border-gray-800">
-                        <svg class="w-2.5 h-2.5 me-1.5"  xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 20 20">
-                        <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z"/>
-                        </svg>
-                        Gluten Free
-                        </span>
-                        <span class="bg-gray-100 text-black text-xs font-normal inline-flex items-center px-2.5 py-0.5 rounded border-gray-800">
-                            <svg class="w-2.5 h-2.5 me-1.5"  xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 20 20">
-                            <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z"/>
-                            </svg>
-                            Nut Allergy
-                            </span>
-                    </div> -->
+
                     <div class='mx-auto space-x-2'>
                       <span *ngFor="let a of selected_item.allergens" class="bg-gray-100 text-black text-xs font-normal inline-flex items-center px-2.5 py-0.5 rounded border-gray-800">
-      <!-- <svg class="w-2.5 h-2.5 me-1.5"  xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 20 20">
-      <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z"/>
-      </svg> -->
+
       <svg class="w-2.5 h-2.5 me-1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Warning / Triangle_Warning"> <path id="Vector" d="M12 9.00006V13.0001M4.37891 15.1999C3.46947 16.775 3.01489 17.5629 3.08281 18.2092C3.14206 18.7729 3.43792 19.2851 3.89648 19.6182C4.42204 20.0001 5.3309 20.0001 7.14853 20.0001H16.8515C18.6691 20.0001 19.5778 20.0001 20.1034 19.6182C20.5619 19.2851 20.8579 18.7729 20.9172 18.2092C20.9851 17.5629 20.5307 16.775 19.6212 15.1999L14.7715 6.79986C13.8621 5.22468 13.4071 4.43722 12.8135 4.17291C12.2957 3.94236 11.704 3.94236 11.1862 4.17291C10.5928 4.43711 10.1381 5.22458 9.22946 6.79845L4.37891 15.1999ZM12.0508 16.0001V16.1001L11.9502 16.1003V16.0001H12.0508Z" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g>
       </svg>
       {{a}}
       </span>
-    <!--   <span class="bg-gray-100 text-black text-xs font-normal inline-flex items-center px-2.5 py-0.5 rounded border-gray-800">
-          <svg class="w-2.5 h-2.5 me-1.5"  xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 20 20">
-          <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z"/>
-          </svg>
-          Nut Allergy
-          </span> -->
+
   </div>
                        <div [id]="selected_item.name">
                             <p class="text-2xl font-black pt-6 px-6">{{selected_item.name}} </p>
+                            <div class="flex items-center gap-2 mt-2 px-6">
+                              <span class="text-red-600 font-extrabold text-2xl">
+                                UGX {{ selected_item.discount_details?.discount_amount || selected_item.primary_price | number }}
+                              </span>
+                            </div>
+                          <p class="px-6" *ngIf="selected_item?.discount_details?.discount_amount">
+                              <ng-container>
+                                <span class="line-through text-gray-400 text-sm">
+                                  UGX {{ selected_item.primary_price | number }}
+                                </span>
+                          
+                                <span class="text-xs text-black font-medium">
+                                  Save UGX {{ priceSaved(selected_item) | number }}
+                                </span>
+                              </ng-container></p>
                              <p class="px-6">{{selected_item.description}}</p>
-                             <p class="font-semibold mt-2 text-xl px-6">UGX {{selected_item.primary_price|number}}</p>
+                             <!-- <p class="font-semibold mt-2 text-xl px-6">UGX {{selected_item.primary_price|number}}</p> -->
         
                                        
                      <div class="px-6 pt-6" *ngIf="selected_item.has_options">                   
