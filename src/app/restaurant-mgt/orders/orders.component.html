@@ -226,7 +226,7 @@ TOTAL
           <!-- Modal body -->
           <div class="flex flex-col">
             <form *ngIf="PaymentForm" [formGroup]="PaymentForm" class="px-3" (ngSubmit)="Save()">
-              <span class="float-left"><span class="font-bold">Amount:</span> UGX {{order?.total_cost|number}}</span>
+              <span class="float-left"><span class="font-bold">Amount:</span> UGX {{order.total_cost|number}}</span>
               <div class="absolute text-left ml-auto right-6">
                 <label class="font-medium flex flex-row w-full">
                  

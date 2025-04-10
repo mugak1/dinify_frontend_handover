@@ -217,8 +217,8 @@ this.section_groups=x?.data?.records as any[]
       // Update the section availability
       this.api.postPatch('restaurant-setup/menusections/', {
         id: section.id,
-        available: String(isChecked),
-      }, 'put', '', {}, false).subscribe({
+        available: isChecked,
+      }, 'put', '', {}, false,'',true).subscribe({
         next: () => {
           this.loadSections(); // Refresh the list of sections
           this.dialog.closeModal(); // Close the modal

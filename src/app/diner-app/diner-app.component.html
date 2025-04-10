@@ -39,7 +39,7 @@
   </defs>
   </svg>
   <div class="ml-4 flex flex-col">
-   <span class="font-semibold text-black text-xl my-auto">{{auth?.userValue?.profile?.first_name}} {{auth?.userValue?.profile?.last_name}}</span>
+   <span class="font-semibold text-black text-xl my-auto">{{auth.userValue?.profile?.first_name}} {{auth.userValue?.profile?.last_name}}</span>
     <span class="text-gray-600 text-sm">{{auth.userValue?.profile?.email}}</span>
     <span class="text-gray-600">+{{auth.userValue?.profile?.phone_number}}</span>
     <span class="text-gray-600">
@@ -156,7 +156,33 @@
 
 
          <button type="button" (click)="closeModal()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center float-end" data-modal-hide="editUserModal">
-          <div  class="relative z-50 block h-[1px] w-7 bg-black bg-transparent content-[''] before:absolute before:top-[-0.35rem] before:z-50 before:block before:h-full before:w-full before:bg-black before:transition-all before:duration-200 before:ease-out before:content-[''] after:absolute after:right-0 after:bottom-[-0.35rem] after:block after:h-full after:w-full after:bg-black after:transition-all after:duration-200 after:ease-out after:content-[''] peer-checked:bg-transparent before:top-0 before:w-full before:rotate-45 before:transform after:bottom-0 after:w-full after:-rotate-45 after:transform"></div>
+          <div  class="relative z-50 block h-[1px] w-7 bg-black bg-transparent content-[''] 
+          before:absolute 
+          before:top-[-0.35rem] 
+          before:z-50 
+          before:block 
+          before:h-full 
+          before:w-full 
+          before:bg-black 
+          before:transition-all 
+          before:duration-200 
+          before:ease-out before:content-[''] 
+          
+          after:absolute after:right-0 
+          after:bottom-[-0.35rem] 
+          after:block after:h-full 
+          after:w-full 
+          after:bg-black 
+          after:transition-all 
+          after:duration-200 
+          after:ease-out 
+          after:content-[''] 
+          
+          peer-checked:bg-transparent           
+          before:rotate-45 
+          before:transform 
+          after:-rotate-45 
+          after:transform"></div>
           <span class="sr-only">Close modal</span>
       </button>
       <div class="flex w-full">

@@ -33,9 +33,7 @@
     /*transition: transform 0.2s ease;*/
   }
   
-  .card:hover {
-   /* transform: scale(1.01); /* Slight scale effect on hover */
-  }
+ 
   
   .card-header {
     margin-bottom: 12px;
