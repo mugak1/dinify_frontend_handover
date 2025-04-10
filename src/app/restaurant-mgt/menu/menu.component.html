@@ -242,13 +242,13 @@
         <div *ngIf="!is_searching" class="flex flex-row justify-between p-4 items-center mt-2">
             <div class="text-xl font-bold">{{section?.name}}</div>           
           </div>
-          <div *ngIf="!is_searching" class="flex-auto overflow-y-auto">
+          <div [ngClass]="section?.available ? 'bg-white opacity-100' : 'bg-gray-50 opacity-60 grayscale'" *ngIf="!is_searching" class="flex-auto overflow-y-auto">
             <div class="container space-y-6">
               
                 <!-- Group Cards -->
-                <div *ngFor="let g of group_menu_keys; let gi = index" class="card">
+                <div [ngClass]="grouped_groups[g]?.available ? 'bg-white opacity-100' : 'bg-gray-50 opacity-60 grayscale'" *ngFor="let g of group_menu_keys; let gi = index" class="card">
                   <!-- Card Header -->
-                  <div *ngIf="grouped_groups[g]" class="card-header flex justify-between items-center">
+                  <div *ngIf="grouped_groups[g]"  class="card-header flex justify-between items-center">
                     <span class="flex flex-row flex-shrink">
                     <h3 class="text-lg font-semibold text-gray-900">
                       {{ grouped_groups[g]?.name }}
