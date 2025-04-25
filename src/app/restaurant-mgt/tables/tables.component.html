@@ -314,7 +314,9 @@
               
                 <!-- Modal Footer -->
                 <div class="flex items-center p-6 space-x-3 rtl:space-x-reverse border-t border-gray-200 rounded-b">
-                  <button type="submit" class="text-white bg-d-red hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-40 px-5 py-2.5 text-center ml-auto">Save</button>
+                  <button [disabled]="saving" type="submit" class="text-white bg-d-red hover:bg-red-800 focus:ring-4 disabled:opacity-75 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-40 px-5 py-2.5 text-center ml-auto">
+                    {{ saving ? 'Saving...' : 'Save' }}
+                  </button>
                 </div>
               </form>
               
@@ -357,11 +359,11 @@
                 </div>
                 <!-- Modal footer -->
                 <div class="flex items-center p-6 space-x-3 rtl:space-x-reverse border-t border-gray-200 rounded-b">
-                    <button type="submit" class="text-white bg-d-red hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-40 px-5 py-2.5 text-center ml-auto">Save</button>
+                    <button [disabled]="saving" type="submit" class="text-white bg-d-red hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-40 px-5 py-2.5 text-center disabled:opacity-50 ml-auto">{{saving?'Saving...':'Save'}}</button>
                 </div>
             </form>
 
-            <form *ngIf="DiningAreaForm" [formGroup]="DiningAreaForm" (ngSubmit)="onSubmitArea()" class="relative bg-white rounded-lg shadow">
+            <form *ngIf="DiningAreaForm" [formGroup]="DiningAreaForm" (ngSubmit)="DiningAreaForm.valid?onSubmitArea():false" class="relative bg-white rounded-lg shadow">
                     <!-- Modal Header -->
                     <div class="flex items-start justify-between p-4 border-b rounded-t">
                         <h3 class="text-xl font-semibold text-gray-900">
@@ -376,7 +378,7 @@
                       </div>
                       <div class="p-4">
                         <div class="mb-4" *ngIf="ask_multiple">
-                            <label for="area_mode" class="block mb-1 text-sm font-medium text-gray-900">Do you have one area or multiple areas?</label>
+                            <label for="area_mode" class="block mb-1 text-sm font-medium text-gray-900">Do you have one area or multiple areas? <span class="text-d-red">*</span></label>
                             <select id="area_mode" formControlName="area_mode" (change)="onAreaModeChange($any($event.target).value)"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
                               <option value="" disabled>Select...</option>
@@ -386,7 +388,7 @@
                           </div>
                                         
                 <div class="mb-4" *ngIf="!isSingleArea" >
-                  <label for="name" class="block text-gray-700 text-sm font-medium">Dining Area Name</label>
+                  <label for="name" class="block text-gray-700 text-sm font-medium">Dining Area Name <span class="text-d-red">*</span></label>
                   <input type="text" id="name" formControlName="name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500" />
                   <div *ngIf="DiningAreaForm.get('name')?.invalid && DiningAreaForm.get('name')?.touched" class="text-red-500 text-sm">
                     Name is required.
@@ -401,7 +403,7 @@
                   </div>
                 </div>
              <div *ngIf="!DiningAreaForm.get('id')?.value" class="mb-4">
-                      <label for="start_table" class="block mb-1 text-sm font-medium text-gray-900">Start Table Number</label>
+                      <label for="start_table" class="block mb-1 text-sm font-medium text-gray-900">Start Table Number<span class="text-d-red">*</span></label>
                       <input type="number" formControlName="start" id="start_table" min="1"  step="1" (keydown)="preventInvalidInput($event)"
                              class="border border-gray-300 placeholder:text-xs text-gray-900 rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                              placeholder="Enter the starting table number">
@@ -415,7 +417,7 @@
                           
                     </div>
                     <div class="mb-4" *ngIf="!DiningAreaForm.get('id')?.value">
-                      <label for="end_table" class="block mb-1 text-sm font-medium text-gray-900">End Table Number</label>
+                      <label for="end_table" class="block mb-1 text-sm font-medium text-gray-900">End Table Number<span class="text-d-red">*</span></label>
                       <input type="number" formControlName="end" id="end_table" min="1" step="1" (keydown)="preventInvalidInput($event)"
                              class="border border-gray-300 placeholder:text-xs text-gray-900 rounded focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                              placeholder="Enter the ending table number">
@@ -426,8 +428,11 @@
                       </div>
                       </div>
                     </div>
-                <button type="submit" class="w-full py-2 px-4 bg-d-red text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring">
-                  Submit
+                    <div *ngIf="DiningAreaForm?.errors?.['minGreaterThanMax']" class="text-red-500 text-xs mt-1 px-2 w-full mb-2">
+                      End Table Number must be greater than Start Table Number!
+                    </div>
+                <button [disabled]="saving" type="submit" class="w-full py-2 px-4 bg-d-red disabled:opacity-75 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring">
+                  {{saving?'Saving...':'Save'}}
                 </button>
             </div>
               </form>

@@ -1,6 +1,6 @@
 import { DOCUMENT, Location } from '@angular/common';
 import { Component, Inject } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { DiningArea, DiningAreaTable, GroupedTableAreas, TableListItem } from 'src/app/_models/app.models';
@@ -28,6 +28,7 @@ export class TablesComponent {
   restaurant: any;
   enc_restaurant:any='';
 bsref='';
+saving=false;
 
 public qrCodeDownloadLink: SafeUrl = "";
 areas: string[] = ['Main Hall', 'VIP Section']; // Example: List of areas
@@ -84,10 +85,10 @@ return this.fb.group({
   restaurant:[this.restaurant],
   number:['',[Validators.required,Validators.pattern('^[1-9]\\d*$'),Validators.min(1)]],
   //room_name:[''],
-  prepayment_required:[''],
+ /* prepayment_required:[''],
   "outdoor_seating": [true],
   smoking_zone:[true],
-  available:[true],
+  available:[true],*/
 dining_area:[''],
 })
   }
@@ -126,17 +127,20 @@ dining_area:[''],
   }
  
   Save(){
-
-    this.api.postPatch('restaurant-setup/tables/',this.TableForm.value,this.TableForm.get('id')?.value?'put':'post','',{}).subscribe({
+this.saving=true;
+var payload = this.TableEditForm?.get('id')?.value? this.TableEditForm.value:this.TableForm.value;
+    this.api.postPatch('restaurant-setup/tables/',payload,this.TableEditForm?.get('id')?.value?'put':'post','',{}).subscribe({
       next: ()=>{
-        let ind = this.list?.filter(x=>x.dining_area.id==this.TableForm.get('dining_area')?.value)
+
+        let ind = this.list?.filter(x=>x.dining_area.id==(this.TableForm?this.TableForm.get('dining_area')?.value:this.TableEditForm?.get('dining_area')?.value));
         if(ind&&this.list){
           // ind[0].tables.push(this.TableForm.value)
           
            
-           this.closeModal();
-this.loadAreas(null as any,this.list?.indexOf(ind[0]));
-//this.list[ as number].isCollapsed=false;
+
+this.loadAreas(null as any,this.list?.findIndex(x=>x.dining_area.id==(this.TableEditForm?.get('id')?.value? this.TableEditForm.get('dining_area')?.value:this.TableForm?.get('dining_area')?.value)));
+this.saving=false;          
+this.closeModal();//this.list[ as number].isCollapsed=false;
           // this.list?.indexOf(ind[0])
           // console.log(this.list?.indexOf(ind[0]))
          }
@@ -148,14 +152,14 @@ this.loadAreas(null as any,this.list?.indexOf(ind[0]));
 //this.list?.indexOf(x=>x.id==this.TableForm.get('dining_area')?.value)
       },
      error:(err)=>{
-
-      alert(err)
+this.saving=false
+   //   alert(err)
      }
       //console.log(x)
     })
   }
   SaveSections(){
-
+ 
     this.api.postPatch(this.TableForm.get('id')?.value?'restaurant-setup/tables/':'restaurant-setup/section-tables/',this.TableForm.value,this.TableForm.get('id')?.value?'put':'post','',{}).subscribe({
       next: ()=>{
 this.closeModal();
@@ -163,7 +167,7 @@ this.loadTables();
       },
      error:(err)=>{
 
-      alert(err)
+   //   alert(err)
      }
       //console.log(x)
     })
@@ -216,7 +220,8 @@ this.showModal!=this.showModal; */
       }else{
         let d :any[] =x?.data as any;
       this.list=d.map(area => ({ ...area, isCollapsed: d.length==1? (false):true }));
-      if(openIndex&&this.list){
+
+      if(openIndex!==undefined){
         this.list[openIndex].isCollapsed=false;
       }
 
@@ -274,9 +279,6 @@ const countDistinct = distinctNames.size;
       if(this.list?.length==0){
 this.ask_multiple=true;
 
-
-      }else if (this.list?.length as number>1&&countDistinct>1){
-        this.ask_multiple=true;
       }else{
         this.ask_multiple=false;
       }
@@ -287,7 +289,7 @@ this.ask_multiple=true;
       id:[''],
       restaurant:[this.restaurant,Validators.required],
       name:['',Validators.required],
-      description:['',Validators.required],
+      description:[''],
       outdoor_seating:[true],
       smoking_zone:[true],
       available:[true],
@@ -296,7 +298,16 @@ this.ask_multiple=true;
       start:['',[Validators.required,Validators.pattern('^[1-9]\\d*$')]],
       end:['',[Validators.required,Validators.pattern('^[1-9]\\d*$')]]
       //tables:this.fb.array([])
+    }, {
+      validators: this.minLessThanMax('start', 'end')
     })
+  }
+  minLessThanMax(minKey: string, maxKey: string) {
+    return (group: AbstractControl) => {
+      const min = group.get(minKey)?.value;
+      const max = group.get(maxKey)?.value;
+      return (min && max && min > max) ? { minGreaterThanMax: true } : null;
+    };
   }
   editArea(area:GroupedTableAreas){
     this.DiningAreaForm=this.initArea();  
@@ -369,13 +380,16 @@ this.ask_multiple=true;
     this.diningAreas[areaIndex].tables.splice(tableIndex, 1);
   }
   onSubmitArea(){
+    this.saving=true;
     this.api.postPatch('restaurant-setup/diningareas/',this.DiningAreaForm.value,this.DiningAreaForm.get('id')?.value?'put':'post','',{}).subscribe({
       next: ()=>{
 this.closeModal();
 this.loadAreas();
+this.saving=false;
       },
      error:(err)=>{
-      alert(err)
+      this.saving=false
+    //  alert(err)
      }
       //console.log(x)
     })
@@ -390,7 +404,7 @@ DeleteArea(area:DiningArea){
       cancelButtonText:'Cancel',
       reason_required:true,
       //action_info:'This table will no longer be available for booking',
-      message:'Are you sure you want to <strong>Delete</strong> Dining Area - '+ area.name +'? <br> Please provide the reason for deleting the section',
+      message:'Are you sure you want to <strong>Delete</strong> Dining Area - '+ area.name +'? <br> Please provide the reason for deleting the section.',
     })?.subscribe((x:any)=>{
       if(x?.action=='yes'){
         this.api.Delete('restaurant-setup/diningareas/',{id:area.id,deletion_reason:x?.reason}).subscribe({
