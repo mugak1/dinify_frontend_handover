@@ -16,7 +16,7 @@
         <div class="flex-1 bg-gray-100 overflow-y-auto">
           <ul *ngIf="true" class="list-none flex-shrink">
             <!-- Parent Node: Dining Area -->
-            <li *ngFor="let area of list; let i = index" class="mb-6 bg-white rounded shadow-md">
+            <li *ngFor="let area of list; let i = index" class="mb-6 bg-white rounded shadow-md" [ngClass]="{ 'border border-gray-200': area.isCollapsed, 'bg-gray-50 opacity-60 grayscale': !area?.dining_area?.available, 'bg-white opacity-100': area?.dining_area?.available }"> 
               <div class="px-4 py-3 border-b cursor-pointer flex justify-between items-center"
                 
               >
