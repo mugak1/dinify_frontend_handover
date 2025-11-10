@@ -1,10 +1,10 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
 import { AuthenticationService } from '../_services/authentication.service';
 import { ApiService } from '../_services/api.service';
 import { RestaurantDetail } from '../_models/app.models';
 import { ConfirmDialogService } from '../_common/confirm-dialog.service';
 import { environment } from 'src/environments/environment';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-restaurant-mgt',
@@ -14,12 +14,12 @@ import { ActivatedRoute } from '@angular/router';
 export class RestaurantMgtComponent implements OnInit {
 iscollapsed=false;
 isChildComponent: boolean = false;
-
+has_tables=false;
 /**
  *
  */
 baseUrl=environment.apiUrl;
-constructor(public auth:AuthenticationService, private api:ApiService, private dialog:ConfirmDialogService, private route: ActivatedRoute) {
+constructor(public auth:AuthenticationService, private api:ApiService, private dialog:ConfirmDialogService, private route: ActivatedRoute, private router:Router,private cdr:ChangeDetectorRef) {
   // Check if the component is loaded through 
   const depth = this.route.pathFromRoot.length; // Count the 
   console.log(depth)
@@ -30,7 +30,10 @@ if(this.auth.currentRestaurantRole){
     this.auth.setCurrentRestaurant(x.data)
   })
 }
-  
+this.router.events.subscribe((event) => {
+this.router.url.includes('tables') ? this.has_tables=true : this.has_tables=false;
+this.cdr.detectChanges();
+});
 }
 ngOnInit(): void {
   this.updateShadows();

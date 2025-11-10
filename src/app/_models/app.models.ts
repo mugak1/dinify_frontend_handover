@@ -109,6 +109,11 @@ export interface MenuItem {
   options: MenuOptions
   group:{id:any,name:any},
   allergens:[]
+  is_extra:boolean
+  has_extras:boolean
+  extras:any[],
+  has_discount:boolean;
+  discount_details?:any
 }
 
 export interface MenuOptions {
@@ -261,6 +266,11 @@ export interface Options {
     totalPrice: number; // Final calculated price including options
     quantity: number; // Quantity of the item selected
     options: SelectedOption[]; // Array of selected options
+    extras: any[]; // Array of selected extras (if any)
+    isDiscounted?: boolean; // flag if discounted
+    originalBasePrice?: number;  // NEW: the pre-discount price
+    discountAmount?: number;  // NEW: discount amount in UGX
+    discountPercentage?: number;  // NEW: discount in %
   }
   
  export interface SelectedOption {
@@ -328,7 +338,33 @@ export interface AvailableItem {
   status: string
   order: string
 }
+export interface OrderDetail {
+  id: string
+  table: string
+  customer: string
+  total_cost: number
+  discounted_cost: number
+  savings: number
+  actual_cost: number
+  prepayment_required: boolean
+  payment_status: string
+  order_status: string
+  items: Item[]
+  order_number: number
+  time_created: string
+  table_details: OrderedTableDetails
+  order_remarks: any
+  count_items_served: number
+  total_paid: string
+  balance_payable: string
+  time_last_updated: string
+}
 export interface OrdersListItem{
+
+  total_paid: string
+  balance_payable: string
+  time_last_updated: string
+
   id: string
   table: string
   customer: any
@@ -340,10 +376,12 @@ export interface OrdersListItem{
   payment_status: string
   order_status: string
   items: OrderedItem[]
+  extras:any[]
   order_number: number
   time_created: string
   table_details: OrderedTableDetails
   count_items_served:number
+  count_items_considered:number
   order_remarks:string;
 }
 
@@ -356,16 +394,19 @@ export interface OrderedItem {
   discounted_price: number
   savings: number
   options: any[]
+  extras:any[]
   cost_of_options: number
   actual_cost: number
   status: string
   deleted:boolean;
   deletion_reason?:string;
+  time_last_updated: string
 }
 
 export interface OrderedItemDetail {
   id: string
   name: string
+  is_special:boolean
 }
 export interface OrderedTableDetails {
   table_number: number
@@ -721,8 +762,9 @@ export interface DiningArea {
 export interface DiningAreaTable {
   id:any;
   number: number
-  available: boolean
+  available: {available:boolean,message:string,order_id?:string}
   reserved: boolean
+  enabled: boolean
 }
 
 export interface Pagination {

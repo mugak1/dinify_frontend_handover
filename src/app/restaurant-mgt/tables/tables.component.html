@@ -39,7 +39,7 @@
                         </g>
                     </svg>
                 
-                    <label class="toggle-switch small">
+                    <label class="toggle-switch small cursor-pointer">
                       <input type="checkbox" (change)="AreaAvailabilityChange($event,area.dining_area,i);"  class="sr-only peer" [(ngModel)]="area.dining_area.available" [ngModelOptions]="{standalone:true}" >
                       <div class="switch"></div>
                     </label>
@@ -83,12 +83,21 @@
               
               <!-- Child Nodes: Tables -->
               <ul *ngIf="!area.isCollapsed" class="transition-all duration-300">
-                <li *ngFor="let l of area.tables; let j = index" 
-                    class="flex items-center bg-gray-50 hover:bg-gray-100 px-4 py-2 border-b">
+                <li *ngFor="let l of area.tables; let j = index" class="flex items-center bg-gray-50 hover:bg-gray-100 px-4 py-2 border-b"
+                [ngClass]="{ 'opacity-60 grayscale': !l.enabled, 'opacity-100': l.enabled }">
                   <!-- Table Info -->
-                  <div class="flex-1">
-                    <span class="font-medium">{{ l.number }}</span> - 
-                    Status: {{ l.available ? 'Available' : 'Occupied' }}
+                  <div class="flex-1 flex-row">
+                    <span class="font-medium">{{ l.number }}</span> - Status: 
+                    <span *ngIf="!l.available.available" class="border px-2 py-1 rounded text-gray-700 border-gray-500 bg-gray-200 text-sm">
+                      {{ l?.available?.message }}
+                    </span>
+                    <span *ngIf="l.available.available" class="border px-2 py-1 rounded text-gray-700 border-gray-500 bg-white text-sm">
+                      Available
+                    </span>
+                  
+                  
+             
+                    
                   </div>
                   <!-- Action Buttons on the Right -->
                   <div class="flex items-center space-x-2" [style.width.%]="30">
@@ -101,20 +110,36 @@
                          <qrcode (qrCodeURL)="onChangeURL($event)" [qrdata]="bsref+'/diner/h/'+l.id" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
                       </div>
                   </div>
-                  <a title="Edit"  class="relative group inline-block border border-gray-400 text-white px-1 py-1 rounded-lg hover:bg-gray-300 transition duration-300 ease-in-out transform hover:scale-105" (click)="toggleModal(l,false,area.dining_area)">
-                      <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Edit / Edit_Pencil_02"> <path id="Vector" d="M4 16.0001V20.0001L8 20.0001L18.8686 9.13146L18.8695 9.13061C19.265 8.73516 19.4628 8.53736 19.5369 8.3092C19.6021 8.10835 19.6022 7.89201 19.5369 7.69117C19.4627 7.46284 19.2646 7.26474 18.8686 6.86872L17.1288 5.12892C16.7345 4.7346 16.5369 4.53704 16.3091 4.46301C16.1082 4.39775 15.8919 4.39775 15.691 4.46301C15.463 4.53709 15.2652 4.73488 14.8704 5.12976L14.8686 5.13146L4 16.0001Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g></svg>
-                  </a>
                   
 <a  title="Download QR Code" class="relative group inline-block border border-gray-400 text-white px-1 py-1 rounded-lg hover:bg-gray-300 transition duration-300 ease-in-out transform hover:scale-105" [href]="qrCodeDownloadLink" download="qrcode">
   <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Interface / Download"> <path id="Vector" d="M6 21H18M12 3V17M12 17L17 12M12 17L7 12" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g></svg>
 </a>
-                 <a title="Order"  class="relative group inline-block border border-gray-400 text-white px-1 py-1 rounded-lg hover:bg-gray-300 transition duration-300 ease-in-out transform hover:scale-105" target="_blank" [routerLink]="['/diner/h/',l.id]">
+                  <a title="Edit"  class="relative group inline-block border border-gray-400 text-white px-1 py-1 rounded-lg hover:bg-gray-300 transition duration-300 ease-in-out transform hover:scale-105" (click)="toggleModal(l,false,area.dining_area)">
+                      <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Edit / Edit_Pencil_02"> <path id="Vector" d="M4 16.0001V20.0001L8 20.0001L18.8686 9.13146L18.8695 9.13061C19.265 8.73516 19.4628 8.53736 19.5369 8.3092C19.6021 8.10835 19.6022 7.89201 19.5369 7.69117C19.4627 7.46284 19.2646 7.26474 18.8686 6.86872L17.1288 5.12892C16.7345 4.7346 16.5369 4.53704 16.3091 4.46301C16.1082 4.39775 15.8919 4.39775 15.691 4.46301C15.463 4.53709 15.2652 4.73488 14.8704 5.12976L14.8686 5.13146L4 16.0001Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g></svg>
+                  </a>
+                 <button *ngIf="l.available.message!='Ongoing order'" [disabled]="!l.available.available" [ngClass]="{'cursor-not-allowed grayscale opacity-60':!l.available.available}"  title="Order{{!l.available.available?' - '+l.available.message:''}}"   class="relative group inline-block border border-gray-400 text-white px-1 py-1 rounded-lg hover:bg-gray-300 transition duration-300 ease-in-out transform hover:scale-105" [routerLink]="l.available.available?['d','menu']:[]" (click)="openMenu(l,i)">
                   <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Interface / External_Link"> <path id="Vector" d="M10.0002 5H8.2002C7.08009 5 6.51962 5 6.0918 5.21799C5.71547 5.40973 5.40973 5.71547 5.21799 6.0918C5 6.51962 5 7.08009 5 8.2002V15.8002C5 16.9203 5 17.4801 5.21799 17.9079C5.40973 18.2842 5.71547 18.5905 6.0918 18.7822C6.5192 19 7.07899 19 8.19691 19H15.8031C16.921 19 17.48 19 17.9074 18.7822C18.2837 18.5905 18.5905 18.2839 18.7822 17.9076C19 17.4802 19 16.921 19 15.8031V14M20 9V4M20 4H15M20 4L13 11" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g></svg>
-                 </a>
-                 <a title="Delete" (click)="DeleteTable(l,i)"  class="relative group inline-block border border-gray-400 text-white px-1 py-1 rounded-lg hover:bg-gray-100 transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer">
+                 </button>
+                 <button *ngIf="l.available.message=='Ongoing order'"   class="relative group inline-block border border-gray-400 text-white px-1 py-1 rounded-lg hover:bg-gray-300 transition duration-300 ease-in-out transform hover:scale-105" (click)="EditMenu(l)">
+                  <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Interface / External_Link"> <path id="Vector" d="M10.0002 5H8.2002C7.08009 5 6.51962 5 6.0918 5.21799C5.71547 5.40973 5.40973 5.71547 5.21799 6.0918C5 6.51962 5 7.08009 5 8.2002V15.8002C5 16.9203 5 17.4801 5.21799 17.9079C5.40973 18.2842 5.71547 18.5905 6.0918 18.7822C6.5192 19 7.07899 19 8.19691 19H15.8031C16.921 19 17.48 19 17.9074 18.7822C18.2837 18.5905 18.5905 18.2839 18.7822 17.9076C19 17.4802 19 16.921 19 15.8031V14M20 9V4M20 4H15M20 4L13 11" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g></svg>
+                 </button>
+                 <div class="border-l border-gray-300 h-6 mx-2"></div>
+
+                 <label [ngClass]="{'!cursor-not-allowed grayscale opacity-60':!l.available.available, 'cursor-pointer':l.available.available}"  title="Order{{!l.available.available?' - '+l.available.message:''}}" class="toggle-switch small">
+                  <input
+                    [(ngModel)]="l.enabled"
+                    (change)="toggleAvailability($event,l,i,j)"
+                    type="checkbox"
+                    class="sr-only">
+                  <div class="switch"></div>
+                 </label>
+                <div class="border-l border-gray-300 h-6 mx-2"></div>
+
+                 <button [disabled]="!l.available.available" [ngClass]="{'cursor-not-allowed grayscale opacity-60':!l.available.available,'cursor-pointer':l.available.available}"  title="Delete: {{!l.available.available?' - '+l.available.message:''}}" title="Delete" (click)="DeleteTable(l,i)"  class="relative group inline-block border border-gray-400 text-white px-1 py-1 rounded-lg hover:bg-gray-100 transition duration-300 ease-in-out transform hover:scale-105">
                   <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Interface / Trash_Empty"> <path id="Vector" d="M6 6V17.8C6 18.9201 6 19.4798 6.21799 19.9076C6.40973 20.2839 6.71547 20.5905 7.0918 20.7822C7.5192 21 8.07899 21 9.19691 21H14.8031C15.921 21 16.48 21 16.9074 20.7822C17.2837 20.5905 17.5905 20.2839 17.7822 19.9076C18 19.4802 18 18.921 18 17.8031V6M6 6H8M6 6H4M8 6H16M8 6C8 5.06812 8 4.60241 8.15224 4.23486C8.35523 3.74481 8.74432 3.35523 9.23438 3.15224C9.60192 3 10.0681 3 11 3H13C13.9319 3 14.3978 3 14.7654 3.15224C15.2554 3.35523 15.6447 3.74481 15.8477 4.23486C15.9999 4.6024 16 5.06812 16 6M16 6H18M18 6H20" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g></svg>
-                 </a>
+                 </button>
                   </div>
+              
                 </li>
               </ul>
           
@@ -221,7 +246,7 @@
     <div *ngIf="showModal" class="opacity-25 fixed inset-0 z-40 bg-black"></div>
     <!-- Edit user modal -->
     <div *ngIf="showModal"  tabindex="-1"   class="fixed top-0 p-4 left-0 right-0 z-50 items-center justify-center w-full overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative max-h-full mx-auto my-auto max-w-2xl">
+        <div [ngClass]="{'w-full':edit_menu,'max-w-2xl':!edit_menu}" class="relative max-h-full mx-auto my-auto">
             <!-- Modal content -->
             <div *ngIf="detailModal" class="relative bg-white rounded-lg shadow">
                 <div class="flex items-start justify-between px-4 border-b rounded-t">
@@ -245,7 +270,7 @@
                 <!-- Modal Header -->
                 <div class="flex items-start justify-between p-4 border-b rounded-t">
                   <h3 class="text-xl font-semibold text-gray-900">
-                    {{ TableForm.get('id')?.value ? 'Edit Table' : 'Add Tables' }}
+                    {{ TableForm.get('id')?.value ? 'Edit Table' : 'Add Table' }}
                   </h3>
                   <button type="button" (click)="closeModal()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center">
                     <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
@@ -436,9 +461,187 @@
                 </button>
             </div>
               </form>
-            
+              <div *ngIf="edit_menu&&order" [ngClass]="{'hidden': view_menu,'relative':edit_menu}" class="flex mx-auto h-screen">
+                <div class="flex flex-col capitalize w-full px-6 bg-white mx-auto my-auto ">
+                  <div  class="flex w-full top-1 items-start justify-between p-4 pr-0 rounded-t">
+                    <h3 class="flex flex-row w-full">
+                       <span class="font-bold">Update Order #{{order?.order_number}}</span>
+                       <span class="ml-auto mr-2 my-auto text-sm">{{isToday(order?.time_created)?'Today':(order?.time_created|date:'shortDate')}} {{order?.time_created|date:'shortTime'}}</span>
+                      </h3>
+                     <button type="button" (click)="closeModal()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" data-modal-hide="editUserModal">
+                      <svg class="w-3 h-3"  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                      </svg>
+                      <span class="sr-only">Close modal</span>
+                  </button>
+                  </div>
+                  <button type="button" class="flex flex-col w-full p-1 font-normal text-sm border m-1 bg-gray-100">
+                   <div class="flex flex-row items-center justify-between w-full">
+                    <table class="w-full py-0 text-start" *ngIf="order">
+                      <tr>
+                        <td class="w-[10%] pl-3">#{{order.order_number}}</td>
+                        <td class="w-[23.5%] pl-2"><span style="line-height: 0.5;" class="flex flex-col py-2"> <span class="text-xs mr-auto">{{order.table_details.table_room_name}}</span>Table - {{order.table_details.table_number}} </span></td>
+                        <td class="w-[17%] !capitalize">{{(order.count_items_served>=1 && order.order_status=='preparing')?order.count_items_served+ '/'+order.items.length+' Served':order.items.length+ '/'+order.items.length + ' '+order.order_status}}</td>
+                        <td class="w-[15%]"><span class="flex flex-row float-start pl-8">
+                            <span  class="my-auto">
+                              <svg height="20px" width="20px" viewBox="0 0 31.955 31.955">
+                              
+                                <g>
+                                  <g>                       
+                                    <circle [ngClass]="{'fill-yellow-300':(order.order_status=='pending'||order.order_status=='initiated'),'fill-orange-500':order.order_status=='served','fill-blue-500':order.order_status=='preparing'}" cx="15.979" cy="15.977" r="10"></circle>
+                                  </g>
+                                </g>
+                              </svg>
+                            </span> <span class="my-auto !capitalize">{{order.order_status}}</span></span> </td>
+                        <td class="w-[15%]">
+                          
+                          </td>
+                          </tr>
+                          </table>
+              <!--         <span class="flex items-center text-xl">#{{order?.order_number}}</span> 
+                    <span class="flex flex-col"> <span class="text-xs mr-auto">{{order?.table_details.table_room_name}}</span>Table#{{order?.table_details.table_number}} </span> 
+                    <span>{{order?.order_status}}</span> 
+                    <span>{{order?.time_created|date:'shortTime'}}</span> 
+                    <span class="flex flex-row">
+                      <span  class="my-auto">
+                        <svg height="20px" width="20px" viewBox="0 0 31.955 31.955">
+                        
+                          <g>
+                            <g>
+                             
+                              <circle [ngClass]="{'fill-d-red':(order?.order_status=='pending'||order?.order_status=='initiated'),'fill-orange-500':order?.order_status=='served'}" cx="15.979" cy="15.977" r="10"></circle>
+                            </g>
+                          </g>
+                        </svg>
+                      </span> <span class="my-auto">{{order?.order_status}}</span></span> -->
+                   </div>
+                       <div id="accordion-open-body-1" class="w-full" aria-labelledby="accordion-open-heading-1">
+                  <div class="pl-3 pr-1 border mt-1 border-gray-200 bg-white" *ngFor="let m of order?.items;let mi=index">
+                    <table class="w-full py-0 text-start">
+              <tr [title]="m?.deletion_reason" [ngClass]="{'line-through':m.deleted}">
+              <td class="w-[10%]">{{mi+1}}. </td>
+              <td class="w-[25%]">
+              <!--     <button (click)="ViewMenu()">
+                  <svg fill="#000000" class="my-auto" width="12px" height="12px" viewBox="0 0 24 24">
+                      <g stroke-linecap="round" stroke-linejoin="round"></g>
+                      <g>
+                          <path
+                              d="M4.07,14.927a.976.976,0,0,0-.167.25c-.011.023-.023.043-.032.067a.362.362,0,0,0-.019.04l-1.8,5.4A1,1,0,0,0,3,22a1.014,1.014,0,0,0,.316-.051l5.4-1.8c.013,0,.023-.013.036-.017s.041-.021.062-.031a.967.967,0,0,0,.259-.172c.01-.009.024-.012.033-.022l12.6-12.6a1,1,0,0,0,0-1.414l-3.6-3.6a1,1,0,0,0-1.414,0l-12.6,12.6C4.083,14.9,4.08,14.917,4.07,14.927ZM17.4,4.414,19.586,6.6,8.4,17.786,7.307,16.693,6.214,15.6ZM5.237,17.451l.656.656.656.656-1.968.656Z">
+                          </path>
+                      </g>
+                  </svg>
+              </button> -->
+                {{m.item.name}}</td>
+              <td class="w-[17%]"><span class="ml-4">{{m.quantity}}</span></td>
+              <td class="w-[13%] !capitalize">
+                <span class="flex flex-row float-start pl-8">
+                  <span  class="my-auto">
+                    <svg height="20px" width="20px" viewBox="0 0 31.955 31.955">
+                    
+                      <g>
+                        <g>                       
+                          <circle [ngClass]="{'fill-yellow-300':(m.status=='pending'||m.status=='initiated'),'fill-orange-500':m.status=='served','fill-blue-500':m.status=='preparing'}" cx="15.979" cy="15.977" r="10"></circle>
+                        </g>
+                      </g>
+                    </svg>
+                  </span> <span [ngClass]="{'line-through':m.deleted}" class="my-auto !capitalize">{{m.status}}</span></span>
+                </td>
+              <td class="w-[18%]" [ngClass]="{'!py-2':m.deleted}">
+               <span  *ngIf="m.deleted"  class="py-3 !w-full flex">
+                  <span class="sr-only">Served</span>
+                </span>
+                <button *ngIf="!m.deleted&&m.status!=='served'" type="button" class="py-3 float-end mr-2" (click)="DeleteItem(m)">
+                  <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                    <g id="SVGRepo_iconCarrier">
+                        <path
+                            d="M7.69231 8.70833H5V8.16667H9.84615M7.69231 8.70833V19H16.3077V8.70833M7.69231 8.70833H16.3077M16.3077 8.70833H19V8.16667H14.1538M9.84615 8.16667V6H14.1538V8.16667M9.84615 8.16667H14.1538"
+                            stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M10 11V17" stroke="#000000" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M12 11V17" stroke="#000000" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M14 11V17" stroke="#000000" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </g>
+                </svg>
+                </button>
+               <!--  <button *ngIf="(order?.order_status=='preparing'||order?.order_status=='served')" type="button" [disabled]="m.status=='served'" (click)="changeStatus('served',m.id)"  class="p-2 my-1 float-end text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm w-40 text-center disabled:bg-white disabled:border disabled:border-gray-300 disabled:text-gray-300" >Served</button> -->
+              </td>
+              </tr>
+                    </table>
+                 <!--   <div class="grid grid-col-4 grid-flow-col gap-2 text-start align-middle">
+              
+              <div>{{mi+1}}. {{m.item.name}}</div>
+              <div>{{m.quantity}}</div>
+              <div>{{m.status}}</div>
+              <div>
+              </div> 
+                   </div>-->
+                  </div>
+                </div>   
+                  </button>
+                  <div  class="flex w-full items-start justify-between py-4 rounded-t">
+                    <h3 class="flex flex-row">
+                      <button (click)="ViewMenu()" type="button" class="text-white bg-black hover:bg-gray-800 focus:ring-4 w-full focus:outline-none focus:ring-gray-300 rounded-lg text-sm block px-3 py-2.5 text-center">Add Item</button>    
+                      </h3>
+                      <button type="button" (click)="closeModal()" class="text-white bg-gray-400 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-sm w-1/12 px-3 py-2.5 text-center mr-3 ml-auto">CANCEL</button>
+                      <button type="button" (click)="closeModal()" class="text-white bg-d-red hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-lg text-sm w-1/6 px-3 py-2.5 text-center mr-1">SAVE CHANGES</button>
+                  </div>
+              
+              </div>
+                  </div>
+                  <div *ngIf="view_menu" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 h-screen overflow-hidden">
+                    <div class="bg-white w-full max-w-2xl mx-4 rounded-lg shadow-lg h-full flex flex-col">
+                  
+                      <!-- Header -->
+                      <div class="flex items-center justify-between p-4 border-b">
+                        <h3 class="text-base font-semibold text-gray-700">
+                          Updating Order #{{ order?.order_number }}
+                        </h3>
+                        <button type="button" (click)="CLoseMenu()" class="text-gray-400 hover:text-gray-900 hover:bg-gray-200 rounded-full p-1">
+                          <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                          </svg>
+                          <span class="sr-only">Close modal</span>
+                        </button>
+                      </div>
+                  
+                      <!-- Non-scrollable content -->
+                      <div class="flex-1 p-4">
+                        <app-menu-common 
+                          (AddItem)="SaveNewItem($event)" 
+                          [restaurant_id]="restaurant">
+                        </app-menu-common>
+                      </div>
+                  
+                    </div>
+                  </div>
         </div>
     </div>
 </div>
 
 </div>
+<div *ngIf="isOpen" 
+     class="fixed inset-0 bg-white z-50 p-4 border rounded transition-transform duration-300 transform w-1/2 h-full overflow-hidden mx-auto"
+     [ngClass]="{ 'scale-100': isOpen }">
+  
+  <button [routerLink]="auth?.currentRestaurantRole?.restaurant_id?['/rest-app/dining-tables']:['/mgt-app/restaurants/rest-app',restaurant,'dining-tables']" (click)="closeMenu()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+    ✖
+  </button>
+
+  <h2 class="text-2xl font-semibold">Table {{tableId}} - Order</h2>
+
+  <div class="mt-4">
+   <router-outlet></router-outlet>
+<!--     <ng-container *ngFor="let item of menuData">
+      <div class="flex justify-between p-3 border-b">
+        <span>{{ item?.name }}</span>
+        <button (click)="addItem(item)" class="bg-blue-500 text-white px-3 py-1 rounded">Add</button>
+      </div>
+    </ng-container> -->
+  </div>
+</div>
+
+<div class="fixed inset-0 backdrop-blur-sm bg-black/30 z-40 transition-opacity duration-300" 
+     [ngClass]="{ 'opacity-100': isOpen, 'opacity-0 pointer-events-none': !isOpen }">
+</div>
+

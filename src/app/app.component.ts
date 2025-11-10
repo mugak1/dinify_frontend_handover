@@ -2,6 +2,7 @@ import { Component, ComponentFactoryResolver, ViewChild, ViewContainerRef } from
 import { MessageService } from './_services/message.service';
 import { ConfirmDialogService } from './_common/confirm-dialog.service';
 import { ConfirmDialogComponent } from './_common/confirm-dialog/confirm-dialog.component';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 @Component({
   selector: 'app-root',

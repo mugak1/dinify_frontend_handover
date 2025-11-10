@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-order-complete',
@@ -6,5 +7,14 @@ import { Component } from '@angular/core';
   styleUrl: './order-complete.component.css'
 })
 export class OrderCompleteComponent {
-url='https://dinify-dev.web.app/diner/payment-details/701d7ee1-0cce-40f2-88ce-25324e2eac2b'
+/**
+ *
+ */
+isDinerApp=true;
+constructor(private router:Router) {
+  console.log(this.router.url)
+ this.isDinerApp=!this.router.url.includes('tables')
+}
+ 
+  
 }

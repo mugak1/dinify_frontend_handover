@@ -18,6 +18,11 @@ submitted:boolean=false;
   email:any;
   countryCode:any;
   phoneNumber:any;
+  require_otp: boolean=false;
+  isSubmittingOtp=false;
+  countdown = 30; // Countdown starts at 30 seconds
+  timer: any;
+  data=''
   constructor(private fb:FormBuilder, private api:ApiService, private router:Router, private locationAPi:LocationStrategy,private messageService:MessageService) {
 this.ForgotPasswordForm= this.fb.group({
       selectedOption: ['', Validators.required], // Require the user to select an option
@@ -67,34 +72,9 @@ this.submitted=true;
     }) */
   }
   ResetPassword() {
+this.sendOtp(this.ForgotPasswordForm.get("selectedOption")?.value=='email'?this.ForgotPasswordForm.get("email")?.value:"256"+this.replaceLeadingZero(this.ForgotPasswordForm.get("phoneNumber")?.value,'0'),this.ForgotPasswordForm.get("selectedOption")?.value,'reset_password');
 
-    this.api.postPatch("users/auth/reset-password/", {
-      phone_number: (this.ForgotPasswordForm.get("selectedOption")?.value=='email')?this.ForgotPasswordForm.get("email")?.value:"+256"+this.ForgotPasswordForm.get("phoneNumber")?.value
-    }, "post").subscribe((e:any)=>{
-      if(e?.status==200){
-        this.messageService.addMessage({severity:'info', summary:'Success', message:e.message});
-        this.ForgotPasswordForm.get("phone_number")?.setValue("");
-        setTimeout(() => {
-          this.router.navigate(["/login"])
-        }, 4500);
-       /*  setTimeout(() => {
-          this.messageService.clear();
-        }, 4500); */
-       // this.LoginResp.emit(e);
-      }
-      else{
-        this.LoginResp.emit(e);
-      }
-       // this.router.navigate(["/login"])
-     //  this.locationAPi.back();
-    }
-    , e=>{
-
-    }
-    , ()=>{
-       // this.router.navigate(["/login"])
-    }
-    )
+    
 }
 replaceLeadingZero(phoneNumber:any, replacementString:any) {
   // Check if the phone number starts with '0'
@@ -104,5 +84,101 @@ replaceLeadingZero(phoneNumber:any, replacementString:any) {
   }
   // Return the original phone number if it doesn't start with '0'
   return phoneNumber;
+}
+sendOtp(identification:any,identifier:any,purpose:any){
+  this.require_otp = false;
+  this.submitted = true;
+  this.isSubmittingOtp = false;
+  this.api.postPatch('users/auth/resend-otp/',
+    {
+      "identifier": identification, 
+      "identification": identifier,
+      "skip_auth": "yes"
+    },'post').subscribe(x=>{
+  this.startCountdown();
+    this.require_otp=true;
+    this.submitted=false; 
+    // store user details and jwt token in local storage to keep user logged in between page refreshes
+    //  localStorage.setItem('user', JSON.stringify((response.data)));
+    //  this.userSubject.next(response.data as any)
+     
+  }, 
+  (error: any) => {
+     // this.error = error;
+     this.submitted = false
+      alert(error)
+  },);
+}
+Submit(){
+  this.submitted=true;
+  this.isSubmittingOtp=true;
+  this.api.postPatch("users/auth/reset-password/", {
+    phone_number: (this.ForgotPasswordForm.get("selectedOption")?.value=='email')?this.ForgotPasswordForm.get("email")?.value:"256"+this.ForgotPasswordForm.get("phoneNumber")?.value,
+    otp:this.data
+  }, "post").subscribe((e:any)=>{
+    if(e?.status==200){
+
+      ////  add otp
+      this.messageService.addMessage({severity:'info', summary:'Success', message:e.message});
+      this.ForgotPasswordForm.get("phone_number")?.setValue("");
+      this.data=''
+      this.submitted=false;
+      this.isSubmittingOtp=false;
+      this.require_otp=false;
+      this.countdown = 30; // Reset the countdown
+      setTimeout(() => {
+        this.router.navigate(["/login"])
+      }, 1500);
+     /*  setTimeout(() => {
+        this.messageService.clear();
+      }, 4500); */
+     // this.LoginResp.emit(e);
+    }
+    else if(e?.status==400){
+      this.submitted=false;
+      this.isSubmittingOtp=false;
+      
+      this.messageService.addMessage({severity:'error', summary:'Error', message:e?.message});
+      this.ForgotPasswordForm.get("phone_number")?.setValue("");
+      this.data=''
+      //this.ForgotPasswordForm.get("otp")?.setValue("");
+      this.require_otp=false;
+      this.LoginResp.emit(e);
+    }else{
+      
+      this.LoginResp.emit(e);
+    }
+     // this.router.navigate(["/login"])
+   //  this.locationAPi.back();
+  }
+  , e=>{
+this.isSubmittingOtp=false;
+this.submitted =false;
+console.log(e)
+    this.messageService.addMessage({severity:'error', summary:'Error', message:e});
+    this.ForgotPasswordForm.get("phone_number")?.setValue("");
+    this.data=''
+    //this.ForgotPasswordForm.get("otp")?.setValue("");
+    this.require_otp=false;
+  }
+  , ()=>{
+     // this.router.navigate(["/login"])
+  }
+  )
+}
+resendOTP(){
+  this.countdown = 30; // Reset the countdown
+  this.startCountdown();
+ this.ResetPassword();
+
+}
+startCountdown(): void {
+  this.timer = setInterval(() => {
+    if (this.countdown > 0) {
+      this.countdown--;
+    } else {
+      clearInterval(this.timer);
+    }
+  }, 1000); // Decrease the countdown every second
 }
 }

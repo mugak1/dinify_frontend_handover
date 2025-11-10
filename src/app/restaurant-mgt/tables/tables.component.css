@@ -10,8 +10,8 @@
     background-color: #ddd;
     border-radius: 20px;
     position: relative;
-    cursor: pointer;
     transition: background-color 0.2s ease;
+    cursor: pointer;
   }
   
   .toggle-switch .switch:before {

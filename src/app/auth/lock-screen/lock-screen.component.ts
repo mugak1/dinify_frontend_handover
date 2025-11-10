@@ -59,9 +59,10 @@ Send() {
     this.LockScreenForm.get("old_password")?.setValue(this.oldpassword),
     this.api.UserChangePasswordOnLogin(this.LockScreenForm.value).subscribe({
         next:(value:any)=>{
+            console.log(value)
           this.unlocking = false,
         this.router.navigate(["/login"])
-this.messageService.addMessage({severity:'info', summary:'info',message:value?.message})
+this.messageService.addMessage({severity:'info', summary:'info',message:value?.body.message})
     }, error:(err:any)=>{
         this.unlocking = false,
         this.message = err
@@ -89,4 +90,6 @@ passwordsMatch(group: FormGroup): { [key: string]: boolean } | null {
     const confirmPassword = group.get('confirmPassword')?.value;
     return newPassword === confirmPassword ? null : { passwordMismatch: true };
   }
+
+
 }

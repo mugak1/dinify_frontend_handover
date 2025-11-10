@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { ApiService } from 'src/app/_services/api.service';
 
 @Component({
@@ -11,8 +12,9 @@ export class MenuItemDetailComponent {
   /**
    *
    */
-  constructor(private api:ApiService) {
-   
+  constructor(private api:ApiService,private router:Router) {
+    console.log(this.router.url)
+   this.router.url.includes('tables')
     
   }
   getTableDetails(id:any){

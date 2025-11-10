@@ -5,6 +5,9 @@ import { DndListModule } from '@ryware/ngx-drag-and-drop-lists';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { Dashboard2Component } from './dashboard/dashboard2.component';
+import { Dashboard3Component } from './dashboard/dashboard3.component';
+import { Dashboard5Component } from './dashboard/dashboard5.component';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgApexchartsModule } from 'ng-apexcharts';
@@ -30,10 +33,15 @@ import { CommonUsersComponent } from '../_common/common-users/common-users.compo
 import { SupportComponent } from './support/support.component';
 import { BillingComponent } from './settings/billing/billing.component';
 import { RestNotificationsComponent } from './rest-notifications/rest-notifications.component';
+import { SampleComponent } from '../sample/sample.component';
+import { BaseChartDirective } from 'ng2-charts';
 
 const routes: Routes = [
   {path: "", redirectTo: "dashboard", pathMatch: "full"},
   {path:'dashboard',component:DashboardComponent,title:'Dashboard'},
+  {path:'dashboard2',component:Dashboard2Component,title:'Dashboard 2 Sample'},
+  {path:'dashboard3',component:Dashboard3Component,title:'Dashboard 3 Enhanced'},
+  {path:'dashboard5',component:Dashboard5Component,title:'Dashboard 5 - 4 Column'},
   {path:'settings',component:SettingsComponent,title:'Settings',children:[
     {path: "", redirectTo: "rest-users", pathMatch: "full"},
     {path:'restaurant-profile',component:RestProfileComponent},
@@ -43,7 +51,10 @@ const routes: Routes = [
     {path:'billing/paid/:id',component:BillingComponent,title:'Billing'}
   ]},
   {path:'menu',component:MenuComponent,title:'Menu'},
-  {path:'tables',component:TablesComponent,title:'Tables'},
+  {path:'dining-tables',component:TablesComponent,title:'Tables',children:[
+    {path: "d",loadChildren: () => import('../diner-app/diner-app.module').then(m => m.DinerAppModule)},
+  ] },
+  
   {path:'reviews',component:ReviewsComponent,title:'Reviews'},
   {path:'orders',component:OrdersComponent,title:'Orders'},
   {path:'payments',component:PaymentsComponent,title:'Payments'},
@@ -51,12 +62,17 @@ const routes: Routes = [
   {path:'support',component:SupportComponent,title:'Support'},  
   {path:'reports/:type',component:ReportDetailComponent,title:'ReportDetail'},
   {path:'notifications',component:RestNotificationsComponent,title:'Notifications'},
+  {path:'sample',component:SampleComponent,title:'Sample'},
+  { path: 'rest-app-ordering', loadChildren: () => import('../diner-app/diner-app.module').then(m => m.DinerAppModule) }, // Load DinerApp for ordering
   { path: '**', redirectTo: '' }
   ];
 
 @NgModule({
   declarations: [
     DashboardComponent,
+    Dashboard2Component,
+    Dashboard3Component,
+    Dashboard5Component,
     SettingsComponent,
     MenuComponent,
     TablesComponent,
@@ -71,7 +87,8 @@ const routes: Routes = [
     SupportComponent,
     BillingComponent,
     RestNotificationsComponent,
-    PaymentsComponent
+    PaymentsComponent,
+    SampleComponent
   ],
   imports: [
     CommonModule,
@@ -83,7 +100,9 @@ const routes: Routes = [
     ColorPickerModule,
     DndListModule,
     NgxCurrencyDirective,
-    DragDropModule
+    DragDropModule,
+    NgApexchartsModule,
+    BaseChartDirective
 ],
   exports:[
     RouterModule    

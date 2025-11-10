@@ -29,6 +29,15 @@ import { DinifyMgtModule } from './dinify-mgt/dinify-mgt.module';
 import { DinerAppModule } from './diner-app/diner-app.module';
 import { DinifyCommonModule } from "./_common/dinify-common.module";
 import { LockScreenComponent } from './auth/lock-screen/lock-screen.component';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { BaseChartDirective } from 'ng2-charts';
+
+/* 
+bootstrapApplication(AppComponent, {
+  providers: [provideCharts(withDefaultRegisterables())],
+}).catch((err) => console.error(err));
+ */
 
 @NgModule({
   declarations: [
@@ -53,7 +62,8 @@ import { LockScreenComponent } from './auth/lock-screen/lock-screen.component';
     DinifyMgtModule,
     DinerAppModule,
     DinifyCommonModule,
-    FormsModule
+    FormsModule,
+    BaseChartDirective
 ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

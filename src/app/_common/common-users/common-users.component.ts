@@ -184,7 +184,7 @@ DeleteUser(user:EmployeeListUser){
     message:'Are you sure you want to <strong>Delete</strong> '+user.name +'? <br> Please provide the reason for deleting the user',
   })?.subscribe((x:any)=>{
     if(x?.action=='yes'){
-      this.api.Delete('restaurant-setup/employees/',{id:user.id,deletion_reason:x?.reason,active:'false'}).subscribe({
+      this.api.postPatch('restaurant-setup/employees/',{id:user.id,deletion_reason:x?.reason,active:'false'},'put','',{},false,'',true).subscribe({
         next: ()=>{
     this.save.emit(x)
     

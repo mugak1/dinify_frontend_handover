@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ConfirmDialogService } from 'src/app/_common/confirm-dialog.service';
-import { OrderDetail, OrderedItem, OrdersListItem } from 'src/app/_models/app.models';
+import { OrderDetail, OrderedItem, OrdersListItem, RestaurantDetail } from 'src/app/_models/app.models';
 import { ApiService } from 'src/app/_services/api.service';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { MessageService } from 'src/app/_services/message.service';
@@ -37,6 +37,8 @@ isResending = false;
 isVerifying = false;
 otpTimer = 0;
 otpCountdownInterval: any;
+viewMode: 'kanban' | 'table' = 'kanban';
+restaurant_details:RestaurantDetail|null=null;
   /**
    *
    */
@@ -44,14 +46,21 @@ otpCountdownInterval: any;
    
     if(auth.currentRestaurantRole?.restaurant_id){
       this.restaurant=auth.currentRestaurantRole?.restaurant_id;
+      this.restaurant_details=auth.currentRestaurant;
       this.current_order_status=this.order_statuses[0]
       this.loadOrders(this.restaurant)
     }else  if(this.route.parent?.snapshot.params['id']){
       this.restaurant=this.route.parent?.snapshot.params['id'];
+      this.loadRestaurantDetails(this.restaurant)
       this.current_order_status=this.order_statuses[0]
       this.loadOrders(this.restaurant)
     }
     
+  }
+  loadRestaurantDetails(restaurant_id:any){
+   this.api.get<RestaurantDetail>(null,'restaurant-setup/'+'details/',{id:restaurant_id,record:'restaurants'}).subscribe((x:any)=>{
+  this.restaurant_details=x.data
+})
   }
   SetTab(ac:number){
     this.active_tab=this.tabs[ac];
@@ -416,6 +425,60 @@ goBackToPaymentForm() {
   this.otpTimer = 0;
 }
 
+get groupedOrders() {
+  const groups: { [key: string]: any[] } = {};
+  for (const order of this.list??[]) {
+    const status = order.order_status || 'unknown';
+    if (!groups[status]) {
+      groups[status] = [];
+    }
+    groups[status].push(order);
+  }
+  return groups;
+}
+getKeys(obj: any): string[] {
+  return Object.keys(obj);
+}
+printReceipt() {
+  const printContents = document.querySelector('.dot-matrix-receipt')?.innerHTML;
+  const popupWin = window.open('', '_blank', 'width=400,height=600');
+  if (popupWin && printContents) {
+    popupWin.document.open();
+    popupWin.document.write(`
+      <html>
+        <head>
+          <title>Receipt</title>
+          <style>
+           @media print {
+  .no-print {
+    display: none !important;
+  }
+  .print\:block {
+    display: block !important;
+  }
+  .dot-matrix-receipt {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    white-space: pre-wrap;
+    width: 280px;
+    margin: 0 auto;
+    padding: 0;
+    background: white;
+    color: black;
+  }
 }
 
+          </style>
+        </head>
+        <body onload="window.print(); window.close();">
+          <div id="printable-receipt">
+            ${printContents}
+          </div>
+        </body>
+      </html>
+    `);
+    popupWin.document.close();
+  }
+}
+}
 

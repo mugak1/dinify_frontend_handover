@@ -17,12 +17,15 @@ import { CurrencyModule } from '../_common/currency-input/currency-input.module'
 import { NgxCurrencyDirective } from 'ngx-currency';
 import { ErrorPageComponent } from "./error-page/error-page.component";
 const routes: Routes = [
-
   {path: "h/:table",component:HomeComponent,title:'Home' /* redirectTo: "home", pathMatch: "prefix" */},
 /*   {path:'home/:id',component:HomeComponent,title:'Home'}, */
   {path:'menu',component:DinersMenuComponent,title:'Menu'},
   {path:'menu-item/:id',component:MenuItemDetailComponent},
-  {path:'basket',component:BasketComponent,title:'Tables'},
+  {path:'menu/basket',component:BasketComponent,title:'Basket'},
+  {path:'menu/error',component:ErrorPageComponent},
+  {path:'menu/basket/order-complete',component:OrderCompleteComponent},
+  {path:'basket',component:BasketComponent,title:'Basket'},
+  {path:'basket/order-complete',component:OrderCompleteComponent},
   {path:'orders',component:OrdersComponent},
   {path:'order-complete',component:OrderCompleteComponent},
   {path:'error',component:ErrorPageComponent},

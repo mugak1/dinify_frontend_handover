@@ -1,7 +1,7 @@
 import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { ConfirmaDialogData } from 'src/app/_models/app.models';
 import { ConfirmDialogService } from '../confirm-dialog.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-confirm-dialog',
@@ -14,14 +14,16 @@ export class ConfirmDialogComponent {
 result!:string;
 reason='';
 has_reason?:boolean;
+private modalSubscription!: Subscription;
+
 
   constructor(private confirmService:ConfirmDialogService) {
-    this.confirmService.showModal?.subscribe(x=>{
+   this.confirmService.showModal?.subscribe(x=>{
       if(x){
         this.data=this.confirmService.data;
         this.has_reason=this.confirmService.data?.has_reason
         this.data?.callback?.next(this.result);
-        this.showModal=true;
+        this.openModal();
       }else{
         this.showModal=false;
       }
@@ -48,10 +50,42 @@ this.data?.callback?.subscribe(x=>{
 ngAfterViewInit(){
 this.confirmService.DialogRef=this;
 }
+ngOnDestroy() {
+ /*  if (this.modalSubscription) {
+  //  this.modalSubscription.unsubscribe(); // Prevent memory leaks
+  } */
+}
+
 Reject(){
   console.log('reject is clicked')
   this.result='reject';
     this.confirmService.resultSub.next({action:'reject',reason:this.reason});
+}
+openModal() {
+  this.showModal = true;
+  setTimeout(() => {
+    document.getElementById('confirm-modal-content')?.focus();
+  }, 100);
+}
+
+handleKeyDown(event: KeyboardEvent) {
+  const focusableElements = document.querySelectorAll(
+    '#modal-container button, #modal-container textarea, #modal-container input'
+  );
+
+  const firstElement = focusableElements[0] as HTMLElement;
+  const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+  if (event.key === 'Tab') {
+    if (event.shiftKey && document.activeElement === firstElement) {
+      event.preventDefault();
+      lastElement.focus();
+    } else if (!event.shiftKey && document.activeElement === lastElement) {
+      event.preventDefault();
+      firstElement.focus();
+    }
+  }
+
 }
 
 }

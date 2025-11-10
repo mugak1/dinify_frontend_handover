@@ -204,6 +204,7 @@ setTimeout(() => {
 
   // Prepare selected extras for visualization
   const selectedExtras = this.selected_extras.map((extra) => ({
+    id:extra.id,
     name: extra.name,
     cost: extra.primary_price || 0,
   }));

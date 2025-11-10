@@ -24,7 +24,8 @@ button_action='';
 
 
 constructor(private readonly sessionStorage: SessionStorageService,private route:ActivatedRoute,private api:ApiService,public auth:AuthenticationService) {
-  if(this.route.children.length>0){
+  console.log("this.route.snapshot.params['table']")
+  /**/if(this.route.children.length>0){
    this.route.children.at(0)?.params.subscribe(x=>{
  if(x['table']){
   this.table_id=x['table']
@@ -44,10 +45,10 @@ this.branding_configs=restaurant.branding_configuration;
     
     let restaurant=this.sessionStorage.getItem<Restaurant>('restaurant') as any;
     this.table=this.sessionStorage.getItem<Restaurant>('Table') as any;
-    this.table_id=this.table.id
-    this.restaurant_name=restaurant.name;
-this.restaurant_id=restaurant.id;
-this.branding_configs=restaurant.branding_configuration;
+    this.table_id=this.table?.id
+    this.restaurant_name=restaurant?.name;
+this.restaurant_id=restaurant?.id;
+this.branding_configs=restaurant?.branding_configuration;
   }
 
   
