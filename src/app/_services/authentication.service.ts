@@ -11,6 +11,7 @@ import { environment } from 'src/environments/environment';
 export class AuthenticationService {
   private userSubject: BehaviorSubject<LoginResponse | null>;
   public user: Observable<LoginResponse | null>;
+  private _base = `${environment.apiUrl}/api/${environment.version}`;
 
   constructor(
       private router: Router,
@@ -32,7 +33,7 @@ export class AuthenticationService {
   }
 
   login(username: string, password: string,source?:any) {
-      return this.http.post<any>(`${environment.apiUrl}/api/${environment.version}/users/auth/login/`, source?{username,password,source}:{ username, password })
+      return this.http.post<any>(`${this._base}/users/auth/login/`, source?{username,password,source}:{ username, password })
           .pipe(map((response:ApiResponse<LoginResponse>) => {
               // store user details and jwt token in local storage to keep user logged in between page refreshes
               localStorage.setItem('user', JSON.stringify((response.data)));
@@ -56,7 +57,7 @@ return u
 
   }
   setOtp(user:any,otp:any){
-    return this.http.post<any>(`${environment.apiUrl}/api/${environment.version}/users/auth/verify-otp/`,{ user,otp })
+    return this.http.post<any>(`${this._base}/users/auth/verify-otp/`,{ user,otp })
     .pipe(map((response:ApiResponse<OTPResponse>) => {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
       //  localStorage.setItem('user', JSON.stringify((response.data)));
@@ -66,7 +67,7 @@ return u
   }
  
   resendOtp(identification:any,identifier:any){
-    return this.http.post<any>(`${environment.apiUrl}/api/${environment.version}/users/auth/resend-otp/`,{"identification": identification, "identifier": identifier,"purpose": 'login'})
+    return this.http.post<any>(`${this._base}/users/auth/resend-otp/`,{"identification": identification, "identifier": identifier,"purpose": 'login'})
     .pipe(map((response:ApiResponse<OTPResponse>) => {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
       //  localStorage.setItem('user', JSON.stringify((response.data)));

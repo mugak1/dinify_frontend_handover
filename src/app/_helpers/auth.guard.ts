@@ -14,10 +14,19 @@ export class AuthGuard {
         if (user) {
             // check if route is restricted by role
             const { roles } = route.data;
-            if (roles && !roles.some((r: string) => user.profile.roles.includes(r))) {
-                // role not authorized so redirect to home page
-                this.router.navigate(['/']);
-                return false;
+            if (roles) {
+                const hasTopLevelRole = roles.some((r: string) => user.profile.roles.includes(r));
+
+                // Also check restaurant_roles for 'restaurant_staff' access,
+                // since the backend may not duplicate that into profile.roles
+                const hasRestaurantRole = roles.includes('restaurant_staff')
+                    && user.profile.restaurant_roles
+                    && user.profile.restaurant_roles.length > 0;
+
+                if (!hasTopLevelRole && !hasRestaurantRole) {
+                    this.router.navigate(['/']);
+                    return false;
+                }
             }
 
             // authorized so return true

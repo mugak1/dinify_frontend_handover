@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ApiService } from '../../_services/api.service';
 import { MessageService } from 'src/app/_services/message.service';
 
@@ -18,9 +18,8 @@ export class LockScreenComponent implements OnInit {
   user: any;
   username: any;
   oldpassword?: string;
-  token: any;
   message: any;
-  constructor(private http:HttpClient,private fb:FormBuilder,private routes:ActivatedRoute,
+  constructor(private http:HttpClient,private fb:FormBuilder,
     private api:ApiService, private router:Router,private messageService:MessageService) {
     this.LockScreenForm= this.fb.group({
       username: [""],
@@ -31,12 +30,17 @@ export class LockScreenComponent implements OnInit {
    }
 
    ngOnInit() {
-    this.routes.params.subscribe(e=>{
-        this.user = e['fullname'] ? e['fullname'] : "name",
-        this.username = e['username'],
-        this.oldpassword = atob(e['otp']),
-        this.token = e['token']
-    })
+    // Read sensitive data from router state (not URL) to avoid exposing credentials
+    const nav = this.router.getCurrentNavigation();
+    const state = nav?.extras?.state || history.state;
+    if (state && state['username']) {
+        this.user = state['fullname'] || 'name';
+        this.username = state['username'];
+        this.oldpassword = state['oldPassword'];
+    } else {
+        // No state available (e.g. direct URL access) — redirect to login
+        this.router.navigate(['/login']);
+    }
 }
 checkMatch(e:any, i:any) {
     return new RegExp(i).test(e)

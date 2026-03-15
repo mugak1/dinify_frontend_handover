@@ -1,6 +1,8 @@
-export const environment = {
+import { Environment } from './environment.interface';
+
+export const environment: Environment = {
     production: false,
-    apiUrl:'https://api-test.dinifyapp.com/uat',//'https://api-test.dinifyapp.com', //
-    version:'v1',
-    version2:'v2'
+    apiUrl: 'https://api-test.dinifyapp.com/uat',
+    version: 'v1',
+    version2: 'v2'
 };

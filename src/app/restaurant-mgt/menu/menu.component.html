@@ -1523,7 +1523,7 @@ class="inline-flex items-center gap-x-0.5 rounded-md bg-black px-2 py-1 text-xs 
                                                                 class="px-3 border rounded-sm w-14 h-12 flex flex-col items-center justify-center shadow-md">
                                                                 {{d}}<br>
                                                                 <input (change)="SetRecurDay(i+1,$event.target)" type="checkbox"
-                                                                    [checked]="this.ItemForm?.get('discount_details')?.get('recurring_days')?.value?.includes(i+1)">
+                                                                    [checked]="ItemForm?.get('discount_details')?.get('recurring_days')?.value?.includes(i+1)">
                                                             </div>
                                                         <!-- 
                                                             <span class="px-3 border rounded-sm w-14 h-12 flex flex-col items-center justify-center border-green-500 text-green-500 shadow-md">
