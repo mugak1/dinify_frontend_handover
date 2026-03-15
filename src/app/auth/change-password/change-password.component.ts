@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -34,8 +34,13 @@ export class ChangePasswordComponent implements OnInit {
     this.routes.params.subscribe(e=>{
         this.user = e['fullname'] ? e['fullname'] : "name",
         this.username = e['username'],
-        this.oldpassword = atob(e['otp']),
         this.token = e['token']
+        try {
+          this.oldpassword = atob(e['otp']);
+        } catch {
+          this.oldpassword = '';
+          this.router.navigate(['/login']);
+        }
     }
     )
 }
