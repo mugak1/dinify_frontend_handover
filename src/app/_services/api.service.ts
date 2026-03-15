@@ -23,9 +23,17 @@ export class ApiService {
   if (isFormData) {
     payload = this.toFormData(data);  // Don't reduce or filter FormData input
   } else {
-    payload = has_false
-      ? Object.entries(data).reduce((y: { [key: string]: any }, [w, T]) => (y[w] = T, y), {})
-      : Object.entries(data).reduce((y: { [key: string]: any }, [w, T]) => ((Boolean(T) && (y[w] = T)), y), {});
+    // Preserve all values except null and undefined.
+    // The has_false flag kept all entries; without it the old code stripped
+    // legitimate falsey values (false, 0, ""). Now the default behaviour is
+    // safe for falsey values, and has_false is kept for backward compat.
+    payload = Object.entries(data).reduce(
+      (y: { [key: string]: any }, [w, T]) => {
+        if (T !== null && T !== undefined) {
+          y[w] = T;
+        }
+        return y;
+      }, {});
   }
 
   return this._http[method](
@@ -34,7 +42,10 @@ export class ApiService {
   );
   }
   Delete(url: string, data: any,version?:string) {
-    const h:any = Object.entries(data).reduce((y:{[key:string]:any}, [w, T]) => ((Boolean(T) && (y[w] = T)), y),{});
+    const h:any = Object.entries(data).reduce((y:{[key:string]:any}, [w, T]) => {
+      if (T !== null && T !== undefined) { y[w] = T; }
+      return y;
+    }, {});
     return this._http.delete(`${version?environment.apiUrl+'/api/'+version:this._base}/${url}`, {body: h}).pipe(e=>e);
   }
   postFileWithProgress(url: string, data: any) {

@@ -91,7 +91,13 @@ this.isSubmittingOtp=(this.data)?true:false;
                if(this.log_in.prompt_password_change){
               //  this.router.navigate(['/auth/change-password']);
 
-                this.router.navigate(["lock-otp-exp", this.f['username'].value, btoa(this.f['password'].value),`${this.log_in.profile.first_name} ${this.log_in.profile.last_name}`])
+                this.router.navigate(["lock-otp-exp"], {
+                  state: {
+                    username: this.f['username'].value,
+                    oldPassword: this.f['password'].value,
+                    fullname: `${this.log_in.profile.first_name} ${this.log_in.profile.last_name}`
+                  }
+                })
                }else  if (this.log_in.require_otp){
 this.require_otp=true;
 this.startCountdown();
