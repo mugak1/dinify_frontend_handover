@@ -79,7 +79,8 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.dev.ts"
                 }
-              ]
+              ],
+              "outputHashing": "all"
             },
             "uat": {
               "fileReplacements": [
@@ -95,7 +96,8 @@
                   "inlineCritical": true
                 },
                 "fonts": false
-              }
+              },
+              "outputHashing": "all"
             },
             "staging": {
               "fileReplacements": [
@@ -103,7 +105,8 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.staging.ts"
                 }
-              ]
+              ],
+              "outputHashing": "all"
             }
           },
           "defaultConfiguration": "production"
