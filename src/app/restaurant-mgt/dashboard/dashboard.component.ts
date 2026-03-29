@@ -66,7 +66,11 @@ export class DashboardComponent {
     }
   };
 
-  cards: { title: string; value: string; change: string; color: string; data: { thisWeek: number[]; lastWeek: number[] } }[] = [];
+  cards: { title: string; value: string; change: string; color: string; data: { thisWeek: number[]; lastWeek: number[] } }[] = [
+    { title: 'Revenue', value: '5.8M', change: '+12%', color: '#3B82F6', data: { thisWeek: [120, 150, 170, 140, 190, 200, 180], lastWeek: [100, 130, 140, 120, 160, 170, 150] } },
+    { title: 'Orders', value: '2,340', change: '+9%', color: '#3B82F6', data: { thisWeek: [30, 45, 50, 35, 55, 60, 48], lastWeek: [25, 38, 42, 30, 48, 52, 40] } },
+    { title: 'Diners', value: '580', change: '+15%', color: '#6366F1', data: { thisWeek: [80, 95, 110, 90, 120, 130, 115], lastWeek: [70, 80, 95, 75, 100, 110, 95] } },
+  ];
 
   getChartData(color: string, values: number[]) {
     return {
