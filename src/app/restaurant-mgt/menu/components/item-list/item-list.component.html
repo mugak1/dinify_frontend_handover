@@ -9,7 +9,7 @@
 
   <!-- Error state -->
   <ng-container *ngIf="error$ | async as error">
-    <div *ngIf="!(isLoading$ | async)"
+    <div *ngIf="(isLoading$ | async) === false"
          class="flex flex-col items-center justify-center h-64 text-center">
       <!-- AlertCircle icon -->
       <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-destructive" viewBox="0 0 24 24" fill="none"
@@ -25,7 +25,7 @@
   </ng-container>
 
   <!-- Item grid -->
-  <ng-container *ngIf="!(isLoading$ | async) && !(error$ | async)">
+  <ng-container *ngIf="(isLoading$ | async) === false && (error$ | async) === null">
     <ng-container *ngIf="sortedItems$ | async as items">
 
       <!-- Empty state -->
