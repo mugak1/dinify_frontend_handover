@@ -258,6 +258,14 @@ export class MenuService {
     this._sortMode$.next(mode);
   }
 
+  getSectionsSnapshot(): MenuSectionListItem[] {
+    return this._sections$.getValue();
+  }
+
+  updateSectionsLocally(sections: MenuSectionListItem[]): void {
+    this._sections$.next(sections);
+  }
+
   // ---------------------------------------------------------------------------
   // Helpers
   // ---------------------------------------------------------------------------
