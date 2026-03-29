@@ -28,6 +28,7 @@ import { RestNotificationsComponent } from './rest-notifications/rest-notificati
 import { BaseChartDirective, provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { SidebarComponent } from './layout/sidebar/sidebar.component';
 import { TopNavComponent } from './layout/top-nav/top-nav.component';
+import { SectionRailComponent } from './menu/components/section-rail/section-rail.component';
 import { StorageModule } from '../_services/storage/storage.module';
 
 const routes: Routes = [
@@ -92,6 +93,7 @@ const routes: Routes = [
     CommonChartModule,
     SidebarComponent,
     TopNavComponent,
+    SectionRailComponent,
     StorageModule.forRoot({ prefix: 'dinify-restaurant-mgt' }),
 ],
   exports:[

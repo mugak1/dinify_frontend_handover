@@ -1,0 +1,89 @@
+<aside class="hidden md:flex flex-col w-[280px] min-w-[280px] border-r border-border bg-card h-full overflow-hidden">
+
+  <!-- Header -->
+  <div class="p-4 flex items-center justify-between">
+    <h2 class="text-lg font-semibold text-foreground">Sections</h2>
+    <div class="flex gap-2">
+      <button app-dn-button variant="default" size="sm" (click)="newSection.emit()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+        Section
+      </button>
+      <button app-dn-button variant="outline" size="sm" (click)="newItem.emit()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+        Item
+      </button>
+    </div>
+  </div>
+
+  <!-- Reorder toggle -->
+  <div class="px-4 pb-2 flex justify-end">
+    <button app-dn-button variant="ghost" size="sm"
+            [class.bg-accent]="reorderMode"
+            (click)="toggleReorderMode()">
+      <!-- GripVertical icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+      Reorder
+    </button>
+  </div>
+
+  <!-- Section list -->
+  <div class="flex-1 overflow-y-auto px-4 pb-4">
+    <div cdkDropList
+         [cdkDropListDisabled]="!reorderMode"
+         (cdkDropListDropped)="onDrop($event)"
+         class="space-y-2">
+
+      <ng-container *ngIf="{ sections: sections$ | async, selectedId: selectedSectionId$ | async } as vm">
+        <div *ngFor="let section of vm.sections; trackBy: trackById"
+             cdkDrag
+             [cdkDragDisabled]="!reorderMode"
+             class="p-3 rounded-lg border-2 transition-all cursor-pointer"
+             [ngClass]="{
+               'border-primary shadow-sm': vm.selectedId === section.id,
+               'bg-accent': vm.selectedId === section.id,
+               'border-border': vm.selectedId !== section.id,
+               'opacity-50 grayscale': !section.available
+             }"
+             (click)="onSelect(section.id)">
+
+          <!-- Drag handle -->
+          <div *ngIf="reorderMode"
+               cdkDragHandle
+               class="flex justify-center mb-2 cursor-grab text-muted-foreground">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"/><circle cx="9" cy="5" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+          </div>
+
+          <div class="flex items-center justify-between gap-2">
+            <div class="min-w-0 flex-1">
+              <p class="font-medium truncate text-foreground" [title]="section.name">
+                {{ section.name }}
+              </p>
+              <p class="text-sm text-muted-foreground">
+                {{ section.item_count || 0 }} Item{{ section.item_count === 1 ? '' : 's' }}
+              </p>
+            </div>
+
+            <div class="flex items-center gap-1 shrink-0" (click)="$event.stopPropagation()">
+              <app-dn-switch
+                [checked]="section.available"
+                (checkedChange)="onToggleAvailability(section.id, $event)">
+              </app-dn-switch>
+              <!-- Pencil icon -->
+              <button app-dn-button variant="ghost" size="icon"
+                      class="h-8 w-8"
+                      (click)="editSection.emit(section.id)">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
+              </button>
+              <!-- Trash icon -->
+              <button app-dn-button variant="ghost" size="icon"
+                      class="h-8 w-8 text-destructive"
+                      (click)="deleteSection.emit(section.id)">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</aside>
