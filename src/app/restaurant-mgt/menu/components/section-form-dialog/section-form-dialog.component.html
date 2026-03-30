@@ -2,7 +2,7 @@
 
   <!-- Delete mode -->
   <ng-container *ngIf="deleteMode; else formMode">
-    <h2 class="text-lg font-semibold text-foreground mb-4">Delete Section</h2>
+    <h2 class="text-xl font-semibold text-foreground mb-4">Delete Section</h2>
     <p class="text-foreground">
       Are you sure you want to delete <strong>{{ section?.name }}</strong>?
     </p>
@@ -10,12 +10,12 @@
       All groups and items within this section will also be deleted.
     </p>
 
-    <label class="block text-sm font-medium text-foreground mb-1">Reason for deletion *</label>
+    <label class="block text-sm font-medium text-foreground mb-1.5">Reason for deletion *</label>
     <textarea
       [(ngModel)]="deleteReason"
       rows="3"
       placeholder="Please provide a reason..."
-      class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+      class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
     </textarea>
 
     <div class="flex justify-end gap-2 mt-4">
@@ -30,7 +30,7 @@
 
   <!-- Form mode -->
   <ng-template #formMode>
-    <h2 class="text-lg font-semibold text-foreground mb-4">
+    <h2 class="text-xl font-semibold text-foreground mb-4">
       {{ section ? 'Edit' : 'New' }} Section
     </h2>
 
@@ -38,29 +38,29 @@
 
       <!-- Name -->
       <div>
-        <label class="block text-sm font-medium text-foreground mb-1">Name *</label>
+        <label class="block text-sm font-medium text-foreground mb-1.5">Name *</label>
         <input formControlName="name"
-               class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+               class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                placeholder="Section name" />
       </div>
 
       <!-- Description -->
       <div>
-        <label class="block text-sm font-medium text-foreground mb-1">Description</label>
+        <label class="block text-sm font-medium text-foreground mb-1.5">Description</label>
         <textarea formControlName="description"
                   rows="3"
-                  class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                  class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   placeholder="Optional description">
         </textarea>
       </div>
 
       <!-- Banner Image -->
       <div>
-        <label class="block text-sm font-medium text-foreground mb-1">Banner Image</label>
+        <label class="block text-sm font-medium text-foreground mb-1.5">Banner Image</label>
         <img *ngIf="imagePreview"
              [src]="imagePreview"
              alt="Banner preview"
-             class="h-24 w-full object-cover rounded-lg mb-2" />
+             class="h-28 w-full object-cover rounded-lg mb-2" />
         <input type="file"
                accept="image/*"
                (change)="onFileSelected($event)"

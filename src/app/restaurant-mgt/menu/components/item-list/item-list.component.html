@@ -1,10 +1,10 @@
 <div class="flex-1 flex flex-col overflow-hidden">
 
   <!-- Selection toolbar -->
-  <div class="flex items-center justify-end gap-2 px-4 pt-3">
+  <div class="flex items-center justify-end gap-2 px-4 pt-4">
     <button app-dn-button
             [variant]="selectionMode ? 'default' : 'outline'"
-            size="sm"
+            size="default"
             (click)="toggleSelectionMode()">
       {{ selectionMode ? 'Done' : 'Select' }}
     </button>
@@ -16,7 +16,7 @@
     <div *ngIf="isLoading$ | async"
          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       <div *ngFor="let s of skeletons"
-           class="h-64 animate-pulse bg-muted rounded-lg"></div>
+           class="h-72 animate-pulse bg-muted rounded-lg"></div>
     </div>
 
     <!-- Error state -->
@@ -24,13 +24,13 @@
       <div *ngIf="(isLoading$ | async) === false"
            class="flex flex-col items-center justify-center h-64 text-center">
         <!-- AlertCircle icon -->
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-destructive" viewBox="0 0 24 24" fill="none"
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-destructive" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/>
           <line x1="12" x2="12.01" y1="16" y2="16"/>
         </svg>
-        <p class="text-destructive font-medium mt-2">{{ error }}</p>
-        <button app-dn-button variant="outline" size="sm" class="mt-4" (click)="onRetry()">
+        <p class="text-base text-destructive font-medium mt-2">{{ error }}</p>
+        <button app-dn-button variant="outline" size="default" class="mt-4" (click)="onRetry()">
           Retry
         </button>
       </div>
@@ -44,13 +44,13 @@
         <div *ngIf="items.length === 0"
              class="flex flex-col items-center justify-center h-64 text-center">
           <!-- Empty plate icon -->
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-muted-foreground" viewBox="0 0 24 24" fill="none"
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-muted-foreground" viewBox="0 0 24 24" fill="none"
                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/>
             <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
           </svg>
-          <p class="text-muted-foreground mt-2">No items in this section yet.</p>
-          <button app-dn-button variant="default" size="sm" class="mt-4" (click)="newItem.emit()">
+          <p class="text-base text-muted-foreground mt-2">No items in this section yet.</p>
+          <button app-dn-button variant="default" size="default" class="mt-4" (click)="newItem.emit()">
             + Add Item
           </button>
         </div>

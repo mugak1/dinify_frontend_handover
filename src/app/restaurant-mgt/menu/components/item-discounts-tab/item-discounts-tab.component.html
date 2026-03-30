@@ -19,7 +19,7 @@
              (ngModelChange)="emitChange()"
              min="0"
              placeholder="0"
-             class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+             class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
 
       <!-- Warning: amount >= price -->
       <p *ngIf="isAmountTooHigh"
@@ -35,7 +35,7 @@
         <input type="date"
                [(ngModel)]="startDate"
                (ngModelChange)="emitChange()"
-               class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+               class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
       </div>
       <div>
         <label class="block text-sm font-medium text-foreground mb-1">End Date</label>
@@ -43,7 +43,7 @@
                [(ngModel)]="endDate"
                (ngModelChange)="emitChange()"
                [min]="startDate"
-               class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+               class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
       </div>
     </div>
 
@@ -55,8 +55,8 @@
                 type="button"
                 (click)="toggleDay(day.value)"
                 [class]="isDaySelected(day.value)
-                  ? 'px-3 py-1.5 rounded-md text-sm font-medium bg-primary text-primary-foreground'
-                  : 'px-3 py-1.5 rounded-md text-sm font-medium border border-input bg-background text-muted-foreground hover:text-foreground'">
+                  ? 'px-4 py-2 rounded-md text-sm font-medium bg-primary text-primary-foreground'
+                  : 'px-4 py-2 rounded-md text-sm font-medium border border-input bg-background text-muted-foreground hover:text-foreground'">
           {{ day.label }}
         </button>
       </div>
@@ -64,7 +64,7 @@
 
     <!-- Summary -->
     <div *ngIf="discountAmount > 0 && !isAmountTooHigh"
-         class="rounded-md border border-border bg-muted/50 px-3 py-2">
+         class="rounded-md border border-border bg-muted/50 px-4 py-3">
       <p class="text-sm text-foreground">
         Price after discount:
         <span class="font-semibold">UGX {{ formatUGX(priceAfterDiscount) }}</span>

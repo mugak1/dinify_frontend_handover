@@ -13,7 +13,7 @@ export class TabTriggerComponent {
 
   get buttonClass(): string {
     return cn(
-      'px-3 py-1.5 text-sm font-medium rounded-md transition-colors',
+      'px-4 py-2 text-sm font-medium rounded-md transition-colors',
       this.active
         ? 'bg-background text-foreground shadow-[var(--shadow-sm)]'
         : 'text-muted-foreground hover:text-foreground'
@@ -29,7 +29,7 @@ export class TabTriggerComponent {
   selector: 'app-dn-tab-list',
   standalone: true,
   template: `
-    <div class="flex bg-muted rounded-lg p-1 gap-1">
+    <div class="flex bg-muted rounded-lg p-1.5 gap-1">
       <ng-content></ng-content>
     </div>
   `,
@@ -41,7 +41,7 @@ export class TabListComponent {}
   standalone: true,
   template: `
     @if (active) {
-      <div class="mt-2">
+      <div class="mt-3">
         <ng-content></ng-content>
       </div>
     }
