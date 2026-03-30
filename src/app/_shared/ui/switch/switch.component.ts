@@ -1,6 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { cn } from '../../utils/cn';
 
+export type SwitchSize = 'sm' | 'md';
+
 @Component({
   selector: 'app-dn-switch',
   standalone: true,
@@ -18,20 +20,22 @@ import { cn } from '../../utils/cn';
 })
 export class SwitchComponent {
   @Input() checked = false;
+  @Input() size: SwitchSize = 'md';
   @Output() checkedChange = new EventEmitter<boolean>();
 
   get trackClass(): string {
-    return cn(
-      'relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-      this.checked ? 'bg-primary' : 'bg-input'
-    );
+    const base = 'relative inline-flex shrink-0 cursor-pointer items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
+    const sizeClass = this.size === 'sm' ? 'h-5 w-9' : 'h-6 w-11';
+    return cn(base, sizeClass, this.checked ? 'bg-primary' : 'bg-input');
   }
 
   get thumbClass(): string {
-    return cn(
-      'pointer-events-none block h-4 w-4 rounded-full bg-white shadow-sm transition-transform',
-      this.checked ? 'translate-x-4' : 'translate-x-0.5'
-    );
+    const base = 'pointer-events-none block rounded-full bg-white shadow-sm transition-transform';
+    const sizeClass = this.size === 'sm' ? 'h-4 w-4' : 'h-5 w-5';
+    const translate = this.checked
+      ? (this.size === 'sm' ? 'translate-x-4' : 'translate-x-5')
+      : 'translate-x-0.5';
+    return cn(base, sizeClass, translate);
   }
 
   toggle(): void {

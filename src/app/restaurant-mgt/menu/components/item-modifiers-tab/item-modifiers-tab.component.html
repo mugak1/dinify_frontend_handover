@@ -2,8 +2,8 @@
 
   <!-- Legacy format warning -->
   <div *ngIf="isLegacy"
-       class="flex items-center gap-2 rounded-md border border-warning bg-warning/10 px-3 py-2 text-sm text-warning">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none"
+       class="flex items-center gap-2 rounded-md border border-warning bg-warning/10 px-4 py-3 text-sm text-warning">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none"
          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
       <path d="M12 9v4"/><path d="M12 17h.01"/>
@@ -32,12 +32,12 @@
            class="rounded-lg border border-border bg-card">
 
         <!-- Group header -->
-        <div class="flex items-center gap-2 px-3 py-2 cursor-pointer select-none"
+        <div class="flex items-center gap-2 px-4 py-3 cursor-pointer select-none"
              (click)="toggleExpand(group.id)">
           <!-- Drag handle -->
           <div cdkDragHandle class="cursor-grab text-muted-foreground hover:text-foreground"
                (click)="$event.stopPropagation()">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/>
               <circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/>
@@ -45,7 +45,7 @@
           </div>
 
           <!-- Expand chevron -->
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-muted-foreground transition-transform"
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-muted-foreground transition-transform"
                [class.rotate-90]="isExpanded(group.id)"
                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                stroke-linecap="round" stroke-linejoin="round">
@@ -69,7 +69,7 @@
           <button type="button"
                   class="text-muted-foreground hover:text-destructive p-1 rounded"
                   (click)="removeGroup(gi); $event.stopPropagation()">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
               <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
@@ -78,7 +78,7 @@
         </div>
 
         <!-- Group body (collapsible) -->
-        <div *ngIf="isExpanded(group.id)" class="border-t border-border px-3 py-3 space-y-3">
+        <div *ngIf="isExpanded(group.id)" class="border-t border-border px-4 py-4 space-y-3">
 
           <!-- Group name -->
           <div>
@@ -87,7 +87,7 @@
                    [(ngModel)]="group.name"
                    (ngModelChange)="emitChange()"
                    placeholder="e.g. Choose your size"
-                   class="w-full border border-input bg-background text-foreground rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+                   class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
           </div>
 
           <!-- Required + Selection type row -->
@@ -104,7 +104,7 @@
               <label class="block text-xs font-medium text-muted-foreground mb-1">Selection Type</label>
               <select [ngModel]="group.selectionType"
                       (ngModelChange)="onSelectionTypeChange(group, $event)"
-                      class="border border-input bg-background text-foreground rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+                      class="border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
                 <option value="single">Single choice</option>
                 <option value="multiple">Multiple choices</option>
               </select>
@@ -117,7 +117,7 @@
                        [(ngModel)]="group.minSelections"
                        (ngModelChange)="emitChange()"
                        min="0"
-                       class="w-16 border border-input bg-background text-foreground rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+                       class="w-20 border border-input bg-background text-foreground rounded-md px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
               </div>
               <div>
                 <label class="block text-xs font-medium text-muted-foreground mb-1">Max</label>
@@ -125,7 +125,7 @@
                        [(ngModel)]="group.maxSelections"
                        (ngModelChange)="emitChange()"
                        min="1"
-                       class="w-16 border border-input bg-background text-foreground rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+                       class="w-20 border border-input bg-background text-foreground rounded-md px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
               </div>
             </div>
           </div>
@@ -147,11 +147,11 @@
 
               <div *ngFor="let choice of group.choices; let ci = index"
                    cdkDrag
-                   class="flex items-center gap-2 rounded-md border border-border bg-background px-2 py-1.5">
+                   class="flex items-center gap-2 rounded-md border border-border bg-background px-3 py-2">
 
                 <!-- Choice drag handle -->
                 <div cdkDragHandle class="cursor-grab text-muted-foreground hover:text-foreground">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none"
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/>
                     <circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/>
@@ -163,7 +163,7 @@
                        [(ngModel)]="choice.name"
                        (ngModelChange)="emitChange()"
                        placeholder="Choice name"
-                       class="flex-1 min-w-0 border border-input bg-background text-foreground rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+                       class="flex-1 min-w-0 border border-input bg-background text-foreground rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
 
                 <!-- Additional cost -->
                 <div class="flex items-center gap-1">
@@ -173,7 +173,7 @@
                          (ngModelChange)="emitChange()"
                          min="0"
                          placeholder="0"
-                         class="w-20 border border-input bg-background text-foreground rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+                         class="w-24 border border-input bg-background text-foreground rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
                 </div>
 
                 <!-- Available toggle -->
@@ -186,7 +186,7 @@
                 <button type="button"
                         class="text-muted-foreground hover:text-destructive p-0.5 rounded"
                         (click)="removeChoice(group, ci)">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none"
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
                   </svg>
@@ -198,7 +198,7 @@
             <button type="button"
                     class="mt-2 text-sm text-primary hover:text-primary/80 flex items-center gap-1"
                     (click)="addChoice(group)">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none"
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M5 12h14"/><path d="M12 5v14"/>
               </svg>
@@ -211,7 +211,7 @@
 
     <!-- Add group button -->
     <button type="button" app-dn-button variant="outline" class="w-full" (click)="addGroup()">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 24 24" fill="none"
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none"
            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M5 12h14"/><path d="M12 5v14"/>
       </svg>

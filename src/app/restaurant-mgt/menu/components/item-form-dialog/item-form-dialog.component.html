@@ -1,5 +1,5 @@
-<app-dn-dialog [open]="open" (closed)="onClose()">
-  <h2 class="text-lg font-semibold text-foreground mb-4">
+<app-dn-dialog [open]="open" (closed)="onClose()" maxWidth="lg">
+  <h2 class="text-xl font-semibold text-foreground mb-4">
     {{ item ? 'Edit' : 'New' }} Item
   </h2>
 
@@ -19,15 +19,15 @@
 
           <!-- Image upload -->
           <div>
-            <label class="block text-sm font-medium text-foreground mb-1">Image</label>
-            <div class="relative h-40 bg-muted rounded-lg overflow-hidden">
+            <label class="block text-sm font-medium text-foreground mb-1.5">Image</label>
+            <div class="relative h-44 bg-muted rounded-lg overflow-hidden">
               <img *ngIf="imagePreview"
                    [src]="imagePreview"
                    alt="Item image"
                    class="w-full h-full object-cover" />
               <div *ngIf="!imagePreview"
                    class="w-full h-full flex items-center justify-center text-muted-foreground">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" viewBox="0 0 24 24" fill="none"
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12" viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/>
                   <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
@@ -42,17 +42,17 @@
 
           <!-- Name -->
           <div>
-            <label class="block text-sm font-medium text-foreground mb-1">Name *</label>
+            <label class="block text-sm font-medium text-foreground mb-1.5">Name *</label>
             <input formControlName="name"
-                   class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                   class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                    placeholder="Item name" />
           </div>
 
           <!-- Section dropdown -->
           <div>
-            <label class="block text-sm font-medium text-foreground mb-1">Section *</label>
+            <label class="block text-sm font-medium text-foreground mb-1.5">Section *</label>
             <select formControlName="section"
-                    class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+                    class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
               <option value="" disabled>Select a section</option>
               <option *ngFor="let s of sections$ | async" [value]="s.id">{{ s.name }}</option>
             </select>
@@ -60,21 +60,21 @@
 
           <!-- Description -->
           <div>
-            <label class="block text-sm font-medium text-foreground mb-1">Description</label>
+            <label class="block text-sm font-medium text-foreground mb-1.5">Description</label>
             <textarea formControlName="description"
                       rows="3"
-                      class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                      class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                       placeholder="Optional description">
             </textarea>
           </div>
 
           <!-- Price -->
           <div>
-            <label class="block text-sm font-medium text-foreground mb-1">Price (UGX) *</label>
+            <label class="block text-sm font-medium text-foreground mb-1.5">Price (UGX) *</label>
             <input type="number"
                    formControlName="primary_price"
                    min="1"
-                   class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                   class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                    placeholder="0" />
           </div>
 
@@ -89,7 +89,7 @@
 
           <!-- Allergens / Tags -->
           <div>
-            <label class="block text-sm font-medium text-foreground mb-1">Tags / Allergens</label>
+            <label class="block text-sm font-medium text-foreground mb-1.5">Tags / Allergens</label>
             <div *ngIf="form.get('allergens')?.value?.length" class="flex flex-wrap gap-1 mb-2">
               <app-dn-badge *ngFor="let tag of form.get('allergens')?.value; let i = index"
                             variant="secondary"
@@ -100,7 +100,7 @@
             </div>
             <input #tagInput
                    placeholder="Add tag and press Enter"
-                   class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                   class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                    (keydown.enter)="onAllergenAdd(tagInput.value); tagInput.value = ''; $event.preventDefault()" />
           </div>
 
@@ -145,7 +145,7 @@
     </app-dn-tabs>
 
     <!-- Actions (always visible) -->
-    <div class="flex justify-end gap-2 pt-4">
+    <div class="flex justify-end gap-3 pt-5">
       <button type="button" app-dn-button variant="outline" (click)="onClose()">Cancel</button>
       <button type="submit" app-dn-button variant="default" [disabled]="form.invalid">
         {{ item ? 'Update' : 'Create' }}

@@ -33,7 +33,7 @@
       <!-- Mobile section selector (visible below md) -->
       <div class="md:hidden flex-1">
         <select (change)="onMobileSectionChange($any($event).target.value)"
-                class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm">
+                class="w-full border border-input bg-background text-foreground rounded-md px-3 py-2.5 text-sm">
           <option *ngFor="let s of sections$ | async"
                   [value]="s.id"
                   [selected]="(selectedSectionId$ | async) === s.id">
@@ -46,7 +46,7 @@
       <ng-container *ngIf="sections$ | async as allSections">
         <ng-container *ngIf="selectedSectionId$ | async as selId">
           <h2 *ngFor="let sec of allSections"
-              class="hidden md:block text-lg font-semibold text-foreground">
+              class="hidden md:block text-xl font-semibold text-foreground">
             <span *ngIf="sec.id === selId">{{ sec.name }}</span>
           </h2>
         </ng-container>
@@ -56,7 +56,7 @@
         <!-- Sort dropdown -->
         <select [ngModel]="sortMode"
                 (ngModelChange)="onSortModeChange($event)"
-                class="border border-input bg-background text-foreground rounded-md px-2 py-1.5 text-sm">
+                class="border border-input bg-background text-foreground rounded-md px-3 py-2 text-sm">
           <option value="manual">Manual</option>
           <option value="a-z">A–Z</option>
           <option value="price-low">Price ↑</option>
@@ -65,9 +65,9 @@
 
         <!-- Search button -->
         <button (click)="searchOpen = true"
-                class="inline-flex items-center gap-1 border border-input rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:bg-accent transition-colors"
+                class="inline-flex items-center gap-1 border border-input rounded-md px-4 py-2 text-sm text-muted-foreground hover:bg-accent transition-colors"
                 title="Search (Ctrl+K)">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
