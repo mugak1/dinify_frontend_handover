@@ -61,11 +61,11 @@ interface StatusSegment {
                     : 'text-destructive bg-destructive/10'"
                 >
                   @if (percentageChange >= 0) {
-                    <svg class="w-3 h-3 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg aria-hidden="true" class="w-3 h-3 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>
                     </svg>
                   } @else {
-                    <svg class="w-3 h-3 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg aria-hidden="true" class="w-3 h-3 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/>
                     </svg>
                   }
@@ -115,6 +115,8 @@ interface StatusSegment {
             <h3 class="text-sm sm:text-base font-bold text-foreground mb-2">Orders vs Time</h3>
             <div class="h-32 sm:h-40">
               <canvas
+                aria-label="Orders over time chart"
+                role="img"
                 baseChart
                 [type]="'line'"
                 [data]="chartData"

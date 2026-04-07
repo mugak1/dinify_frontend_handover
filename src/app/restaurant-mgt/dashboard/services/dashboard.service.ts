@@ -18,6 +18,9 @@ export class DashboardService {
   /** Whether the dashboard route is currently active (controls TopNav pills visibility) */
   isDashboardActive$ = new BehaviorSubject<boolean>(false);
 
+  /** Timestamp of last successful data fetch (TopNav uses this to display "updated Xs ago") */
+  lastFetchTimestamp$ = new BehaviorSubject<number>(Date.now());
+
   constructor(private api: ApiService) {}
 
   getDashboardData(

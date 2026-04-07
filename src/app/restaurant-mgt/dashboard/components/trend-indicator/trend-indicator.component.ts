@@ -13,13 +13,13 @@ import { Component, Input } from '@angular/core';
       >
         @if (isPositive) {
           <!-- TrendingUp arrow -->
-          <svg class="w-2 h-2 sm:w-3 sm:h-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg aria-hidden="true" class="w-2 h-2 sm:w-3 sm:h-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
             <polyline points="16 7 22 7 22 13"/>
           </svg>
         } @else {
           <!-- TrendingDown arrow -->
-          <svg class="w-2 h-2 sm:w-3 sm:h-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg aria-hidden="true" class="w-2 h-2 sm:w-3 sm:h-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/>
             <polyline points="16 17 22 17 22 11"/>
           </svg>

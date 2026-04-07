@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject, combineLatest, of } from 'rxjs';
-import { switchMap, startWith, catchError, tap, takeUntil } from 'rxjs/operators';
+import { Subject, combineLatest, of, timer } from 'rxjs';
+import { switchMap, startWith, catchError, tap, takeUntil, map } from 'rxjs/operators';
 import { DashboardService } from './services/dashboard.service';
 import { AuthenticationService } from '../../_services/authentication.service';
 import { DashboardV2Response, DateRange, ReviewsSummaryResponse } from './models/dashboard.models';
@@ -32,9 +32,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const restaurantId = this.auth.currentRestaurantRole?.restaurant_id;
     if (!restaurantId) return;
 
-    // Dashboard data: reacts to dateRange changes + manual refresh
+    // Dashboard data: reacts to dateRange, autoRefresh toggle, and manual refresh
     combineLatest([
       this.dashboardService.dateRange$,
+      this.dashboardService.autoRefresh$,
       this.dashboardService.refresh$.pipe(startWith(undefined)),
     ])
       .pipe(
@@ -43,7 +44,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.loading = true;
           this.error = null;
         }),
-        switchMap(([range]) => {
+        switchMap(([range, auto]) => {
+          const tick$ = auto ? timer(0, 30_000) : of(0);
+          return tick$.pipe(map(() => range));
+        }),
+        switchMap((range) => {
           const { from, to } = this.computeDateRange(range);
           return this.dashboardService
             .getDashboardData(restaurantId, from, to, range)
@@ -57,14 +62,29 @@ export class DashboardComponent implements OnInit, OnDestroy {
         } else {
           this.error = res.error?.message || 'Failed to load dashboard data';
         }
+        this.dashboardService.lastFetchTimestamp$.next(Date.now());
       });
 
-    // Reviews data
-    this.dashboardService
-      .getReviewsSummary(restaurantId)
+    // Reviews data: reacts to autoRefresh toggle and manual refresh
+    combineLatest([
+      this.dashboardService.autoRefresh$,
+      this.dashboardService.refresh$.pipe(startWith(undefined)),
+    ])
       .pipe(
         takeUntil(this.destroy$),
-        catchError((err) => of({ data: null, error: err })),
+        tap(() => {
+          this.reviewsLoading = true;
+          this.reviewsError = null;
+        }),
+        switchMap(([auto]) => {
+          const tick$ = auto ? timer(0, 30_000) : of(0);
+          return tick$;
+        }),
+        switchMap(() =>
+          this.dashboardService
+            .getReviewsSummary(restaurantId)
+            .pipe(catchError((err) => of({ data: null, error: err }))),
+        ),
       )
       .subscribe((res: any) => {
         this.reviewsLoading = false;
@@ -87,21 +107,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   retryReviews(): void {
-    const restaurantId = this.auth.currentRestaurantRole?.restaurant_id;
-    if (!restaurantId) return;
-    this.reviewsLoading = true;
-    this.reviewsError = null;
-    this.dashboardService
-      .getReviewsSummary(restaurantId)
-      .pipe(catchError((err) => of({ data: null, error: err })))
-      .subscribe((res: any) => {
-        this.reviewsLoading = false;
-        if (res.data) {
-          this.reviewsData = res.data as unknown as ReviewsSummaryResponse;
-        } else {
-          this.reviewsError = res.error?.message || 'Failed to load reviews';
-        }
-      });
+    this.dashboardService.refresh$.next();
   }
 
   private computeDateRange(range: DateRange): { from: string; to: string } {

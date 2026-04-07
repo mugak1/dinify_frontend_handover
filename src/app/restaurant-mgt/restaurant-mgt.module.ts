@@ -16,6 +16,7 @@ import { PopularItemsCardComponent } from './dashboard/components/popular-items-
 import { TotalOrdersCardComponent } from './dashboard/components/total-orders-card/total-orders-card.component';
 import { TablesCardComponent } from './dashboard/components/tables-card/tables-card.component';
 import { KdsAttentionCardComponent } from './dashboard/components/kds-attention-card/kds-attention-card.component';
+import { ReviewsCardComponent } from './dashboard/components/reviews-card/reviews-card.component';
 import { SettingsComponent } from './settings/settings.component';
 import { MenuComponent } from './menu/menu.component';
 import { DinifyCommonModule } from '../_common/dinify-common.module';
@@ -120,6 +121,7 @@ const routes: Routes = [
     TotalOrdersCardComponent,
     TablesCardComponent,
     KdsAttentionCardComponent,
+    ReviewsCardComponent,
     CommonChartModule,
     SidebarComponent,
     TopNavComponent,
