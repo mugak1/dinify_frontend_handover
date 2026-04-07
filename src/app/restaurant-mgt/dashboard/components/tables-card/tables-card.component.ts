@@ -52,7 +52,7 @@ import { formatCompact } from '../../utils/format.utils';
             >
               <div class="flex items-center gap-1.5 mb-1">
                 <!-- Users icon -->
-                <svg [class]="'w-3.5 h-3.5 shrink-0 ' + occupancyIconColor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg aria-hidden="true" [class]="'w-3.5 h-3.5 shrink-0 ' + occupancyIconColor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
                   <circle cx="9" cy="7" r="4"/>
                   <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
@@ -86,7 +86,7 @@ import { formatCompact } from '../../utils/format.utils';
             <div class="p-3 sm:p-4 bg-gradient-to-br from-muted to-muted/50 rounded-lg border overflow-hidden flex flex-col">
               <div class="flex items-center gap-1.5 mb-1">
                 <!-- Timer icon -->
-                <svg class="w-3.5 h-3.5 text-chart-1 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg aria-hidden="true" class="w-3.5 h-3.5 text-chart-1 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="10"/>
                   <polyline points="12 6 12 12 16 14"/>
                 </svg>
@@ -110,7 +110,7 @@ import { formatCompact } from '../../utils/format.utils';
             <div class="p-3 sm:p-4 bg-gradient-to-br from-muted to-muted/50 rounded-lg border overflow-hidden flex flex-col">
               <div class="flex items-center gap-1.5 mb-1">
                 <!-- RotateCw icon -->
-                <svg class="w-3.5 h-3.5 text-chart-2 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg aria-hidden="true" class="w-3.5 h-3.5 text-chart-2 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/>
                   <path d="M21 3v5h-5"/>
                 </svg>
@@ -162,7 +162,7 @@ import { formatCompact } from '../../utils/format.utils';
           <div class="pt-3 sm:pt-4 mt-3 sm:mt-4 border-t">
             <p class="text-[10px] sm:text-xs text-muted-foreground text-center flex items-center justify-center gap-1.5">
               <!-- Activity icon -->
-              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg aria-hidden="true" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
               </svg>
               Live table data · updates every 30s

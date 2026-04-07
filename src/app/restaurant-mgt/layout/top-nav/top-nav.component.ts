@@ -1,6 +1,8 @@
 import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { AuthenticationService } from '../../../_services/authentication.service';
 import { environment } from 'src/environments/environment';
 import { DashboardService } from '../../dashboard/services/dashboard.service';
@@ -35,6 +37,7 @@ export class TopNavComponent implements OnInit, OnDestroy {
   secondsAgo = 0;
   private lastUpdate = Date.now();
   private timerInterval?: ReturnType<typeof setInterval>;
+  private destroy$ = new Subject<void>();
 
   constructor(
     public auth: AuthenticationService,
@@ -47,10 +50,19 @@ export class TopNavComponent implements OnInit, OnDestroy {
       this.secondsAgo = Math.floor((Date.now() - this.lastUpdate) / 1000);
       this.updateTime();
     }, 1000);
+
+    // Sync timer with dashboard data fetches
+    this.dashboardService.lastFetchTimestamp$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.resetUpdateTimer();
+      });
   }
 
   ngOnDestroy(): void {
     if (this.timerInterval) clearInterval(this.timerInterval);
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onDateRangeChange(range: DateRange): void {

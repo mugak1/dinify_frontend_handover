@@ -47,7 +47,7 @@ import { formatCurrency, formatChartTick } from '../../utils/format.utils';
                   class="text-xs sm:text-sm text-primary hover:underline flex items-center gap-1 sm:hidden whitespace-nowrap"
                 >
                   Sales
-                  <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg aria-hidden="true" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
                   </svg>
                 </a>
@@ -66,11 +66,11 @@ import { formatCurrency, formatChartTick } from '../../utils/format.utils';
                   [class]="percentageChange >= 0 ? 'text-success' : 'text-destructive'"
                 >
                   @if (percentageChange >= 0) {
-                    <svg class="w-3 h-3 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg aria-hidden="true" class="w-3 h-3 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>
                     </svg>
                   } @else {
-                    <svg class="w-3 h-3 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg aria-hidden="true" class="w-3 h-3 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/>
                     </svg>
                   }
@@ -83,7 +83,7 @@ import { formatCurrency, formatChartTick } from '../../utils/format.utils';
               class="hidden sm:flex text-sm text-primary hover:underline items-center gap-1 whitespace-nowrap shrink-0"
             >
               See Sales report
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
               </svg>
             </a>
@@ -104,6 +104,8 @@ import { formatCurrency, formatChartTick } from '../../utils/format.utils';
           <!-- Chart -->
           <div class="h-48 sm:h-64">
             <canvas
+              aria-label="Revenue over time chart"
+              role="img"
               baseChart
               [type]="'line'"
               [data]="chartData"

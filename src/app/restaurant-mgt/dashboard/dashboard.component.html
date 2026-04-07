@@ -48,5 +48,10 @@
   </div>
 
   <!-- Row 4: Reviews (full width) -->
-  <app-card-skeleton variant="wide"></app-card-skeleton>
+  <app-reviews-card
+    [reviewsData]="reviewsData"
+    [loading]="reviewsLoading"
+    [error]="reviewsError"
+    (retry)="retryReviews()"
+  ></app-reviews-card>
 </div>
