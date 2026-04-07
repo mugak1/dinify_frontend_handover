@@ -1,7 +1,7 @@
-<div class="bg-white min-h-screen flex flex-col items-center justify-center">
-                    <form [formGroup]="loginForm" (ngSubmit)="require_otp?(inputPTO?.valid?this.SubmitOTP():false) :onSubmit()" class="flex flex-col w-full max-w-md pb-6 text-center">
-                        <img src="assets/images/dinify-logo-full.svg" alt="Dinify" class="h-12 mb-8 mx-auto" />
-                          <div *ngIf="showLoginForm && !require_otp && !showRestaurantSelector" class="relative bg-white px-6 pt-6 pb-9 shadow-xl mx-auto w-full max-w-[28rem] lg:!max-w-lg rounded-2xl space-y-5">
+<div class="bg-black min-h-screen flex flex-col items-center justify-center px-4">
+                    <form [formGroup]="loginForm" (ngSubmit)="require_otp?(inputPTO?.valid?this.SubmitOTP():false) :onSubmit()" class="flex flex-col w-full max-w-md text-center">
+                          <div *ngIf="showLoginForm && !require_otp && !showRestaurantSelector" class="relative bg-white px-6 pt-8 pb-9 shadow-xl mx-auto w-full max-w-[28rem] lg:!max-w-lg rounded-lg space-y-5">
+                            <img src="assets/images/dinify-logo-full.svg" alt="Dinify" class="h-10 mx-auto mb-2" />
                             <div class="flex flex-col items-center justify-center text-center space-y-2">
                                 <div class="font-semibold text-3xl">
                                   <p>Sign In</p>
@@ -61,7 +61,8 @@
                           Sign In
                         </button>
                         </div>                    
-                        <div *ngIf="require_otp" class="relative bg-white px-6 pt-10 pb-9 shadow-xl mx-auto w-full max-w-[28rem] lg:max-w-lg rounded-2xl">
+                        <div *ngIf="require_otp" class="relative bg-white px-6 pt-8 pb-9 shadow-xl mx-auto w-full max-w-[28rem] lg:max-w-lg rounded-lg">
+                            <img src="assets/images/dinify-logo-full.svg" alt="Dinify" class="h-10 mx-auto mb-2" />
                         <div class="mx-auto flex w-full max-w-md flex-col space-y-16">
                           <div class="flex flex-col items-center justify-center text-center space-y-2">
                             <div class="font-semibold text-3xl">
@@ -111,7 +112,8 @@
   </svg>
 </div>
 <div *ngIf="showRestaurantSelector"
-     class="relative bg-white px-6 pt-10 pb-9 shadow-xl mx-auto w-full max-w-[28rem] lg:max-w-lg rounded-2xl">
+     class="relative bg-white px-6 pt-8 pb-9 shadow-xl mx-auto w-full max-w-[28rem] lg:max-w-lg rounded-lg">
+  <img src="assets/images/dinify-logo-full.svg" alt="Dinify" class="h-10 mx-auto mb-2" />
   <div class="mx-auto flex w-full max-w-md flex-col space-y-8">
     <div class="flex flex-col items-center justify-center text-center space-y-2">
       <div class="font-semibold text-3xl">
