@@ -155,7 +155,7 @@ type Sentiment = 'positive' | 'neutral' | 'negative';
           <!-- Section 4: Warning Banner -->
           @if (lowRatingPct > 5) {
             <div class="mt-3 sm:mt-4 p-2 sm:p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-center">
-              <span class="text-destructive font-bold text-sm sm:text-base">{{ lowRatingPct }}%</span>
+              <span class="text-destructive font-bold text-sm sm:text-base">{{ lowRatingPct.toFixed(1) }}%</span>
               <span class="text-xs sm:text-sm text-muted-foreground ml-1">
                 of reviews are 1-2 stars this month
               </span>
