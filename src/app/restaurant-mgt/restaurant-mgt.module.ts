@@ -12,6 +12,8 @@ import { CardSkeletonComponent } from './dashboard/components/card-skeleton/card
 import { CardErrorComponent } from './dashboard/components/card-error/card-error.component';
 import { RevenueCardComponent } from './dashboard/components/revenue-card/revenue-card.component';
 import { PaymentMethodsCardComponent } from './dashboard/components/payment-methods-card/payment-methods-card.component';
+import { PopularItemsCardComponent } from './dashboard/components/popular-items-card/popular-items-card.component';
+import { TotalOrdersCardComponent } from './dashboard/components/total-orders-card/total-orders-card.component';
 import { SettingsComponent } from './settings/settings.component';
 import { MenuComponent } from './menu/menu.component';
 import { DinifyCommonModule } from '../_common/dinify-common.module';
@@ -112,6 +114,8 @@ const routes: Routes = [
     CardErrorComponent,
     RevenueCardComponent,
     PaymentMethodsCardComponent,
+    PopularItemsCardComponent,
+    TotalOrdersCardComponent,
     CommonChartModule,
     SidebarComponent,
     TopNavComponent,
