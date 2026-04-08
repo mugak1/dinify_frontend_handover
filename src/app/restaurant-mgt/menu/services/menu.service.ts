@@ -76,8 +76,12 @@ export class MenuService {
     this.api.get<MenuSectionListItem>(null, 'restaurant-setup/menusections/', { restaurant: restaurantId })
       .subscribe({
         next: (res: ApiResponse<MenuSectionListItem>) => {
-          this._sections$.next(res?.data?.records ?? []);
+          const sections = res?.data?.records ?? [];
+          this._sections$.next(sections);
           this._isLoading$.next(false);
+          if (sections.length > 0 && !this._selectedSectionId$.getValue()) {
+            this.selectSection(sections[0].id);
+          }
         },
         error: (err) => {
           this._error$.next(err?.message ?? 'Failed to load sections');
