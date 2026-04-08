@@ -79,8 +79,11 @@ export class MenuService {
           const sections = res?.data?.records ?? [];
           this._sections$.next(sections);
           this._isLoading$.next(false);
-          if (sections.length > 0 && !this._selectedSectionId$.getValue()) {
-            this.selectSection(sections[0].id);
+          if (sections.length > 0) {
+            const currentId = this._selectedSectionId$.getValue();
+            if (!currentId || !sections.find(s => s.id === currentId)) {
+              this.selectSection(sections[0].id);
+            }
           }
         },
         error: (err) => {
