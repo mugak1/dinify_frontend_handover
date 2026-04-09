@@ -144,8 +144,9 @@ export class MenuComponent {
     this.editingSection = undefined;
   }
 
-  onSectionDeleted(event: { id: string; reason: string }): void {
-    this.menuService.deleteSection(event.id, event.reason).subscribe(() => {
+  onSectionDeleted(): void {
+    if (!this.editingSection) return;
+    this.menuService.deleteSection(this.editingSection.id, 'Deleted by user').subscribe(() => {
       this.closeSectionDelete();
       this.menuService.loadSections(this.restaurant);
     });
