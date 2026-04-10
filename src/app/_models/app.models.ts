@@ -171,6 +171,7 @@ export interface ItemModifiers {
 }
 
 export interface ItemDiscountDetails {
+  discount_type?: 'percentage' | 'fixed';
   discount_amount: number;
   start_date: string;
   end_date: string;

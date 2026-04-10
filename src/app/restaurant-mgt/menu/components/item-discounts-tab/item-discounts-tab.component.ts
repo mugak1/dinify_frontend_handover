@@ -28,6 +28,7 @@ export class ItemDiscountsTabComponent implements OnChanges {
   }>();
 
   enabled = false;
+  discountType: 'percentage' | 'fixed' = 'fixed';
   discountAmount = 0;
   startDate = '';
   endDate = '';
@@ -47,11 +48,13 @@ export class ItemDiscountsTabComponent implements OnChanges {
     if (changes['hasDiscount'] || changes['discountDetails']) {
       this.enabled = this.hasDiscount;
       if (this.discountDetails) {
+        this.discountType = this.discountDetails.discount_type ?? 'fixed';
         this.discountAmount = this.discountDetails.discount_amount ?? 0;
         this.startDate = this.discountDetails.start_date ?? '';
         this.endDate = this.discountDetails.end_date ?? '';
         this.recurringDays = [...(this.discountDetails.recurring_days ?? [])];
       } else {
+        this.discountType = 'fixed';
         this.discountAmount = 0;
         this.startDate = '';
         this.endDate = '';
@@ -62,6 +65,12 @@ export class ItemDiscountsTabComponent implements OnChanges {
 
   onToggleDiscount(value: boolean): void {
     this.enabled = value;
+    this.emitChange();
+  }
+
+  onDiscountTypeChange(type: 'percentage' | 'fixed'): void {
+    this.discountType = type;
+    this.discountAmount = 0;
     this.emitChange();
   }
 
@@ -81,11 +90,29 @@ export class ItemDiscountsTabComponent implements OnChanges {
   }
 
   get priceAfterDiscount(): number {
+    if (this.discountType === 'percentage') {
+      return Math.round(this.primaryPrice * (1 - this.discountAmount / 100));
+    }
     return Math.max(0, this.primaryPrice - this.discountAmount);
   }
 
+  get savings(): number {
+    return this.primaryPrice - this.priceAfterDiscount;
+  }
+
   get isAmountTooHigh(): boolean {
-    return this.discountAmount >= this.primaryPrice && this.primaryPrice > 0;
+    if (this.primaryPrice <= 0) return false;
+    if (this.discountType === 'percentage') {
+      return this.discountAmount < 1 || this.discountAmount > 99;
+    }
+    return this.discountAmount >= this.primaryPrice;
+  }
+
+  get validationMessage(): string {
+    if (this.discountType === 'percentage') {
+      return 'Percentage must be between 1 and 99';
+    }
+    return 'Discount amount must be less than the item price (UGX ' + this.formatUGX(this.primaryPrice) + ')';
   }
 
   formatUGX(amount: number): string {
@@ -96,6 +123,7 @@ export class ItemDiscountsTabComponent implements OnChanges {
     this.discountChange.emit({
       hasDiscount: this.enabled,
       discountDetails: {
+        discount_type: this.discountType,
         discount_amount: this.discountAmount,
         start_date: this.startDate,
         end_date: this.endDate,
