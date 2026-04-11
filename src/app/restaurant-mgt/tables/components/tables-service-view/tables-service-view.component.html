@@ -1,0 +1,36 @@
+<div class="space-y-4">
+  <!-- Service Toolbar -->
+  <app-service-toolbar
+    [filters]="filters"
+    [areas]="areas"
+    [servers]="servers"
+    [metrics]="metrics"
+    (filtersChange)="onFiltersChange($event)"
+  ></app-service-toolbar>
+
+  <!-- Two-column layout -->
+  <div class="flex flex-col lg:flex-row gap-4">
+    <!-- Left pane: Reservations (placeholder) -->
+    <div class="w-full lg:min-w-[400px] lg:max-w-[420px] lg:shrink-0 max-h-[35vh] sm:max-h-[40vh] lg:max-h-none overflow-y-auto lg:overflow-y-visible">
+      <div class="bg-card rounded-lg border p-4">
+        <p class="text-sm text-muted-foreground">Reservations pane coming next…</p>
+      </div>
+    </div>
+
+    <!-- Right pane: Floor Plan Canvas -->
+    <div class="relative flex-1 min-w-0">
+      <app-floor-plan-canvas
+        [tables]="filteredTables"
+        [areas]="areas"
+        [seatedParties]="seatedParties"
+        [servers]="servers"
+        [selectedTableId]="selectedTableId"
+        [selectedTableIds]="selectedTableIds"
+        [reservations]="reservations"
+        (tableSelect)="onTableSelect($event)"
+        (seatReservation)="onSeatReservation($event)"
+        (tablesChange)="onTablesChange($event)"
+      ></app-floor-plan-canvas>
+    </div>
+  </div>
+</div>
