@@ -1,0 +1,316 @@
+<div class="bg-card rounded-lg border flex flex-col h-full lg:h-[calc(100vh-280px)] min-h-[500px]">
+
+  <!-- ── Header with tabs + New button ── -->
+  <div class="border-b p-3 sm:p-4">
+    <div class="flex items-center gap-1 sm:gap-2">
+      <!-- Tab pills -->
+      <div class="flex bg-muted rounded-md p-0.5 flex-1">
+        <button
+          type="button"
+          (click)="activeTab = 'reservations'"
+          [class]="activeTab === 'reservations'
+            ? 'flex-1 px-2 py-1.5 text-xs font-medium rounded transition-all bg-card text-foreground shadow-sm'
+            : 'flex-1 px-2 py-1.5 text-xs font-medium rounded transition-all text-muted-foreground hover:text-foreground'"
+        >Reservations ({{ activeReservations.length }})</button>
+        <button
+          type="button"
+          (click)="activeTab = 'waitlist'"
+          [class]="activeTab === 'waitlist'
+            ? 'flex-1 px-2 py-1.5 text-xs font-medium rounded transition-all bg-card text-foreground shadow-sm'
+            : 'flex-1 px-2 py-1.5 text-xs font-medium rounded transition-all text-muted-foreground hover:text-foreground'"
+        >Waitlist ({{ waitlist.length }})</button>
+        <button
+          type="button"
+          (click)="activeTab = 'seated'"
+          [class]="activeTab === 'seated'
+            ? 'flex-1 px-2 py-1.5 text-xs font-medium rounded transition-all bg-card text-foreground shadow-sm'
+            : 'flex-1 px-2 py-1.5 text-xs font-medium rounded transition-all text-muted-foreground hover:text-foreground'"
+        >Seated ({{ seatedParties.length }})</button>
+      </div>
+      <!-- New button -->
+      <button app-dn-button size="sm" (click)="newReservation.emit()" class="h-7 text-xs shrink-0">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Scrollable content ── -->
+  <div class="flex-1 overflow-y-auto p-3 space-y-2">
+
+    <!-- ═══ RESERVATIONS TAB ═══ -->
+    @if (activeTab === 'reservations') {
+      @for (res of activeReservations; track res.id) {
+        <div
+          class="p-3 bg-muted/50 rounded-lg border hover:border-primary/30 transition-colors cursor-grab active:cursor-grabbing"
+          draggable="true"
+          (dragstart)="onDragStart($event, res.id)"
+        >
+          <div class="flex items-start gap-2">
+            <!-- Time -->
+            <span class="text-xs sm:text-sm font-bold min-w-[40px] sm:min-w-[50px]">
+              {{ formatTime(res.dateTime) }}
+            </span>
+
+            <!-- Info -->
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <app-dn-badge variant="secondary" class="text-[10px]">{{ res.partySize }}</app-dn-badge>
+                <span class="text-sm truncate">{{ res.guest.name }}</span>
+                <!-- Tag icons -->
+                @if (res.tags.birthday) {
+                  <span class="text-pink-500" [appTooltip]="'Birthday'">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/><path d="M2 21h20"/><path d="M7 8v3"/><path d="M12 8v3"/><path d="M17 8v3"/><path d="M7 4h.01"/><path d="M12 4h.01"/><path d="M17 4h.01"/></svg>
+                  </span>
+                }
+                @if (res.tags.vip) {
+                  <span class="text-amber-500" [appTooltip]="'VIP'">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  </span>
+                }
+                @if (res.tags.allergy) {
+                  <span class="text-destructive" [appTooltip]="'Allergy'">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                  </span>
+                }
+                @if (res.tags.nonSmoking) {
+                  <span class="text-muted-foreground" [appTooltip]="'Non-smoking'">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="2" x2="22" y2="22"/><path d="M12 12H2v4h14"/><path d="M22 12v4"/><path d="M18 12h-.5"/><path d="M7 12v-1a5 5 0 0 1 10 0"/></svg>
+                  </span>
+                }
+              </div>
+              <!-- Status + table info -->
+              <div class="flex items-center gap-2 mt-1 text-[10px]">
+                <span class="inline-flex items-center rounded-full px-1.5 py-0.5 border" [class]="getStatusClass(res.status)">
+                  {{ res.status === 'no_show' ? 'No show' : res.status }}
+                </span>
+                @if (res.tableId) {
+                  @let t = getTable(res.tableId);
+                  <span class="text-muted-foreground">Table {{ t?.number }}</span>
+                } @else {
+                  <span class="text-warning">No table yet</span>
+                }
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-0.5 shrink-0">
+              <button
+                class="h-7 w-7 inline-flex items-center justify-center rounded-md hover:bg-accent transition-colors"
+                [appTooltip]="'Seat at available table'"
+                (click)="seatAtFirstAvailable(res)"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
+              </button>
+              <button
+                class="h-7 w-7 inline-flex items-center justify-center rounded-md hover:bg-accent transition-colors"
+                [appTooltip]="'Edit'"
+                (click)="openEditDialog(res)"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+              </button>
+              <!-- More menu -->
+              <div class="relative">
+                <button
+                  class="h-7 w-7 inline-flex items-center justify-center rounded-md hover:bg-accent transition-colors"
+                  (click)="openMenuId = openMenuId === res.id ? null : res.id; $event.stopPropagation()"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                </button>
+                @if (openMenuId === res.id) {
+                  <div class="absolute right-0 top-full mt-1 w-40 bg-card rounded-md shadow-lg border z-20 py-1" (mouseleave)="openMenuId = null">
+                    <button class="w-full text-left px-3 py-1.5 text-xs hover:bg-accent" (click)="cancelResId = res.id; openMenuId = null">Cancel</button>
+                    <button class="w-full text-left px-3 py-1.5 text-xs hover:bg-accent" (click)="noShowResId = res.id; openMenuId = null">Mark no-show</button>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+      @if (activeReservations.length === 0) {
+        <p class="text-center text-sm text-muted-foreground py-8">No reservations for this time</p>
+      }
+    }
+
+    <!-- ═══ WAITLIST TAB ═══ -->
+    @if (activeTab === 'waitlist') {
+      @for (entry of waitlist; track entry.id) {
+        <div class="p-3 bg-muted/50 rounded-lg border hover:border-primary/30 transition-colors">
+          <div class="flex items-start gap-2">
+            <span class="text-xs font-bold min-w-[55px]">{{ entry.quotedWaitMinutes.min }}–{{ entry.quotedWaitMinutes.max }}m</span>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <app-dn-badge variant="secondary" class="text-[10px]">{{ entry.partySize }}</app-dn-badge>
+                <span class="text-sm truncate">{{ entry.guest.name }}</span>
+                @if (entry.tags.birthday) {
+                  <span class="text-pink-500"><svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/><path d="M2 21h20"/><path d="M7 8v3"/><path d="M12 8v3"/><path d="M17 8v3"/><path d="M7 4h.01"/><path d="M12 4h.01"/><path d="M17 4h.01"/></svg></span>
+                }
+                @if (entry.tags.vip) {
+                  <span class="text-amber-500"><svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
+                }
+              </div>
+              <span class="text-[10px] text-muted-foreground">Added {{ formatTime(entry.addedAt) }}</span>
+            </div>
+            <button app-dn-button size="sm" variant="outline" class="text-xs shrink-0" (click)="handleSeatBestTable(entry)">Seat</button>
+          </div>
+        </div>
+      }
+      @if (waitlist.length === 0) {
+        <p class="text-center text-sm text-muted-foreground py-8">No guests on waitlist</p>
+      }
+    }
+
+    <!-- ═══ SEATED TAB ═══ -->
+    @if (activeTab === 'seated') {
+      @for (party of seatedParties; track party.id) {
+        @let table = getTable(party.tableId);
+        @let area = table ? getArea(table.areaId) : undefined;
+        @let server = getServer(party.serverId);
+        <div class="p-3 bg-muted/50 rounded-lg border hover:border-primary/30 transition-colors">
+          <div class="flex items-start gap-2">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5">
+                <span class="text-sm font-bold">Table {{ table?.number }}</span>
+                @if (area) {
+                  <span class="text-[10px] text-muted-foreground">&middot; {{ area.name }}</span>
+                }
+              </div>
+              <div class="flex items-center gap-2 mt-0.5 text-[10px] text-muted-foreground">
+                <span>{{ party.partySize }} guests</span>
+                <span>&middot; {{ getSeatedTime(party.seatedAt) }} min</span>
+                @if (server) {
+                  <span>&middot; {{ server.name }}</span>
+                }
+              </div>
+              @if (party.guest?.name) {
+                <span class="text-xs text-muted-foreground">{{ party.guest?.name }}</span>
+              }
+            </div>
+            <button
+              class="h-7 w-7 inline-flex items-center justify-center rounded-md hover:bg-accent transition-colors shrink-0"
+              [appTooltip]="'View table'"
+              (click)="viewTable.emit(party.tableId)"
+            >
+              <!-- Eye icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+      }
+      @if (seatedParties.length === 0) {
+        <p class="text-center text-sm text-muted-foreground py-8">No tables currently seated</p>
+      }
+    }
+  </div>
+</div>
+
+<!-- ═══ MODALS / DIALOGS ═══ -->
+
+<!-- Edit Reservation Dialog -->
+<app-dn-dialog [open]="!!editingRes" (closed)="editingRes = null" maxWidth="md">
+  <h2 class="text-lg font-semibold mb-4">Edit Reservation</h2>
+  <div class="space-y-4">
+    <div class="grid grid-cols-2 gap-4">
+      <div class="space-y-1.5">
+        <label class="text-sm font-medium">Guest Name *</label>
+        <input type="text" [(ngModel)]="editName" required class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+      </div>
+      <div class="space-y-1.5">
+        <label class="text-sm font-medium">Phone</label>
+        <input type="tel" [(ngModel)]="editPhone" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+      </div>
+    </div>
+    <div class="grid grid-cols-3 gap-4">
+      <div class="space-y-1.5">
+        <label class="text-sm font-medium">Date *</label>
+        <input type="date" [(ngModel)]="editDate" required class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+      </div>
+      <div class="space-y-1.5">
+        <label class="text-sm font-medium">Time *</label>
+        <input type="time" [(ngModel)]="editTime" required class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+      </div>
+      <div class="space-y-1.5">
+        <label class="text-sm font-medium">Party Size</label>
+        <select [(ngModel)]="editPartySize" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+          @for (n of [1,2,3,4,5,6,7,8,10,12,15,20]; track n) {
+            <option [value]="n">{{ n }} {{ n === 1 ? 'guest' : 'guests' }}</option>
+          }
+        </select>
+      </div>
+    </div>
+    <div class="space-y-1.5">
+      <label class="text-sm font-medium">Assigned Table</label>
+      <select [(ngModel)]="editTableId" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+        <option value="">No table</option>
+        @for (t of tables; track t.id) {
+          @if (t.isActive) {
+            @let a = getArea(t.areaId);
+            <option [value]="t.id">Table {{ t.number }} ({{ t.maxCapacity }} seats{{ a ? ', ' + a.name : '' }})</option>
+          }
+        }
+      </select>
+    </div>
+    <div class="space-y-1.5">
+      <label class="text-sm font-medium">Notes</label>
+      <textarea [(ngModel)]="editNotes" rows="2" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none"></textarea>
+    </div>
+  </div>
+  <div class="flex justify-end gap-2 pt-4">
+    <button app-dn-button variant="outline" (click)="editingRes = null">Cancel</button>
+    <button app-dn-button [disabled]="!editName.trim()" (click)="handleSaveEdit()">Save Changes</button>
+  </div>
+</app-dn-dialog>
+
+<!-- Cancel Reservation Confirmation -->
+<app-dn-dialog [open]="!!cancelResId" (closed)="cancelResId = null" maxWidth="sm">
+  <h2 class="text-lg font-semibold mb-2">Cancel reservation?</h2>
+  @if (cancelRes) {
+    <p class="text-sm text-muted-foreground mb-4">
+      Cancel reservation for {{ cancelRes.guest.name }} on {{ formatTime(cancelRes.dateTime) }}?
+    </p>
+  }
+  <div class="flex justify-end gap-2">
+    <button app-dn-button variant="outline" (click)="cancelResId = null">Keep</button>
+    <button app-dn-button variant="destructive" (click)="confirmCancel()">Cancel Reservation</button>
+  </div>
+</app-dn-dialog>
+
+<!-- Mark No-Show Confirmation -->
+<app-dn-dialog [open]="!!noShowResId" (closed)="noShowResId = null" maxWidth="sm">
+  <h2 class="text-lg font-semibold mb-2">Mark as no-show?</h2>
+  @if (noShowRes) {
+    <p class="text-sm text-muted-foreground mb-4">
+      Mark {{ noShowRes.guest.name }} as no-show?
+      @if (noShowRes.tableId) {
+        Table {{ getTable(noShowRes.tableId)?.number }} will become available.
+      }
+    </p>
+  }
+  <div class="flex justify-end gap-2">
+    <button app-dn-button variant="outline" (click)="noShowResId = null">Cancel</button>
+    <button app-dn-button variant="destructive" (click)="confirmNoShow()">Mark No-Show</button>
+  </div>
+</app-dn-dialog>
+
+<!-- Seat from Waitlist Dialog -->
+<app-dn-dialog [open]="!!seatWaitlistEntry" (closed)="seatWaitlistEntry = null" maxWidth="sm">
+  <h2 class="text-lg font-semibold mb-1">Seat guest</h2>
+  @if (seatWaitlistEntry) {
+    <p class="text-sm text-muted-foreground mb-4">
+      Seat {{ seatWaitlistEntry.guest.name }} (party of {{ seatWaitlistEntry.partySize }}) at:
+    </p>
+    <select [(ngModel)]="seatOverrideTableId" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring mb-4">
+      @for (t of availableTables; track t.id) {
+        @let a = getArea(t.areaId);
+        <option [value]="t.id">
+          Table {{ t.number }} ({{ t.maxCapacity }} seats{{ a ? ', ' + a.name : '' }}){{ t.id === seatSuggestedTableId ? ' ★ Best match' : '' }}
+        </option>
+      }
+    </select>
+  }
+  <div class="flex justify-end gap-2">
+    <button app-dn-button variant="outline" (click)="seatWaitlistEntry = null">Cancel</button>
+    <button app-dn-button (click)="confirmSeatFromWaitlist()">Seat Guest</button>
+  </div>
+</app-dn-dialog>

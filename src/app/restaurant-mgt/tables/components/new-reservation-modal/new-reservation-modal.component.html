@@ -1,0 +1,97 @@
+<app-dn-dialog [open]="open" (closed)="onClose()" maxWidth="md">
+  <h2 class="text-lg font-semibold mb-4">New Reservation</h2>
+
+  <form (ngSubmit)="onSubmit()" class="space-y-4">
+    <!-- Guest Info -->
+    <div class="grid grid-cols-2 gap-4">
+      <div class="space-y-1.5">
+        <label class="text-sm font-medium">Guest Name *</label>
+        <input type="text" [(ngModel)]="name" name="name" required placeholder="Enter name" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+      </div>
+      <div class="space-y-1.5">
+        <label class="text-sm font-medium">Phone</label>
+        <input type="tel" [(ngModel)]="phone" name="phone" placeholder="+256 700 000 000" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+      </div>
+    </div>
+
+    <!-- Date / Time / Party Size -->
+    <div class="grid grid-cols-3 gap-4">
+      <div class="space-y-1.5">
+        <label class="text-sm font-medium">Date *</label>
+        <input type="date" [(ngModel)]="date" name="date" required class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+      </div>
+      <div class="space-y-1.5">
+        <label class="text-sm font-medium">Time *</label>
+        <input type="time" [(ngModel)]="time" name="time" required class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+      </div>
+      <div class="space-y-1.5">
+        <label class="text-sm font-medium">Party Size *</label>
+        <select [(ngModel)]="partySize" name="partySize" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+          @for (n of partySizeOptions; track n) {
+            <option [value]="n">{{ n }} {{ n === 1 ? 'guest' : 'guests' }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- Area Preference -->
+    <div class="space-y-1.5">
+      <label class="text-sm font-medium">Area Preference</label>
+      <select [(ngModel)]="areaPreference" name="areaPreference" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+        <option value="">No preference</option>
+        @for (area of activeAreas; track area.id) {
+          <option [value]="area.id">{{ area.name }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Notes -->
+    <div class="space-y-1.5">
+      <label class="text-sm font-medium">Notes</label>
+      <textarea [(ngModel)]="notes" name="notes" rows="2" placeholder="Special requests, dietary requirements, etc." class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none"></textarea>
+    </div>
+
+    <!-- Tags -->
+    <div class="space-y-1.5">
+      <label class="text-sm font-medium">Tags</label>
+      <div class="flex flex-wrap gap-4">
+        <label class="flex items-center gap-1.5 text-sm cursor-pointer">
+          <input type="checkbox" [(ngModel)]="tags.birthday" name="birthday" class="h-4 w-4 rounded border-input" />
+          <!-- Cake icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-pink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/><path d="M2 21h20"/><path d="M7 8v3"/><path d="M12 8v3"/><path d="M17 8v3"/><path d="M7 4h.01"/><path d="M12 4h.01"/><path d="M17 4h.01"/></svg>
+          Birthday
+        </label>
+        <label class="flex items-center gap-1.5 text-sm cursor-pointer">
+          <input type="checkbox" [(ngModel)]="tags.anniversary" name="anniversary" class="h-4 w-4 rounded border-input" />
+          <!-- Heart icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          Anniversary
+        </label>
+        <label class="flex items-center gap-1.5 text-sm cursor-pointer">
+          <input type="checkbox" [(ngModel)]="tags.vip" name="vip" class="h-4 w-4 rounded border-input" />
+          <!-- Star icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          VIP
+        </label>
+        <label class="flex items-center gap-1.5 text-sm cursor-pointer">
+          <input type="checkbox" [(ngModel)]="tags.allergy" name="allergy" class="h-4 w-4 rounded border-input" />
+          <!-- Warning icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-destructive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Allergy
+        </label>
+        <label class="flex items-center gap-1.5 text-sm cursor-pointer">
+          <input type="checkbox" [(ngModel)]="tags.nonSmoking" name="nonSmoking" class="h-4 w-4 rounded border-input" />
+          <!-- Cigarette off icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="2" x2="22" y2="22"/><path d="M12 12H2v4h14"/><path d="M22 12v4"/><path d="M18 12h-.5"/><path d="M7 12v-1a5 5 0 0 1 10 0"/></svg>
+          Non-smoking
+        </label>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-end gap-2 pt-4">
+      <button app-dn-button type="button" variant="outline" (click)="onClose()">Cancel</button>
+      <button app-dn-button type="submit" [disabled]="!name.trim() || !date || !time">Save Reservation</button>
+    </div>
+  </form>
+</app-dn-dialog>
