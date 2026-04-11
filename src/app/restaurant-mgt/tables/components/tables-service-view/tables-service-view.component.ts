@@ -6,6 +6,8 @@ import { ToastService } from '../../../../_shared/ui/toast/toast.service';
 import { TablesService } from '../../services/tables.service';
 import { ServiceToolbarComponent, ServiceMetrics } from '../service-toolbar/service-toolbar.component';
 import { FloorPlanCanvasComponent } from '../floor-plan-canvas/floor-plan-canvas.component';
+import { ReservationsPaneComponent } from '../reservations-pane/reservations-pane.component';
+import { NewReservationModalComponent } from '../new-reservation-modal/new-reservation-modal.component';
 import {
   TableFilters,
   DiningArea,
@@ -24,6 +26,8 @@ import { mockSeatedParties } from '../../data/tables-mock-data';
     CommonModule,
     ServiceToolbarComponent,
     FloorPlanCanvasComponent,
+    ReservationsPaneComponent,
+    NewReservationModalComponent,
   ],
   templateUrl: './tables-service-view.component.html',
 })
@@ -45,6 +49,7 @@ export class TablesServiceViewComponent implements OnInit, OnDestroy {
 
   selectedTableId: string | null = null;
   selectedTableIds: string[] = [];
+  isNewReservationModalOpen = false;
 
   private destroy$ = new Subject<void>();
 
@@ -203,5 +208,42 @@ export class TablesServiceViewComponent implements OnInit, OnDestroy {
         this.tablesService.createTable(t);
       }
     }
+  }
+
+  // ── Reservation handlers ──────────────────────────────
+
+  onNewReservation(): void {
+    this.isNewReservationModalOpen = true;
+  }
+
+  onNewReservationSaved(data: Omit<Reservation, 'id' | 'status'>): void {
+    this.tablesService.createReservation({ ...data, status: 'confirmed' } as any);
+    this.isNewReservationModalOpen = false;
+    this.toast.success('Reservation created');
+  }
+
+  onEditReservation(res: Reservation): void {
+    this.tablesService.updateReservation(res);
+  }
+
+  onCancelReservation(resId: string): void {
+    this.tablesService.cancelReservation(resId);
+  }
+
+  onMarkNoShow(resId: string): void {
+    const res = this.reservations.find(r => r.id === resId);
+    if (res?.tableId) {
+      this.tablesService.updateTableStatus(res.tableId, 'available');
+    }
+    this.tablesService.markNoShow(resId);
+  }
+
+  onSeatFromWaitlist(event: { waitlistId: string; tableId: string }): void {
+    this.tablesService.seatFromWaitlist(event.waitlistId, event.tableId);
+  }
+
+  onViewTable(tableId: string): void {
+    this.selectedTableId = tableId;
+    this.selectedTableIds = [];
   }
 }

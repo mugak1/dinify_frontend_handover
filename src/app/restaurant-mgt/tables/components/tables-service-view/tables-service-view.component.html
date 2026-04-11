@@ -10,11 +10,23 @@
 
   <!-- Two-column layout -->
   <div class="flex flex-col lg:flex-row gap-4">
-    <!-- Left pane: Reservations (placeholder) -->
+    <!-- Left pane: Reservations -->
     <div class="w-full lg:min-w-[400px] lg:max-w-[420px] lg:shrink-0 max-h-[35vh] sm:max-h-[40vh] lg:max-h-none overflow-y-auto lg:overflow-y-visible">
-      <div class="bg-card rounded-lg border p-4">
-        <p class="text-sm text-muted-foreground">Reservations pane coming next…</p>
-      </div>
+      <app-reservations-pane
+        [reservations]="reservations"
+        [waitlist]="waitlist"
+        [seatedParties]="seatedParties"
+        [tables]="tables"
+        [areas]="areas"
+        [servers]="servers"
+        (newReservation)="onNewReservation()"
+        (seatReservation)="onSeatReservation($event)"
+        (viewTable)="onViewTable($event)"
+        (editReservation)="onEditReservation($event)"
+        (cancelReservation)="onCancelReservation($event)"
+        (markNoShow)="onMarkNoShow($event)"
+        (seatFromWaitlist)="onSeatFromWaitlist($event)"
+      ></app-reservations-pane>
     </div>
 
     <!-- Right pane: Floor Plan Canvas -->
@@ -34,3 +46,11 @@
     </div>
   </div>
 </div>
+
+<!-- New Reservation Modal -->
+<app-new-reservation-modal
+  [open]="isNewReservationModalOpen"
+  [areas]="areas"
+  (closed)="isNewReservationModalOpen = false"
+  (saved)="onNewReservationSaved($event)"
+></app-new-reservation-modal>
