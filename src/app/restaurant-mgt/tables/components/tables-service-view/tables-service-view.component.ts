@@ -1,8 +1,207 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Subject, combineLatest } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { ToastService } from '../../../../_shared/ui/toast/toast.service';
+import { TablesService } from '../../services/tables.service';
+import { ServiceToolbarComponent, ServiceMetrics } from '../service-toolbar/service-toolbar.component';
+import { FloorPlanCanvasComponent } from '../floor-plan-canvas/floor-plan-canvas.component';
+import {
+  TableFilters,
+  DiningArea,
+  RestaurantTable,
+  Server,
+  Reservation,
+  WaitlistEntry,
+  SeatedParty,
+} from '../../models/tables.models';
+import { mockSeatedParties } from '../../data/tables-mock-data';
 
 @Component({
   selector: 'app-tables-service-view',
   standalone: true,
-  template: `<p class="text-muted-foreground">Service view coming next...</p>`,
+  imports: [
+    CommonModule,
+    ServiceToolbarComponent,
+    FloorPlanCanvasComponent,
+  ],
+  templateUrl: './tables-service-view.component.html',
 })
-export class TablesServiceViewComponent {}
+export class TablesServiceViewComponent implements OnInit, OnDestroy {
+  areas: DiningArea[] = [];
+  tables: RestaurantTable[] = [];
+  servers: Server[] = [];
+  reservations: Reservation[] = [];
+  waitlist: WaitlistEntry[] = [];
+  seatedParties: SeatedParty[] = [];
+
+  filters: TableFilters = {
+    area: 'all',
+    status: [],
+    servers: [],
+    tableSize: [],
+    search: '',
+  };
+
+  selectedTableId: string | null = null;
+  selectedTableIds: string[] = [];
+
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private tablesService: TablesService,
+    private toast: ToastService,
+  ) {}
+
+  ngOnInit(): void {
+    combineLatest([
+      this.tablesService.areas$,
+      this.tablesService.tables$,
+      this.tablesService.reservations$,
+      this.tablesService.waitlist$,
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([areas, tables, reservations, waitlist]) => {
+        this.areas = areas;
+        this.tables = tables;
+        this.reservations = reservations;
+        this.waitlist = waitlist;
+        this.seatedParties = this.tablesService.getSeatedParties();
+      });
+
+    // Load initial data
+    this.tablesService.getAreas('').subscribe();
+    this.tablesService.getTables('').subscribe();
+    this.tablesService.getReservations('').subscribe();
+    this.tablesService.getWaitlist('').subscribe();
+    this.tablesService.getServers('').subscribe(s => (this.servers = s));
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  // ── Filtered tables ───────────────────────────────────
+
+  get filteredTables(): RestaurantTable[] {
+    return this.tables.filter(t => {
+      // Area
+      if (this.filters.area !== 'all' && t.areaId !== this.filters.area) return false;
+      // Status
+      if (this.filters.status.length > 0 && !this.filters.status.includes(t.status)) return false;
+      // Server
+      if (this.filters.servers.length > 0) {
+        if (this.filters.servers.includes('unassigned')) {
+          if (t.serverId && !this.filters.servers.includes(t.serverId)) return false;
+        } else {
+          if (!t.serverId || !this.filters.servers.includes(t.serverId)) return false;
+        }
+      }
+      // Size
+      if (this.filters.tableSize.length > 0) {
+        const match = this.filters.tableSize.some(size =>
+          size === 6 ? t.maxCapacity >= 6 : t.maxCapacity === size,
+        );
+        if (!match) return false;
+      }
+      // Search
+      if (this.filters.search) {
+        const q = this.filters.search.toLowerCase();
+        const party = this.seatedParties.find(p => p.tableId === t.id);
+        const nameMatch = party?.guest?.name?.toLowerCase().includes(q) ?? false;
+        const numMatch = String(t.number).includes(q);
+        const dispMatch = t.displayName?.toLowerCase().includes(q) ?? false;
+        if (!numMatch && !dispMatch && !nameMatch) return false;
+      }
+      return true;
+    });
+  }
+
+  // ── Metrics ───────────────────────────────────────────
+
+  get metrics(): ServiceMetrics {
+    const seated = this.tables.filter(t => t.status === 'seated').length;
+    const total = this.tables.filter(t => t.status !== 'out_of_service').length;
+    const guestsSeated = this.seatedParties.reduce((sum, p) => sum + p.partySize, 0);
+    const avgTime =
+      this.seatedParties.length > 0
+        ? Math.round(
+            this.seatedParties.reduce(
+              (sum, p) => sum + (Date.now() - p.seatedAt.getTime()) / 60000,
+              0,
+            ) / this.seatedParties.length,
+          )
+        : 0;
+    return { inUse: seated, total, guestsSeated, avgTableTime: avgTime };
+  }
+
+  // ── Filter change ─────────────────────────────────────
+
+  onFiltersChange(filters: TableFilters): void {
+    this.filters = filters;
+  }
+
+  // ── Table selection ───────────────────────────────────
+
+  onTableSelect(event: { tableId: string; isMultiSelect: boolean }): void {
+    if (event.isMultiSelect) {
+      if (this.selectedTableIds.includes(event.tableId)) {
+        this.selectedTableIds = this.selectedTableIds.filter(id => id !== event.tableId);
+      } else {
+        this.selectedTableIds = [...this.selectedTableIds, event.tableId];
+      }
+    } else {
+      this.selectedTableId = this.selectedTableId === event.tableId ? null : event.tableId;
+      this.selectedTableIds = [];
+    }
+  }
+
+  // ── Seat reservation on drop ──────────────────────────
+
+  onSeatReservation(event: { reservationId: string; tableId: string }): void {
+    const reservation = this.reservations.find(r => r.id === event.reservationId);
+    const table = this.tables.find(t => t.id === event.tableId);
+    if (!reservation || !table) return;
+
+    this.tablesService.updateTableStatus(event.tableId, 'seated');
+    this.tablesService.updateReservation({
+      id: event.reservationId,
+      status: 'seated',
+      tableId: event.tableId,
+      seatedAt: new Date(),
+    });
+
+    // Create seated party
+    const newParty: SeatedParty = {
+      id: `seated-${Date.now()}`,
+      tableId: event.tableId,
+      guest: reservation.guest,
+      partySize: reservation.partySize,
+      adults: reservation.partySize,
+      children: 0,
+      seatedAt: new Date(),
+      serverId: table.serverId ?? 'srv-1',
+      reservationId: reservation.id,
+      currentCheck: 0,
+      isPaid: false,
+      orderItems: [],
+    };
+    mockSeatedParties.push(newParty);
+    this.seatedParties = [...mockSeatedParties];
+  }
+
+  // ── Tables change (from floor plan save) ──────────────
+
+  onTablesChange(updatedTables: RestaurantTable[]): void {
+    const positions = updatedTables.map(t => ({ id: t.id, x: t.x, y: t.y }));
+    this.tablesService.updateFloorPlan(positions);
+
+    // Handle new tables
+    for (const t of updatedTables) {
+      if (t.id.startsWith('t-new-')) {
+        this.tablesService.createTable(t);
+      }
+    }
+  }
+}
