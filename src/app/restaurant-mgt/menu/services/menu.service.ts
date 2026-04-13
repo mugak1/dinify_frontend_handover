@@ -305,15 +305,24 @@ export class MenuService {
 
   updateItemLocally(itemId: string, changes: Partial<MenuItem>): void {
     const currentItems = this._items$.getValue();
-    const updated = currentItems.map(item =>
-      item.id === itemId ? { ...item, ...changes } : item
+    this._items$.next(
+      currentItems.map(item => item.id === itemId ? { ...item, ...changes } : item)
     );
-    this._items$.next(updated);
+
+    // Keep allItems$ in sync for the preview drawer
+    const allItems = this._allItems$.getValue();
+    this._allItems$.next(
+      allItems.map(item => item.id === itemId ? { ...item, ...changes } : item)
+    );
   }
 
   removeItemLocally(itemId: string): void {
     const currentItems = this._items$.getValue();
     this._items$.next(currentItems.filter(item => item.id !== itemId));
+
+    // Keep allItems$ in sync for the preview drawer
+    const allItems = this._allItems$.getValue();
+    this._allItems$.next(allItems.filter(item => item.id !== itemId));
   }
 
   removeSectionLocally(sectionId: string): void {
