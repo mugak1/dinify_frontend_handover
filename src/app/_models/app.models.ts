@@ -129,6 +129,8 @@ export interface MenuItem {
   is_popular?: boolean
   is_new?: boolean
   in_stock?: boolean
+  is_special?: boolean
+  discount_percentage?: number
 }
 
 export interface MenuOptions {

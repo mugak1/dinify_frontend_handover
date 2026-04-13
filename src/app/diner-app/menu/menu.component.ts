@@ -142,6 +142,7 @@ get QuantitySum(){
     
   }
   viewItem(i:MenuItem/* |Item */){
+if (this.isOutOfStock(i)) return;
 this.selected_item=i as any;
 /* const modifiers = this.fb.array([]);
 i.options.options.forEach((o,io)=>{
@@ -469,6 +470,14 @@ const max = option.max_choices || 1;
   priceSaved(item:any): number {
     if (!item?.discount_details?.discount_amount) return 0;
     return item.primary_price - item.discount_details.discount_amount;
+  }
+  isOutOfStock(item: any): boolean {
+    return item.in_stock === false;
+  }
+  getDiscountBadge(item: any): string {
+    if (!item?.running_discount) return '';
+    const pct = this.calculateDiscount(item);
+    return pct > 0 ? `-${pct}%` : '';
   }
   validateSelections(): boolean {
     let isValid = true;

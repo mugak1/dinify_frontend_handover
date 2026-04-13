@@ -1,110 +1,3 @@
-<div *ngIf="false" class="flex flex-col mt-12">
-
-  <!-- Category Navigation + Search Toggle -->
-  <div *ngIf="!showSearch"
-       class="w-full top-0 overflow-x-auto flex items-center justify-between px-6 bg-white z-10 sticky shadow-md">
-    <div class="flex space-x-3">
-      <button
-        *ngFor="let s of filteredMenuList; let i = index"
-        (click)="scrollTo(s.name, i)"
-        class="px-4 py-2 text-lg font-semibold whitespace-nowrap border-b-4 transition-all duration-300"
-        [ngClass]="{'border-red-600 text-red-600': removeUnderscore(currentSection) === s.name, 'border-transparent text-gray-600': removeUnderscore(currentSection) !== s.name}">
-        {{ s?.name }}
-      </button>
-    </div>
-    <!-- Search Button -->
-    <button (click)="toggleSearch()" class="ml-4 px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
-      🔍 Search
-    </button>
-  </div>
-
-  <!-- Search Bar (Replaces Category List) -->
-  <div *ngIf="showSearch" class="relative px-6 mt-4 flex items-center space-x-3">
-    <input
-      type="text"
-      placeholder="Search menu..."
-      [(ngModel)]="searchQuery"
-      (input)="filterMenu()"
-      class="w-full p-3 pl-10 border border-gray-300 rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-red-500"
-    />
-    <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" width="20" height="20" viewBox="0 0 20 20">
-      <path stroke="currentColor" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-    </svg>
-    <button *ngIf="searchQuery" (click)="clearSearch()" class="text-gray-500 text-lg">✕</button>
-    <!-- Back to Categories Button -->
-    <button (click)="toggleSearch()" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
-      🔙 Back
-    </button>
-  </div>
-
-  <!-- Menu List (Minimalist) -->
-  <div *ngIf="filteredMenuList" class="flex flex-col px-6 overflow-y-scroll">
-    <div *ngFor="let s of filteredMenuList">
-      <h2 class="text-xl font-bold pt-3" [id]="sanitizeId(s.name)">{{s?.name}}</h2>
-      <div class="mt-3">
-        <div *ngFor="let i of s?.items" class="py-2 border-b border-gray-300 flex justify-between items-center">
-          <div (click)="viewItem(i)" class="flex-grow">
-            <p class="font-semibold text-lg">{{i.name}}</p>
-            <p class="text-sm text-gray-600">{{i.description}}</p>
-            <p class="font-medium text-red-600 mt-1">UGX {{i.primary_price | number}}</p>
-          </div>
-          <div (click)="viewItem(i)" class="w-[100px] h-[100px]">
-            <div class="relative w-[100px] h-[100px]">
-  <!-- Ribbon -->
-  <div *ngIf="i?.is_special"
-       class="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md z-10">
-    SPECIAL
-  </div>
-            <app-common-image [container]="false" [imgclass]="'rounded-lg w-full h-[100px] object-cover'" [src]="i.image" [width]="'100'" [height]="'100'"></app-common-image>  
-            </div>   
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Floating Basket Button -->
-  <div *ngIf="basketItems.length > 0" class="fixed bottom-5 right-5">
-    <div class="relative">
-      <span class="absolute -top-2 -right-2 bg-black text-white text-xs font-bold px-2 py-1 rounded-full">
-        {{ QuantitySum }}
-      </span>
-      <button [routerLink]="['basket']"
-        class="bg-red-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-red-700 transition-all">
-        VIEW BASKET
-      </button>
-    </div>
-  </div>
-
-  <!-- Minimalist Modal -->
-  <div *ngIf="showModal && selected_item &&false" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-    <div class="bg-white w-11/12 max-w-lg p-6 relative animate-fadeIn">
-      <button (click)="closeModal()" class="absolute top-2 right-2 text-gray-500 hover:text-red-600">✕</button>
-      
-      <div class="text-center">
-        <img [src]="selected_item.image" class="rounded-lg w-[100px] h-[100px] mx-auto"/>
-        <h2 class="text-2xl font-bold mt-4">{{selected_item.name}}</h2>
-        <p class="text-gray-700">{{selected_item.description}}</p>
-        <p class="text-xl font-semibold text-red-600 mt-2">UGX {{selected_item.primary_price | number}}</p>
-      </div>
-
-      <!-- Quantity Selector -->
-      <div class="flex items-center justify-center space-x-4 mt-4">
-        <button (click)="checkSelected()" class="w-10 h-10 flex items-center justify-center bg-gray-300 rounded-lg text-xl">−</button>
-        <span class="text-lg font-semibold">{{ selected_quantity }}</span>
-        <button (click)="AddSelected()" class="w-10 h-10 flex items-center justify-center bg-gray-300 rounded-lg text-xl">+</button>
-      </div>
-
-      <button [disabled]="!isFormValid()" (click)="AddSelectedItem()"
-        class="w-full mt-4 bg-black text-white py-3 rounded-lg text-lg font-semibold hover:bg-gray-800 transition">
-        Add to Cart
-      </button>
-    </div>
-  </div>
-
-</div>
-
-
 <div  class="flex flex-col mt-12">
 
    <!-- Category Navigation with Search Icon -->
@@ -174,68 +67,105 @@
   
 <div style="height: calc(100dvh - 100px);" *ngIf="filteredMenuList" class="flex flex-col px-6 overflow-y-scroll" appScrollSpy [spiedTags]="['DIV']" (sectionChange)="onSectionChange($event)" >
     <div id="{{addUnderScore(s.name)}}" *ngFor="let s of filteredMenuList;let is=index; let last=last" [ngClass]="{'min-h-dvh':last}"  class="flex flex-col justify-between w-full font-normal text-left rtl:text-right text-black">
-       <span class="font-bold text-xl pt-3">{{s?.name}}</span>
+       <span class="font-bold text-xl pt-4 pb-2">{{s?.name}}</span>
        <div class="flex flex-col" [ngClass]="{'mb-auto':last }">
-        <div *ngFor="let i of s?.items" class="py-4 border-b border-gray-200">
-            <div class="flex flex-row">
-            
-                <div (click)="viewItem(i)" class="p-2 flex-grow">
-                  <p class="font-semibold flex flex-wrap items-center gap-2">
-  {{ i.name }}
-  <span *ngIf="i?.running_discount"
-        class="bg-black text-white text-xs font-medium px-2 py-1 rounded-full whitespace-nowrap inline-flex items-center">
-    -{{ calculateDiscount(i) }}%
-    <span class="ml-2 text-gray-400 whitespace-nowrap">
-      Save UGX {{ priceSaved(i) | number }}
-    </span>
-  </span>
-</p>
-                    <!-- <p class="font-semibold">{{i.name}} <span *ngIf="i?.discount_details?.discount_amount" class="ml-2 bg-black text-white text-xs font-medium px-2 py-1 rounded-full">
-                      -{{ calculateDiscount(i) }}%
-                        <span class="text-xs text-gray-400 ml-2">Save UGX {{ priceSaved(i) | number }}</span>
-                    </span></p> -->
-                    
-                     <p class="text-sm line-clamp-2 mt-2">{{i.description}}</p>
-                     <div class="flex flex-col mt-2">
-                      <ng-container *ngIf="i?.running_discount; else normalPrice">
-                        <span class="text-red-600 font-bold text-lg">UGX {{ i?.discount_details?.discount_amount | number }}</span>
-                        <div class="flex justify-between items-center">
-                          <span class="line-through text-gray-400 text-sm">UGX {{ i.primary_price | number }}</span>
-                        </div>
-                      </ng-container>
-              
-                      <ng-template #normalPrice>
-                        <span class="text-red-600 font-bold text-base">UGX {{ i.primary_price | number }}</span>
-                      </ng-template>
-                    </div>
-                    
-                </div>
-               
-           <div (click)="viewItem(i)" class="w-[150px] ml-auto mr-2">
-            <div class="relative w-[100px] h-[100px]">
-  <!-- Ribbon -->
-  <div *ngIf="i?.is_special"
-       class="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md z-10">
-    SPECIAL
-  </div>
-                 <app-common-image [container]="true" [imgclass]="'rounded-lg ml-auto'" [src]="i.image" [width]="'100'" [height]="'100'"></app-common-image>     
-               </div>
-                </div>
-            </div>
-       <div class="flex flex-col">
-                 
-        <button class="float-end ml-auto mt-1" (click)="viewItem(i)">
-            <svg width="20px" height="20px" viewBox="0 0 32 32" fill="#000000">
-                <g> 
-                    <g transform="translate(-464.000000, -1087.000000)" [attr.fill]="'#b6252c'">
-                        <path d="M480,1117 C472.268,1117 466,1110.73 466,1103 C466,1095.27 472.268,1089 480,1089 C487.732,1089 494,1095.27 494,1103 C494,1110.73 487.732,1117 480,1117 L480,1117 Z M480,1087 C471.163,1087 464,1094.16 464,1103 C464,1111.84 471.163,1119 480,1119 C488.837,1119 496,1111.84 496,1103 C496,1094.16 488.837,1087 480,1087 L480,1087 Z M486,1102 L481,1102 L481,1097 C481,1096.45 480.553,1096 480,1096 C479.447,1096 479,1096.45 479,1097 L479,1102 L474,1102 C473.447,1102 473,1102.45 473,1103 C473,1103.55 473.447,1104 474,1104 L479,1104 L479,1109 C479,1109.55 479.447,1110 480,1110 C480.553,1110 481,1109.55 481,1109 L481,1104 L486,1104 C486.553,1104 487,1103.55 487,1103 C487,1102.45 486.553,1102 486,1102 L486,1102 Z"> </path> 
-                    </g> 
-                </g> </svg>
-        </button>
-       </div> 
- 
-        </div>
+        <div *ngFor="let i of s?.items"
+             class="mb-3 rounded-xl bg-white shadow-sm border border-gray-100"
+             [class.opacity-60]="isOutOfStock(i)"
+             [class.cursor-not-allowed]="isOutOfStock(i)">
+          <div class="flex gap-3 p-3" (click)="viewItem(i)">
 
+            <!-- LEFT: Text content -->
+            <div class="flex-1 min-w-0 flex flex-col">
+
+              <!-- Item name + sold-out pill -->
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="font-bold text-base text-gray-900">{{ i.name }}</h3>
+                <span *ngIf="isOutOfStock(i)"
+                      class="inline-flex items-center rounded-full bg-gray-200 text-gray-600 text-xs font-medium px-2 py-0.5">
+                  Sold out
+                </span>
+              </div>
+
+              <!-- Discount badge inline (only when not sold out) -->
+              <span *ngIf="i?.running_discount && !isOutOfStock(i)"
+                    class="inline-flex items-center self-start bg-black text-white text-xs font-medium px-2 py-0.5 rounded-full mt-1">
+                -{{ calculateDiscount(i) }}%
+                <span class="ml-1 text-gray-400">Save UGX {{ priceSaved(i) | number }}</span>
+              </span>
+
+              <!-- Description -->
+              <p class="text-sm text-gray-500 line-clamp-2 mt-1">{{ i.description }}</p>
+
+              <!-- Price -->
+              <div class="mt-auto pt-2">
+                <ng-container *ngIf="i?.running_discount && !isOutOfStock(i); else normalPriceCard">
+                  <span class="text-red-600 font-bold text-base">UGX {{ i?.discount_details?.discount_amount | number }}</span>
+                  <span class="line-through text-gray-400 text-sm ml-2">UGX {{ i.primary_price | number }}</span>
+                </ng-container>
+                <ng-template #normalPriceCard>
+                  <span [class]="isOutOfStock(i) ? 'text-gray-400 font-bold text-base' : 'text-red-600 font-bold text-base'">
+                    UGX {{ i.primary_price | number }}
+                  </span>
+                </ng-template>
+              </div>
+
+              <!-- Allergen / tag pills -->
+              <div *ngIf="i.allergens?.length > 0" class="flex flex-wrap gap-1 mt-2">
+                <span *ngFor="let tag of i.allergens"
+                      class="inline-flex items-center bg-gray-100 text-gray-700 text-xs font-medium px-2 py-0.5 rounded-full">
+                  {{ tag }}
+                </span>
+              </div>
+            </div>
+
+            <!-- RIGHT: Image with badge overlays -->
+            <div class="w-[112px] h-[112px] rounded-xl overflow-hidden flex-shrink-0 relative"
+                 [class.grayscale]="isOutOfStock(i)">
+
+              <!-- Badge overlays (top-left stack) -->
+              <div class="absolute top-1.5 left-1.5 z-10 flex flex-col gap-1">
+                <!-- Discount % badge -->
+                <span *ngIf="i?.running_discount && !isOutOfStock(i)"
+                      class="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm">
+                  {{ getDiscountBadge(i) }}
+                </span>
+                <!-- Popular badge -->
+                <span *ngIf="i?.is_popular && !isOutOfStock(i)"
+                      class="bg-orange-500 text-white text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded shadow-sm flex items-center gap-0.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none"
+                       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+                  </svg>
+                  Popular
+                </span>
+                <!-- New badge -->
+                <span *ngIf="i?.is_new && !isOutOfStock(i)"
+                      class="bg-green-500 text-white text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded shadow-sm flex items-center gap-0.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none"
+                       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+                  </svg>
+                  New
+                </span>
+              </div>
+
+              <!-- Special ribbon (top-right) -->
+              <div *ngIf="i?.is_special && !isOutOfStock(i)"
+                   class="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-bl-lg z-10">
+                SPECIAL
+              </div>
+
+              <app-common-image
+                [container]="true"
+                [imgclass]="'rounded-xl'"
+                [src]="i.image"
+                [width]="'112'"
+                [height]="'112'">
+              </app-common-image>
+            </div>
+          </div>
+        </div>
        </div>
     </div>
     <div *ngIf="(!filteredMenuList || !filteredMenuList.length)&& menu_list.length" class="flex flex-col items-center justify-center h-full w-full">
