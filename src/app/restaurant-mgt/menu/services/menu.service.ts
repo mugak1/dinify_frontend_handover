@@ -278,6 +278,8 @@ export class MenuService {
     if (!restaurantId) return;
 
     this.loadSections(restaurantId);
+    this.loadAllItems(restaurantId);
+    this.loadExtras(restaurantId);
 
     const sectionId = this._selectedSectionId$.getValue();
     if (sectionId) {
