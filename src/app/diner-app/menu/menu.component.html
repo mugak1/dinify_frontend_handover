@@ -66,7 +66,7 @@
 
 
   
-<div style="height: calc(100dvh - 100px);" *ngIf="filteredMenuList" class="flex flex-col px-6 overflow-y-scroll" appScrollSpy [spiedTags]="['DIV']" (sectionChange)="onSectionChange($event)" >
+<div style="height: calc(100dvh - 100px);" *ngIf="filteredMenuList" class="flex flex-col px-6 overflow-y-scroll" [class.pb-24]="basketItems.length > 0" appScrollSpy [spiedTags]="['DIV']" (sectionChange)="onSectionChange($event)" >
     <div id="{{addUnderScore(s.name)}}" *ngFor="let s of filteredMenuList;let is=index; let last=last" [ngClass]="{'min-h-dvh':last}"  class="flex flex-col justify-between w-full font-normal text-left rtl:text-right text-black">
        <span class="font-bold text-xl pt-4 pb-2">{{s?.name}}</span>
        <div class="flex flex-col" [ngClass]="{'mb-auto':last }">
@@ -114,7 +114,10 @@
               <!-- Allergen / tag pills -->
               <div *ngIf="i.allergens?.length > 0" class="flex flex-wrap gap-1 mt-2">
                 <span *ngFor="let tag of i.allergens"
-                      class="inline-flex items-center bg-gray-100 text-gray-700 text-xs font-medium px-2 py-0.5 rounded-full">
+                      class="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full"
+                      [ngClass]="getTagBadge(tag).colorClasses">
+                  <span [innerHTML]="getTagBadge(tag).iconSvg"
+                        class="[&>svg]:h-3 [&>svg]:w-3"></span>
                   {{ tag }}
                 </span>
               </div>
@@ -186,29 +189,25 @@
   </div>
 </div>
 </div>
-  <!-- Floating Basket Button -->
-  <div *ngIf="basketItems.length > 0" class="fixed bottom-5 right-5">
-    <div class="relative">
-      <span class="absolute -top-2 -right-2 bg-black text-white text-xs font-bold px-2 py-1 rounded-full">
-        {{ QuantitySum }}
-      </span>
-      <button [routerLink]="['basket']"
-        class="bg-d-red text-white px-6 py-3 rounded-full shadow-lg hover:bg-red-700 transition-all">
-        VIEW BASKET
-      </button>
-    </div>
+  <!-- Floating Basket Bar -->
+  <div *ngIf="basketItems.length > 0"
+       class="fixed bottom-0 left-0 right-0 z-30 p-3 bg-white border-t border-gray-200 shadow-lg">
+    <button [routerLink]="['basket']"
+            class="w-full flex items-center justify-between bg-red-600 hover:bg-red-700 text-white rounded-xl px-5 py-3.5 shadow-md transition-colors">
+      <div class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/>
+          <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+        </svg>
+        <span class="font-semibold">View Basket</span>
+        <span class="bg-white/20 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+          {{ QuantitySum }}
+        </span>
+      </div>
+      <span class="font-bold text-base">UGX {{ totalAmount | number }}</span>
+    </button>
   </div>
-    <div  *ngIf="basketItems.length>0&&false" id="outer" class="bottom-14">
-        <div id="inner">
-            <div
-    class="absolute bottom-auto left-auto right-0 top-0 z-10 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-black px-2.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
-    {{QuantitySum}}
-  </div>
- <button title="Contact Sale"  [routerLink]="['basket']"
-        class="align-middle  bg-[#B6252C] px-5 h-10 rounded drop-shadow-lg flex justify-center items-center text-white text-sm font-bold">VIEW BASKET</button>
-   
-    </div>
-    </div>
    
   <div *ngIf="showModal" class="fixed inset-0 z-40 bg-black/50"></div>
 
@@ -293,7 +292,10 @@
           <h4 class="font-semibold text-sm text-gray-700 mb-2">Dietary Info</h4>
           <div class="flex flex-wrap gap-2">
             <span *ngFor="let tag of selected_item.allergens"
-                  class="inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 border border-gray-200">
+                  class="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full"
+                  [ngClass]="getTagBadge(tag).colorClasses">
+              <span [innerHTML]="getTagBadge(tag).iconSvg"
+                    class="[&>svg]:h-3.5 [&>svg]:w-3.5"></span>
               {{ tag }}
             </span>
           </div>

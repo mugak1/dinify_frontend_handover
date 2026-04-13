@@ -18,7 +18,7 @@ import { ItemExtrasTabComponent } from '../item-extras-tab/item-extras-tab.compo
 import { MenuItem, MenuSectionListItem, ItemModifiers, ItemDiscountDetails } from 'src/app/_models/app.models';
 import { MenuService } from '../../services/menu.service';
 import { TagService, PresetTag } from '../../services/tag.service';
-import { getTagColorClasses, getTagIcon } from '../../utils/tag-utils';
+import { getTagColorClasses, getTagIcon } from 'src/app/_common/utils/tag-utils';
 import { environment } from 'src/environments/environment';
 
 @Component({

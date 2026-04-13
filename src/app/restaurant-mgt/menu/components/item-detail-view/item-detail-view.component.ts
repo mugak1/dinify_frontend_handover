@@ -21,7 +21,7 @@ import {
   getDiscountBadgeText,
   calculateSavings,
 } from '../../utils/price-utils';
-import { getTagColorClasses, getTagIcon } from '../../utils/tag-utils';
+import { getTagColorClasses, getTagIcon } from 'src/app/_common/utils/tag-utils';
 import { environment } from 'src/environments/environment';
 
 interface ParsedModifierGroup {

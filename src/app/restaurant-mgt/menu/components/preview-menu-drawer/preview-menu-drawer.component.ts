@@ -32,7 +32,7 @@ import {
   getDiscountBadgeText,
   calculateSavings,
 } from '../../utils/price-utils';
-import { getTagColorClasses, getTagIcon } from '../../utils/tag-utils';
+import { getTagColorClasses, getTagIcon } from 'src/app/_common/utils/tag-utils';
 import { isSectionCurrentlyActive } from '../../utils/schedule-utils';
 import { environment } from 'src/environments/environment';
 import { ItemDetailViewComponent } from '../item-detail-view/item-detail-view.component';

@@ -17,7 +17,7 @@ import { TagService, PresetTag } from '../../services/tag.service';
 import { CartItem } from '../../models/cart.model';
 import { UpsellConfig } from 'src/app/_models/app.models';
 import { getCurrentPrice, formatUGX, isDiscountActive } from '../../utils/price-utils';
-import { getTagColorClasses, getTagIcon } from '../../utils/tag-utils';
+import { getTagColorClasses, getTagIcon } from 'src/app/_common/utils/tag-utils';
 import { environment } from 'src/environments/environment';
 
 @Component({
