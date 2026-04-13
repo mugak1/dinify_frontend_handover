@@ -19,7 +19,7 @@ import {
   AVAILABLE_ICONS,
   getTagColorClasses,
   getTagIcon,
-} from '../../utils/tag-utils';
+} from 'src/app/_common/utils/tag-utils';
 
 @Component({
   selector: 'app-preset-tags-config',

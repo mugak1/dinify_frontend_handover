@@ -5,6 +5,7 @@ import { MenuItem, Restaurant } from 'src/app/_models/app.models';
 import { ApiService } from 'src/app/_services/api.service';
 import { BasketService } from 'src/app/_services/basket.service';
 import { SessionStorageService } from 'src/app/_services/storage/session-storage.service';
+import { getTagColorClasses, getTagIcon } from 'src/app/_common/utils/tag-utils';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -46,10 +47,20 @@ export class DinersMenuComponent implements OnInit {
   searchQuery: string = '';
   errorMessages: any[]=[];
   isFormValidFlag: boolean=true;
+  presetTags: any[] = [];
 
   constructor(private sessionStorage:SessionStorageService,private api:ApiService,private basketService:BasketService,private router:Router,private fb:FormBuilder) {
   this.restaurant=this.sessionStorage.getItem<Restaurant>('restaurant') as any;
+  this.presetTags = this.restaurant?.preset_tags || [];
   this.udpateCart();
+  }
+
+  getTagBadge(tagName: string): { colorClasses: string; iconSvg: string } {
+    const preset = this.presetTags.find((p: any) => p.name === tagName);
+    return {
+      colorClasses: preset ? getTagColorClasses(preset.color) : 'bg-gray-100 text-gray-700',
+      iconSvg: preset ? getTagIcon(preset.icon) : '',
+    };
   }
   ngOnInit(){
    

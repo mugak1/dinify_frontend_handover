@@ -254,6 +254,7 @@ export interface Restaurant {
   cover_photo: any
   menu_approval_status:any
   branding_configuration: BrandingConfiguration
+  preset_tags?: any[]
 }
 
 export interface BrandingConfiguration {

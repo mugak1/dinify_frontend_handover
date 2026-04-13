@@ -2,7 +2,7 @@ import { Component, EventEmitter, HostListener, Input, OnChanges, Output, Simple
 import { CommonModule } from '@angular/common';
 import { ButtonComponent } from 'src/app/_shared/ui/button/button.component';
 import { PresetTag } from '../../services/tag.service';
-import { getTagColorClasses, getTagIcon } from '../../utils/tag-utils';
+import { getTagColorClasses, getTagIcon } from 'src/app/_common/utils/tag-utils';
 
 @Component({
   selector: 'app-tag-filter-sheet',
