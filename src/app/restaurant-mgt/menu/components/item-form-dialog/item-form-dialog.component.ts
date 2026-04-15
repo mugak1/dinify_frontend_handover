@@ -236,12 +236,43 @@ export class ItemFormDialogComponent implements OnChanges {
     return !!(f.get('name')?.invalid || f.get('section')?.invalid || f.get('primary_price')?.invalid);
   }
 
-  // Stubs for future tab-specific validation
-  get hasModifiersErrors(): boolean { return false; }
+  get hasModifiersErrors(): boolean {
+    if (!this.itemModifiers.hasModifiers) return false;
+    return this.itemModifiers.groups.some(
+      group => group.required && group.choices.length === 0
+    );
+  }
+
   get hasExtrasErrors(): boolean { return false; }
-  get hasDiscountsErrors(): boolean { return false; }
+
+  get hasDiscountsErrors(): boolean {
+    if (!this.itemHasDiscount) return false;
+    if (!this.itemDiscountDetails) return true;
+
+    const amount = this.itemDiscountDetails.discount_amount ?? 0;
+
+    if (amount <= 0) return true;
+
+    if (this.itemDiscountDetails.discount_type === 'percentage') {
+      return amount < 1 || amount > 99;
+    }
+
+    const price = this.form.get('primary_price')?.value ?? 0;
+    if (price > 0 && amount >= price) return true;
+
+    return false;
+  }
 
   onSubmit(): void {
+    if (this.hasModifiersErrors) {
+      this.activeTab = 'modifiers';
+      return;
+    }
+    if (this.hasDiscountsErrors) {
+      this.activeTab = 'discounts';
+      return;
+    }
+
     this.attemptedSave = true;
     if (this.form.invalid) {
       this.activeTab = 'details';
