@@ -266,12 +266,49 @@ get QuantitySum(){
         }
         // If the user tapped a basket item, re-open the detail modal pre-populated
         this.checkEditMode();
-        this.isLoading = false;
+        // Keep the skeleton visible until every item image has been preloaded
+        // into the browser cache, so the reveal paints with no pop-in. A 5s
+        // timeout caps the wait in case a CDN stalls.
+        this.preloadImages(this.menu_list).then(() => {
+          this.isLoading = false;
+        });
       },
       error: () => {
         this.isLoading = false;
       }
     })
+  }
+
+  /**
+   * Preloads every item image in the menu into the browser cache.
+   * Resolves when all images have fired load or error, or after 5s — whichever
+   * comes first. Broken images never block; a missing image list short-circuits.
+   */
+  private preloadImages(menuSections: any[]): Promise<void> {
+    const imageUrls: string[] = [];
+    for (const section of menuSections || []) {
+      for (const item of section?.items || []) {
+        if (item?.image) {
+          imageUrls.push(this.url + item.image);
+        }
+      }
+    }
+
+    if (imageUrls.length === 0) {
+      return Promise.resolve();
+    }
+
+    const imagePromises = imageUrls.map(url =>
+      new Promise<void>(resolve => {
+        const img = new Image();
+        img.onload = () => resolve();
+        img.onerror = () => resolve();
+        img.src = url;
+      })
+    );
+
+    const timeout = new Promise<void>(resolve => setTimeout(resolve, 5000));
+    return Promise.race([Promise.all(imagePromises).then(() => {}), timeout]);
   }
 
   /**

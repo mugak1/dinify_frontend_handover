@@ -299,13 +299,13 @@
           SPECIAL
         </div>
 
-        <app-common-image
-          [container]="true"
-          [imgclass]="'rounded-xl'"
-          [src]="i.image"
-          [width]="'112'"
-          [height]="'112'">
-        </app-common-image>
+        <!-- Eager native <img>: images are preloaded before the menu reveals,
+             so this paints from cache immediately without any lazy delay. -->
+        <img *ngIf="i.image"
+             [src]="url + i.image"
+             [alt]="i.name"
+             class="w-full h-full object-cover rounded-xl"
+             decoding="async" />
       </div>
     </div>
   </div>
