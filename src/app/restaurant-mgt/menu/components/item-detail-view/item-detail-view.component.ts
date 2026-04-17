@@ -163,6 +163,10 @@ export class ItemDetailViewComponent implements OnInit, OnChanges, OnDestroy {
     );
   }
 
+  get isEditMode(): boolean {
+    return !!this.editingCartItem;
+  }
+
   // ── Template helpers ─────────────────────────────────────────────────
 
   formatPrice(amount: number): string {
@@ -181,6 +185,10 @@ export class ItemDetailViewComponent implements OnInit, OnChanges, OnDestroy {
 
   isModifierSelected(groupId: string, choiceId: string): boolean {
     return (this.selectedModifiers[groupId] || []).includes(choiceId);
+  }
+
+  getSelectedCount(groupId: string): number {
+    return (this.selectedModifiers[groupId] || []).length;
   }
 
   isExtraSelected(extraId: string): boolean {
