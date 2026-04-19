@@ -14,6 +14,7 @@ import { Subscription } from 'rxjs';
 import { MenuService } from '../../services/menu.service';
 import { ToastService } from 'src/app/_shared/ui/toast/toast.service';
 import { SelectedModifier, SelectedExtra } from '../../models/cart.model';
+import { ModifierGroup } from 'src/app/_models/app.models';
 import {
   getCurrentPrice,
   formatUGX,
@@ -22,22 +23,8 @@ import {
   calculateSavings,
 } from '../../utils/price-utils';
 import { getTagColorClasses, getTagIcon } from 'src/app/_common/utils/tag-utils';
+import { parseModifierGroups } from 'src/app/_common/utils/modifier-utils';
 import { environment } from 'src/environments/environment';
-
-interface ParsedModifierGroup {
-  id: string;
-  name: string;
-  required: boolean;
-  selectionType: 'single' | 'multiple';
-  minSelections: number;
-  maxSelections: number;
-  choices: {
-    id: string;
-    name: string;
-    additionalCost: number;
-    available: boolean;
-  }[];
-}
 
 @Component({
   selector: 'app-item-detail-view',
@@ -97,14 +84,9 @@ export class ItemDetailViewComponent implements OnInit, OnChanges, OnDestroy {
 
   // ── Computed properties ──────────────────────────────────────────────
 
-  get modifierGroups(): ParsedModifierGroup[] {
+  get modifierGroups(): ModifierGroup[] {
     if (!this.item) return [];
-    const opts = this.parseOptions(this.item.options);
-    if (!opts || !opts.hasModifiers || !Array.isArray(opts.groups)) return [];
-    return opts.groups.map((g: any) => ({
-      ...g,
-      choices: (g.choices || []).filter((c: any) => c.available !== false),
-    }));
+    return parseModifierGroups(this.item.options);
   }
 
   get hasModifierGroups(): boolean {
@@ -176,7 +158,7 @@ export class ItemDetailViewComponent implements OnInit, OnChanges, OnDestroy {
     return formatUGX(amount);
   }
 
-  getSelectionHint(group: ParsedModifierGroup): string {
+  getSelectionHint(group: ModifierGroup): string {
     if (group.selectionType === 'single') {
       return group.required ? 'Choose 1' : 'Choose up to 1';
     }
@@ -331,43 +313,6 @@ export class ItemDetailViewComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   // ── Private helpers ──────────────────────────────────────────────────
-
-  private parseOptions(options: any): any {
-    if (!options) return null;
-    let parsed = options;
-    if (typeof parsed === 'string') {
-      try {
-        parsed = JSON.parse(parsed);
-      } catch {
-        return null;
-      }
-    }
-    // New grouped format
-    if (parsed.groups !== undefined) {
-      return { hasModifiers: parsed.hasModifiers ?? false, groups: parsed.groups };
-    }
-    // Legacy flat format — convert to groups
-    if (Array.isArray(parsed.options) && parsed.options.length > 0) {
-      const groups = parsed.options.map((opt: any) => ({
-        id: opt.name || crypto.randomUUID(),
-        name: opt.name || 'Untitled Group',
-        required: opt.required ?? false,
-        selectionType: opt.selectable ? 'multiple' : 'single',
-        minSelections: opt.required ? 1 : 0,
-        maxSelections: opt.selectable
-          ? (opt.choices?.length || opt.options?.length || 1)
-          : 1,
-        choices: (opt.choices || opt.options || []).map((c: any, i: number) => ({
-          id: c.id || `${opt.name}-${i}`,
-          name: c.name || '',
-          additionalCost: c.additionalCost ?? c.cost ?? 0,
-          available: c.available !== false,
-        })),
-      }));
-      return { hasModifiers: true, groups };
-    }
-    return null;
-  }
 
   private prefillFromCartItem(cartItem: any): void {
     this.quantity = cartItem.quantity || 1;

@@ -19,7 +19,6 @@ import {
   ItemModifiers,
   ModifierGroup,
   ModifierChoice,
-  MenuOptions,
 } from 'src/app/_models/app.models';
 
 @Component({
@@ -41,7 +40,6 @@ export class ItemModifiersTabComponent implements OnChanges {
   hasModifiers = false;
   groups: ModifierGroup[] = [];
   expandedGroups = new Set<string>();
-  isLegacy = false;
 
   private skipNextInputChange = false;
 
@@ -72,53 +70,20 @@ export class ItemModifiersTabComponent implements OnChanges {
   }
 
   private loadModifiers(data: any): void {
-    this.isLegacy = false;
-
     if (!data) {
       this.hasModifiers = false;
       this.groups = [];
       return;
     }
 
-    // New grouped format
     if (data.groups !== undefined) {
       this.hasModifiers = data.hasModifiers ?? false;
       this.groups = (data.groups ?? []).map((g: ModifierGroup) => ({ ...g, choices: [...g.choices] }));
       return;
     }
 
-    // Legacy flat format: MenuOptions with options array
-    if (Array.isArray(data.options) && data.options.length > 0) {
-      this.isLegacy = true;
-      this.hasModifiers = true;
-      this.groups = this.convertLegacy(data as MenuOptions);
-      // Expand all converted groups
-      this.groups.forEach((g) => this.expandedGroups.add(g.id));
-      return;
-    }
-
     this.hasModifiers = false;
     this.groups = [];
-  }
-
-  private convertLegacy(legacy: MenuOptions): ModifierGroup[] {
-    return legacy.options.map((opt) => {
-      const group: ModifierGroup = {
-        id: crypto.randomUUID(),
-        name: opt.name || 'Untitled Group',
-        required: opt.required ?? false,
-        selectionType: opt.selectable ? 'multiple' : 'single',
-        minSelections: opt.required ? 1 : 0,
-        maxSelections: opt.selectable ? (legacy.max_selections || 5) : 1,
-        choices: (opt.choices ?? opt.options ?? []).map((c: any) => ({
-          id: crypto.randomUUID(),
-          name: c.name || c,
-          additionalCost: c.cost ?? c.additionalCost ?? 0,
-          available: c.available !== false,
-        })),
-      };
-      return group;
-    });
   }
 
   // ---------------------------------------------------------------------------
