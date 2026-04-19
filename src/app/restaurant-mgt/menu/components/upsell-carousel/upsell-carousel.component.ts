@@ -18,6 +18,7 @@ import { CartItem } from '../../models/cart.model';
 import { UpsellConfig } from 'src/app/_models/app.models';
 import { getCurrentPrice, formatUGX, isDiscountActive } from '../../utils/price-utils';
 import { getTagColorClasses, getTagIcon } from 'src/app/_common/utils/tag-utils';
+import { parseModifierGroups } from 'src/app/_common/utils/modifier-utils';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -122,10 +123,7 @@ export class UpsellCarouselComponent implements OnInit, OnDestroy {
   }
 
   handleAddClick(item: any): void {
-    const hasRequiredModifiers = this.parseOptions(item.options)?.groups?.some(
-      (g: any) => g.required
-    );
-
+    const hasRequiredModifiers = parseModifierGroups(item.options).some(g => g.required);
     if (hasRequiredModifiers) {
       this.itemNeedsModifiers.emit(item);
     } else {
@@ -164,16 +162,5 @@ export class UpsellCarouselComponent implements OnInit, OnDestroy {
   getRemainingTagCount(item: any): number {
     const tags = item.allergens || [];
     return Math.max(0, tags.length - 2);
-  }
-
-  private parseOptions(options: any): any {
-    if (!options) return null;
-    try {
-      const parsed = typeof options === 'string' ? JSON.parse(options) : options;
-      if (parsed?.hasModifiers && parsed?.groups) return parsed;
-      return null;
-    } catch {
-      return null;
-    }
   }
 }

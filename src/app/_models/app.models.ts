@@ -118,7 +118,7 @@ export interface MenuItem {
   image: string
   available: boolean
   has_options: boolean
-  options: MenuOptions
+  options: ItemModifiers | string
   group:{id:any,name:any},
   allergens:[]
   is_extra:boolean
@@ -132,23 +132,6 @@ export interface MenuItem {
   in_stock?: boolean
   is_special?: boolean
   discount_percentage?: number
-}
-
-export interface MenuOptions {
-  min_selections:number;
-  max_selections:number;
-  options:MenuItemOption[];
-}
-
-export interface MenuItemOption {
-  name: string;
-  selectable: boolean /** Does it have options to select from */
-  options: any[];
-  choices?:any[]
-  cost: number,
-  required:boolean;
-  isSelected?:boolean;
-  hasError?:boolean;
 }
 
 export interface ModifierChoice {
