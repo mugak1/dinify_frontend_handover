@@ -75,24 +75,9 @@ export class UpsellsTabComponent implements OnInit, OnDestroy {
     this.subs.forEach(s => s.unsubscribe());
   }
 
-  get upsellMenuItems(): MenuItem[] {
-    if (!this.config?.items) return [];
-    return this.config.items
-      .filter(i => i.menu_item_details)
-      .map(i => i.menu_item_details!);
-  }
-
   get addedItemIds(): Set<string> {
-    if (!this.config?.items) {
-      console.log('[DIAG] addedItemIds getter — no config.items, returning empty Set');
-      return new Set();
-    }
-    const ids = this.config.items.map(i => i.menu_item);
-    console.log('[DIAG] addedItemIds getter — building Set from config.items', {
-      itemsCount: this.config.items.length,
-      ids,
-    });
-    return new Set(ids);
+    if (!this.config?.items) return new Set();
+    return new Set(this.config.items.map(i => i.menu_item));
   }
 
   getItemImageUrl(item: MenuItem): string {
@@ -174,10 +159,9 @@ export class UpsellsTabComponent implements OnInit, OnDestroy {
   }
 
   getUpsellItemImage(item: UpsellItem): string {
-    if (!item.menu_item_details?.image) return '';
-    const img = item.menu_item_details.image;
-    if (img.startsWith('http')) return img;
-    return environment.apiUrl + img;
+    if (!item.item_image) return '';
+    if (item.item_image.startsWith('http')) return item.item_image;
+    return environment.apiUrl + item.item_image;
   }
 
   trackByUpsellItemId(_index: number, item: UpsellItem): string {

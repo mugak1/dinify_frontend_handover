@@ -811,8 +811,13 @@ export interface UpsellConfig {
 export interface UpsellItem {
   id: string;
   menu_item: string;
-  position: number;
-  menu_item_details?: MenuItem;
+  item_id: string;
+  item_name: string;
+  item_price: number;
+  item_image: string;
+  item_available: boolean;
+  item_in_stock: boolean;
+  listing_position: number;
 }
 
 
