@@ -76,7 +76,7 @@ export class UpsellCarouselComponent implements OnInit, OnDestroy {
     }
 
     // Map upsell items by position order to actual menu items
-    const sorted = [...this.config.items].sort((a, b) => a.position - b.position);
+    const sorted = [...this.config.items].sort((a, b) => a.listing_position - b.listing_position);
     let items = sorted
       .map(ui => this.allItems.find(mi => mi.id === ui.menu_item))
       .filter((item): item is any => !!item);

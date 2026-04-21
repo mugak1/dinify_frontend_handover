@@ -120,24 +120,24 @@
           <div class="w-10 h-10 rounded-md overflow-hidden bg-muted shrink-0">
             <img *ngIf="getUpsellItemImage(item)"
                  [src]="getUpsellItemImage(item)"
-                 [alt]="item.menu_item_details?.name"
+                 [alt]="item.item_name"
                  class="w-full h-full object-cover" />
           </div>
 
           <!-- Item info -->
           <div class="flex-1 min-w-0">
             <p class="text-sm font-medium text-foreground truncate">
-              {{ item.menu_item_details?.name || 'Unknown item' }}
+              {{ item.item_name || 'Unknown item' }}
             </p>
             <p class="text-xs text-muted-foreground">
-              {{ (item.menu_item_details?.primary_price || 0) | number:'1.0-0' }} UGX
+              {{ (item.item_price || 0) | number:'1.0-0' }} UGX
             </p>
           </div>
 
           <!-- Stock indicator -->
           <span class="w-2 h-2 rounded-full shrink-0"
-                [class.bg-green-500]="item.menu_item_details?.available"
-                [class.bg-red-500]="!item.menu_item_details?.available"></span>
+                [class.bg-green-500]="item.item_available"
+                [class.bg-red-500]="!item.item_available"></span>
 
           <!-- Remove button -->
           <button app-dn-button variant="ghost" size="icon"
@@ -213,7 +213,7 @@
 <!-- Upsell Preview Modal -->
 <app-upsell-preview-modal
   [open]="previewOpen"
-  [items]="upsellMenuItems"
+  [items]="config?.items ?? []"
   [title]="config?.title ?? 'You might also like...'"
   (closed)="previewOpen = false">
 </app-upsell-preview-modal>
