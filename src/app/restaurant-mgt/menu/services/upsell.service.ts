@@ -4,6 +4,17 @@ import { ApiService } from 'src/app/_services/api.service';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { ApiResponse, UpsellConfig } from 'src/app/_models/app.models';
 
+/**
+ * Response shape for single-resource upsell config endpoints.
+ * The generic ApiResponse<T> is shaped for paginated lists and
+ * doesn't fit the 1:1 upsell-config resource.
+ */
+interface UpsellConfigResponse {
+  status: number;
+  message: string;
+  data?: UpsellConfig;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -29,8 +40,8 @@ export class UpsellService {
     this.api.get<UpsellConfig>(null, 'restaurant-setup/upsell-config/', { restaurant: restaurantId })
       .subscribe({
         next: (res: ApiResponse<UpsellConfig>) => {
-          const config = res?.data?.records?.[0] ?? null;
-          this._config$.next(config);
+          const response = res as unknown as UpsellConfigResponse;
+          this._config$.next(response?.data ?? null);
           this._isLoading$.next(false);
         },
         error: () => {
