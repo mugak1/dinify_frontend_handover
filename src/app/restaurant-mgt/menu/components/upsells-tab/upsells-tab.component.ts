@@ -83,8 +83,16 @@ export class UpsellsTabComponent implements OnInit, OnDestroy {
   }
 
   get addedItemIds(): Set<string> {
-    if (!this.config?.items) return new Set();
-    return new Set(this.config.items.map(i => i.menu_item));
+    if (!this.config?.items) {
+      console.log('[DIAG] addedItemIds getter — no config.items, returning empty Set');
+      return new Set();
+    }
+    const ids = this.config.items.map(i => i.menu_item);
+    console.log('[DIAG] addedItemIds getter — building Set from config.items', {
+      itemsCount: this.config.items.length,
+      ids,
+    });
+    return new Set(ids);
   }
 
   getItemImageUrl(item: MenuItem): string {

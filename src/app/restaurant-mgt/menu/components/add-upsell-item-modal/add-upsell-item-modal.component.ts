@@ -88,7 +88,18 @@ export class AddUpsellItemModalComponent implements OnChanges {
   }
 
   toggleItem(item: MenuItem): void {
-    if (this.isAlreadyAdded(item)) return;
+    console.log('[DIAG] toggleItem called', {
+      itemId: item.id,
+      itemName: item.name,
+      isAlreadyAdded: this.isAlreadyAdded(item),
+      addedItemIdsSize: this.addedItemIds.size,
+      addedItemIds: [...this.addedItemIds],
+      selectedIdsBefore: [...this.selectedIds],
+    });
+    if (this.isAlreadyAdded(item)) {
+      console.log('[DIAG] toggleItem early-returning because isAlreadyAdded=true');
+      return;
+    }
     if (this.selectedIds.has(item.id)) {
       this.selectedIds.delete(item.id);
     } else {
@@ -96,6 +107,11 @@ export class AddUpsellItemModalComponent implements OnChanges {
     }
     // Force change detection
     this.selectedIds = new Set(this.selectedIds);
+    console.log('[DIAG] toggleItem done', {
+      itemId: item.id,
+      selectedIdsAfter: [...this.selectedIds],
+      isSelectedNow: this.isSelected(item),
+    });
   }
 
   onAdd(): void {
