@@ -5,16 +5,11 @@
 
 <div class="flex-1 overflow-y-auto pb-4">
   <!-- Empty state -->
-  <div *ngIf="basketItems.length === 0" class="text-center py-12 px-4">
-    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
-         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-         stroke-linejoin="round" class="mx-auto text-gray-400 mb-4">
-      <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/>
-      <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
-    </svg>
+  <div *ngIf="basketItems.length === 0" class="text-center py-6 px-4">
     <p class="text-gray-500">Your basket is empty</p>
+    <p class="text-gray-400 text-sm mt-1">Why not treat yourself?</p>
     <button type="button" (click)="loc.back()"
-            class="mt-4 inline-flex items-center justify-center px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-50 active:bg-gray-100 transition-colors">
+            class="mt-4 lg:hidden inline-flex items-center justify-center px-4 py-2 rounded-none border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-50 active:bg-gray-100 transition-colors">
       Browse Menu
     </button>
   </div>

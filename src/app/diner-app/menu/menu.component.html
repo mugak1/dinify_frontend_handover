@@ -202,7 +202,7 @@
 
 <!-- Shared item card template — used by both the Featured section and the regular section listings -->
 <ng-template #itemCard let-i>
-  <div class="mb-3 rounded-none bg-white shadow-sm border border-gray-100"
+  <div class="mb-3 rounded-none bg-white shadow-md"
        [class.opacity-60]="isOutOfStock(i)"
        [class.cursor-not-allowed]="isOutOfStock(i)">
     <div class="flex gap-3 p-3" (click)="viewItem(i)">
