@@ -1,7 +1,7 @@
 <app-no-table *ngIf="!table"></app-no-table>
 <div *ngIf="table" class="pb-24 lg:pb-0">
-    <header *ngIf="branding_configs" [style.background-color]="branding_configs?.home?.bgColor" class="absolute inset-x-0 top-0 z-50">
-      <nav [style.background-color]="branding_configs?.home?.headerColor" class="fixed w-full top-0 left-0 flex items-center justify-between p-4 lg:px-8" aria-label="Global">
+    <header *ngIf="branding_configs" [style.background-color]="branding_configs?.home?.bgColor" class="fixed inset-x-0 top-0 z-50">
+      <nav [style.background-color]="branding_configs?.home?.headerColor" class="flex items-center justify-between p-4 lg:px-8" aria-label="Global">
         <div  class="flex lg:flex-1">
           <a [routerLink]="['/diner/h/',table_id]" class="-m-1.5 p-1.5">
             <span class="sr-only">{{restaurant_name}}</span>
