@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { BasketComponent } from './basket/basket.component';
+import { BasketBodyComponent } from './basket/basket-body/basket-body.component';
 import { DinersMenuComponent } from './menu/menu.component';
 import { RouterModule, Routes } from '@angular/router';
 import { StorageModule } from '../_services/storage/storage.module';
@@ -30,6 +31,7 @@ const routes: Routes = [
   declarations: [
     DinersMenuComponent,
     BasketComponent,
+    BasketBodyComponent,
     MenuItemDetailComponent,
     OrdersComponent,
     PaymentDetailsComponent,
