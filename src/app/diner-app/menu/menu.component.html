@@ -168,7 +168,7 @@
         </svg>
         Featured
       </span>
-      <div class="flex flex-col">
+      <div class="grid grid-cols-1 md:grid-cols-2 md:gap-x-3">
         <ng-container *ngFor="let i of featuredItems">
           <ng-container *ngTemplateOutlet="itemCard; context: { $implicit: i }"></ng-container>
         </ng-container>
@@ -177,7 +177,7 @@
 
     <div id="{{addUnderScore(s.name)}}" *ngFor="let s of filteredMenuList;let is=index; let last=last" class="flex flex-col justify-between w-full font-normal text-left rtl:text-right text-black">
        <span class="font-bold text-xl pt-4 pb-2">{{s?.name}}</span>
-       <div class="flex flex-col">
+       <div class="grid grid-cols-1 md:grid-cols-2 md:gap-x-3">
         <ng-container *ngFor="let i of s?.items">
           <ng-container *ngTemplateOutlet="itemCard; context: { $implicit: i }"></ng-container>
         </ng-container>
@@ -328,7 +328,10 @@
    
   <div *ngIf="showModal" class="fixed inset-0 z-40 bg-black/50"></div>
 
-  <div *ngIf="showModal&&selected_item" tabindex="-1" class="bg-white fixed inset-0 z-50 overflow-hidden flex flex-col">
+  <div *ngIf="showModal&&selected_item" tabindex="-1"
+       class="bg-white fixed inset-0 z-50 overflow-hidden flex flex-col
+              lg:inset-auto lg:top-1/2 lg:left-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2
+              lg:w-[90vw] lg:max-w-2xl lg:max-h-[90vh] lg:rounded-xl lg:shadow-xl">
     <!-- Header -->
     <div [ngClass]="{'shadow-lg':currentSectionItem}" class="flex-shrink-0 flex items-center p-4">
       <button type="button" (click)="closeModal()"
