@@ -319,7 +319,7 @@ export class ItemFormDialogComponent implements OnChanges {
     } else {
       payload.running_discount = false;
       payload.discounted_price = null;
-      payload.discount_details = JSON.stringify(null);
+      payload.discount_details = JSON.stringify({});
     }
 
     // Include extras
